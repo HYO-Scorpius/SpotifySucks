@@ -16,7 +16,8 @@ Enter the project folder
 
 Set up npm
 ``` npm install && cd backend && npm install && cd ../frontend && npm install ```
+
 Run the app
 ```npm run dev```
 
-In your browser, go to http://localhost:8888/
+In your browser, go to http://localhost:1337/
