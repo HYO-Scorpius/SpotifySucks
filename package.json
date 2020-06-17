@@ -1,9 +1,25 @@
 {
-    "name": "SpotifySucks",
-    "version": "0.0.1",
-    "dependencies": {
-        "express": "^4.17.1",
-        "nodemon": "^2.0.4",
-        "request": "^2.88.2"
-    }
+  "name": "spotifysucks",
+  "version": "1.0.0",
+  "description": "Additional features for spotify",
+  "main": "backend/app.js",
+  "dependencies": {
+    "concurrently": "^5.2.0",
+    "nodemon": "^2.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HYO-Scorpius/SpotifySucks.git"
+  },
+  "author": "Amy Kenny Mike Syed",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HYO-Scorpius/SpotifySucks/issues"
+  },
+  "homepage": "https://github.com/HYO-Scorpius/SpotifySucks#readme"
 }

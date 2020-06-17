@@ -1,0 +1,16 @@
+{
+    "name": "SpotifySucks",
+    "version": "0.0.1",
+    "dependencies": {
+        "express": "^4.17.1",
+        "request": "^2.88.2"
+    },
+    "devDependencies": {
+        "concurrently": "^5.2.0",
+        "nodemon": "^2.0.4"
+    },
+    "scripts": {
+       "start": "node app.js",
+       "dev": "npx nodemon app.js"
+    }
+}

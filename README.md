@@ -14,7 +14,9 @@ Clone this repository:
 Enter the project folder
 ```cd SpotifySucks```
 
+Set up npm
+``` npm install && cd backend && npm install && cd ../frontend && npm install ```
 Run the app
-```node app.js```
+```npm run dev```
 
 In your browser, go to http://localhost:8888/
