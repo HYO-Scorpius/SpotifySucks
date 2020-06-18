@@ -1,7 +1,14 @@
 const express = require('express');
 const path = require('path');
+const SWA = require('spotify-web-api-node'); //Node Spotify Wrapper
+
 const app = express();
 
+var spotifyApi = new SWA({
+   clientId: process.env.SPOTIFY_CLIENT_ID,
+   clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+   redirectUri: 'http://localhost:8888/callback'
+});
 
 app.use(express.static(path.join('..', 'frontend', 'build')));
 
