@@ -2,11 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import logo from './logo.svg';
+import './Components/MusicPlayer'
+import MusicPlayer from './Components/MusicPlayer';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
     <App />
+    <MusicPlayer logo={logo} song="{songname}" />
   </React.StrictMode>,
   document.getElementById('root')
 );
