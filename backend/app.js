@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require('path');
 const SWA = require('spotify-web-api-node'); //Node Spotify Wrapper
+const FriendSync = require('./friendsync.js'); // Code for FriendSync feature
 const app = express();
 const PORT = process.env.PORT || 1337;
 const HOSTNAME = '127.0.0.1';
@@ -28,9 +29,9 @@ app.get('/api/spotify', (req, res) => {
 app.get('/api/spotifycallback', (req, res) => {
    spotifyApi.authorizationCodeGrant(req.query.code).then(
       (data) => {
-         console.log('expires in' + data.body['expires_in']);
-         console.log('access token is' + data.body['access_token']);
-         console.log('refresh_token is' + data.body['refresh_token']);
+         console.log('The token expires in ' + data.body['expires_in']);
+         console.log('The access token is ' + data.body['access_token']);
+         console.log('The refresh_token is ' + data.body['refresh_token']);
          spotifyApi.setAccessToken(data.body['access_token']);
          spotifyApi.setRefreshToken(data.body['refresh_token']);
          res.redirect('/');
@@ -40,6 +41,12 @@ app.get('/api/spotifycallback', (req, res) => {
       }
    );
 });
+
+// Endpoints for friendsync feature
+app.get('/friendsync/invite/:userid', function (req, res) {
+    res.send(FriendSync.invite(req.params.userid));
+});
+
 
 app.listen(PORT, HOSTNAME, () => {
     console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
