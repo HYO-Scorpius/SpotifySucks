@@ -31,7 +31,7 @@ module.exports = {
     /**
      * gets sessionid of active user
      * 
-     * @param userid User ID of target user
+     * @param {string} userid User ID of target user
      * @returns sessionid of active user
      */
     get_sessionid: function (userid) {

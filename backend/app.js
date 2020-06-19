@@ -30,6 +30,9 @@ app.get('/friendsync/invite/:userid', function (req, res) {
     res.send(FriendSync.invite(req.params.userid));
 });
 
+app.post('/friendsync/queue/add/:groupid&:songid', function (req, res) {
+    FriendSync.add_to_queue(req.params.groupid, req.params.songid)
+})
 
 
 

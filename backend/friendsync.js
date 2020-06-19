@@ -9,7 +9,7 @@ module.exports = {
     /**
     * Invites user to sync playback
     *   
-    * @argument userid Spotify user ID of desired user
+    * @param {string} userid Spotify user ID of desired user
     * @returns string description of outcome. Either invite sent or error
     */
     invite: function (userid) {
@@ -29,12 +29,26 @@ module.exports = {
 
 
 
+
+    /**
+     * Adds user to group
+     * 
+     * @param {*} groupid 
+     */
+    accept: function () {
+
+    },
+
+
+
+
+    /////////////////////////////////////////////////////////////////
     // MEDIA CONTROLS
 
     /** 
      * Begins playback
      * 
-     * @param groupid ID of synchronized group
+     * @param {string} groupid ID of synchronized group
      */
     play: function (groupid) {
         return "play";
@@ -47,7 +61,7 @@ module.exports = {
     /**
      * Pauses playback
      * 
-     * @param groupid ID of synchronized group
+     * @param {string} groupid ID of synchronized group
      */
     pause: function (groupid) {
         return "pause";
@@ -60,7 +74,7 @@ module.exports = {
     /**
      * Skips song
      * 
-     * @param groupid ID of synchronized group
+     * @param {string} groupid ID of synchronized group
      */
     skip: function (groupid) {
         return "skip";
@@ -73,7 +87,7 @@ module.exports = {
     /**
      * Restart song, or skip backwards
      * 
-     * @param groupid ID of synchronized group
+     * @param {string} groupid ID of synchronized group
      */
     back: function (groupid) {
         return "back";
@@ -86,8 +100,8 @@ module.exports = {
     /**
      * Add song to queue
      * 
-     * @param groupid ID of synchronized group
-     * @param songid  Spotify songid
+     * @param {string} groupid ID of synchronized group
+     * @param {string} songid  Spotify songid
      */
     add_to_queue: function (groupid, songid) {
         return "Add to queue";
@@ -99,11 +113,41 @@ module.exports = {
 
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CLASS GROUP
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class Group {
+    groupid;
+    users = [];
+
+    /**
+    * @param {string} userid Spotify userID of the group's creator
+    */
+    constructor(userid) {
+        this.groupid = userid;
+        this.add_user(userid);
+    }
+
+    /**
+     * add user to users list
+     * 
+     * @param {string} userid Spotify userID of the person to add
+     */
+    set add_user(userid) {
+        if (!this.users.includes(userid)) {
+            this.users.append(userid);
+        }
+    }
+};
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -111,7 +155,7 @@ module.exports = {
 /**
  * Checks if user with userid is currently connected to this app
  * 
- * @argument userid Spotify user ID of desired user
+ * @param {string} userid Spotify user ID of desired user
  * @returns sessionid of user if active, null otherwise
  */
 function is_active(userid) {
@@ -127,7 +171,7 @@ function is_active(userid) {
 /**
  * Checks spotify is username is valid
  * 
- * @param userid Spotify user ID of desired user
+ * @param {string} userid Spotify user ID of desired user
  * @returns true if exists, false otherwise
  */
 function user_exists(userid) {
