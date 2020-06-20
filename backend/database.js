@@ -27,6 +27,22 @@ module.exports = {
 
 
 
+    /**
+     * Checks database for active users to determine if user is active
+     * 
+     * @param {string} userid SpotifyID of target
+     * @returns {boolean} true if active, false otherwise
+     */
+    user_is_active: function (userid) {
+        // check database active users
+        // if contains userid, return true
+        // else return false
+        return true;
+    },
+
+
+
+
 
     /**
      * gets sessionid of active user

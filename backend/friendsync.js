@@ -1,8 +1,14 @@
 // Friendsync implementations go here
 const SpotifyWrapper = require('spotify-web-api-node');
 const Request = require('request');
-const Database = require('./database.js')
+const Database = require('./database.js');
+const DataStructures = require('./datastructures');
 
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module.exports = {
 
@@ -25,9 +31,6 @@ module.exports = {
             return "Invite sent"
         }
     },
-
-
-
 
 
     /**
@@ -55,9 +58,6 @@ module.exports = {
     },
 
 
-
-
-
     /**
      * Pauses playback
      * 
@@ -66,9 +66,6 @@ module.exports = {
     pause: function (groupid) {
         return "pause";
     },
-
-
-
 
 
     /**
@@ -81,9 +78,6 @@ module.exports = {
     },
 
 
-
-
-
     /**
      * Restart song, or skip backwards
      * 
@@ -94,9 +88,6 @@ module.exports = {
     },
 
 
-
-
-
     /**
      * Add song to queue
      * 
@@ -104,6 +95,8 @@ module.exports = {
      * @param {string} songid  Spotify songid
      */
     add_to_queue: function (groupid, songid) {
+        // get group with groupid
+        // call add_to_queue function on that group
         return "Add to queue";
     }
 
@@ -120,6 +113,8 @@ module.exports = {
 class Group {
     groupid;
     users = [];
+
+    queue = new DataStructures.Queue
 
     /**
     * @param {string} userid Spotify userID of the group's creator
@@ -139,6 +134,16 @@ class Group {
             this.users.append(userid);
         }
     }
+
+
+    /**
+     * add song to queue
+     * 
+     * @param {string} songid SpotifyID of song
+     */
+    set add_to_queue(songid) {
+        this.queue.enqueue(songid);
+    }
 };
 
 
@@ -148,9 +153,6 @@ class Group {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 /**
  * Checks if user with userid is currently connected to this app
@@ -165,9 +167,6 @@ function is_active(userid) {
 }
 
 
-
-
-
 /**
  * Checks spotify is username is valid
  * 
@@ -175,10 +174,10 @@ function is_active(userid) {
  * @returns true if exists, false otherwise
  */
 function user_exists(userid) {
-    Request(`https://api.spotify.co/v1/users/${userid}`, function (err, res, body) {
-        if (!err && res.statusCode === 200) {
-            return true;
-        }
-    });
-    return false;
+    var exists;
+    SpotifyWrapper.getUser(userid).then(
+        function (data) { exists = true;  },
+        function (err)  { exists = false; }
+    );
+    return exists;
 }
