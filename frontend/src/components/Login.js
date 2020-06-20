@@ -1,0 +1,20 @@
+import React from 'react';
+import App from '../App';
+import { getCookie } from '../helper';
+
+const api_token = getCookie('api_token');
+function Login() {
+
+   console.log(api_token);
+  return api_token ? (
+     <App />
+  ) : (
+     <div className="Login">
+      <header className="Login-header">
+         <a href="http://localhost:1337/spotify/login"> LOGIN </a>
+     </header>
+     </div>
+  );
+}
+
+export default Login;
