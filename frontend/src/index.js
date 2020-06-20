@@ -10,7 +10,7 @@ import * as serviceWorker from './serviceWorker';
 ReactDOM.render(
   <React.StrictMode>
     <App />
-    <MusicPlayer logo={logo} song="{songname}" />
+    <MusicPlayer />
   </React.StrictMode>,
   document.getElementById('root')
 );
