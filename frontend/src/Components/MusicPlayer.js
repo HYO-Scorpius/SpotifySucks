@@ -7,70 +7,70 @@ import './MusicPlayer.css';
 function MusicPlayer() {
 
   // current state and function that updates it
-  //const token = 'BQD0BNprYY-tOBYnO6Y4CjC2w1zfM5ZSyz7lWxDmp_lefAuiorz5gSZmBSuEbz_RDY3mRqJtIaVSRORco687974KFsCAME5AzJrKZyfgC0jVMzU9KUvZfIYTY5YWwh0JCY25WQeAQZpjTEYGyk8iAJfLXAMwDfpNbvI8pj53uTW5mQmuCz4';
-  const [token, setToken] = useState('');
-  const [loggedIn, setLogin] = useState(false);
-
-
-  window.onSpotifyWebPlaybackSDKReady = () => {
-    const player = new window.Spotify.Player({
-      name: 'Web Playback SDK Quick Start Player',
-        getOAuthToken: cb => { cb(token);
-      },
-    });
-
-    // SDK Error handling
-    player.addListener("initialization_error", ({ message }) => {
-      console.error(message);
-        
-    });
-    player.addListener("authentication_error", ({ message }) => {
-      console.error(message);
+  const token = 'BQD0BNprYY-tOBYnO6Y4CjC2w1zfM5ZSyz7lWxDmp_lefAuiorz5gSZmBSuEbz_RDY3mRqJtIaVSRORco687974KFsCAME5AzJrKZyfgC0jVMzU9KUvZfIYTY5YWwh0JCY25WQeAQZpjTEYGyk8iAJfLXAMwDfpNbvI8pj53uTW5mQmuCz4';
+  //const [token, setToken] = useState('');
+  //const [loggedIn, setLogin] = useState(false);
+ 
   
-    });
-    player.addListener("account_error", ({ message }) => {
-      console.error(message);
-    });
-    player.addListener("playback_error", ({ message }) => {
-      console.error(message);
-    });
-    player.addListener('player_state_changed', state => { console.log(state); });
 
-      // Ready
-      player.addListener('ready', ({ device_id }) => {
-        console.log('Ready with Device ID', device_id);
+
+  
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const player = new window.Spotify.Player({
+        name: 'Web Playback SDK Quick Start Player',
+          getOAuthToken: cb => { cb(token);
+        },
       });
 
-      // Not Ready
-      player.addListener('not_ready', ({ device_id }) => {
-        console.log('Device ID has gone offline', device_id);
+      // SDK Error handling
+      player.addListener("initialization_error", ({ message }) => {
+        console.error(message);
+          
       });
+      player.addListener("authentication_error", ({ message }) => {
+        console.error(message);
+    
+      });
+      player.addListener("account_error", ({ message }) => {
+        console.error(message);
+      });
+      player.addListener("playback_error", ({ message }) => {
+        console.error(message);
+      });
+      player.addListener('player_state_changed', state => { console.log(state); });
 
-  // Connect to the player!
-    player.connect();
-  }
+        // Ready
+        player.addListener('ready', ({ device_id }) => {
+          console.log('Ready with Device ID', device_id);
+        });
+
+        // Not Ready
+        player.addListener('not_ready', ({ device_id }) => {
+          console.log('Device ID has gone offline', device_id);
+        });
+
+    // Connect to the player!
+      player.connect();
+    }
+  
+ 
       
       
   // javascript conditional { boolean ?() : () }
   return (
     <div className="footer">
-      {loggedIn ?(
+  
       <div>  
         <img src={logo} className="albumImage" alt="logo" />
         <p> It worked! </p>
-        <p> Token: {token} </p>
-      </div>)
-      :  
-      (<div>
-        <p> Enter the token from
-          <a href="https://beta.developer.spotify.com/documentation/web-playback-sdk/quick-start/#authenticating-with-spotify"> 
-           Web Player SDK 
-          </a>
+        
+        <p>
+          <button>Previous</button>
+         
+          <button>Next</button>
         </p>
-        <input type="text" value={token} onChange={e => setToken(e.target.value)} />
-        <button onClick={() => setLogin(true) }> Login </button>
-      </div>)
-      }
+      </div>
+      
     </div>
   );
 }
