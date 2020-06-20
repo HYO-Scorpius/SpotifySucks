@@ -40,4 +40,4 @@ npm install && cd backend && npm install && cd ../frontend && npm install
 npm run dev
 ```
 
-5. View the rendered content at [http://localhost:1337](http://localhost:1337).  
+5. View the rendered content at [http://localhost:3000](http://localhost:3000).  
