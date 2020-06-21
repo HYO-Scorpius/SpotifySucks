@@ -6,7 +6,7 @@ class FriendSyncTab extends Tab {
     render() {
         super.render();
 
-        var synced = ["billy", "bob", "joe"];
+        var synced = ["billy", "bob", "joe", "omnomdomz"];
         var syncedentries = [];
 
         for (const [index, value] of synced.entries()) {
