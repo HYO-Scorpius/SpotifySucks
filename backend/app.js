@@ -34,7 +34,9 @@ var spotifyApi = new SWA({
    clientSecret: clientSECRET,
    redirectUri: 'http://localhost:1337/callback'
 });
-
+                              /**********
+                              *   AUTH  *
+                              **********/
 var authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
 
 app.get('/spotify/login', (req, res) => {
@@ -72,7 +74,14 @@ app.get('/callback', (req, res) => {
       }
    );
 });
+                              /**************
+                              *   SHUFFLE   *
+                              **************/
 
+
+                              /*****************
+                              *   FRIENDSYNC   *
+                              *****************/
 
 // Endpoints for friendsync feature
 app.get('/friendsync/invite/:userid', function (req, res) {
