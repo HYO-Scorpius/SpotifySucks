@@ -8,23 +8,7 @@ import React from "react";
          },
          "href":"https://api.spotify.com/v1/playlists/7qyJCAZ3xrFydyvjXZYZ5j",
          "id":"7qyJCAZ3xrFydyvjXZYZ5j",
-         "images":[
-            {
-               "height":640,
-               "url":"<url of above size>",
-               "width":640
-            },
-            {
-               "height":300,
-               "url":"<url of above size>",
-               "width":300
-            },
-            {
-               "height":60,
-               "url":"<url of above size>",
-               "width":60
-            }
-         ],
+         "images":[ { "height":640, "url":"<url of above size>", "width":640 }, { "height":300, "url":"<url of above size>", "width":300 }, { "height":60, "url":"<url of above size>", "width":60 } ],
          "name":"MORNING EPs",
          "owner":{
             "display_name":"Kenny",
@@ -57,10 +41,10 @@ function Shuffle({ playlists }) {
         </select>
 
        <div>
-            {playlists.map((track) =>{ 
+            {playlists.map((playlist) =>{ 
                return (
                   <div>
-                     <button type="button"> { track.name } </button>
+                     <button type="button"> { playlist.name } </button>
                   </div>
 
                );
