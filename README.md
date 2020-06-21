@@ -9,10 +9,11 @@ Web app that adds some useful features to Spotify
 
 - Environment Variables
    - [create a spotify application](https://developer.spotify.com/my-applications/)
-   - Set client id and client secret environment variables
+   - create a file in the backend/ folder called .env
+   - add the following to your .env file
    - ``` 
-     export SPOTIFY_CLIENT_ID=<CLIENT_ID>
-     export SPOTIFY_CLIENT_SECRET=<CLIENT_SECRET>
+     SPOTIFY_CLIENT_ID=<CLIENT_ID>
+     SPOTIFY_CLIENT_SECRET=<CLIENT_SECRET>
      ```
 
 ## Setup
