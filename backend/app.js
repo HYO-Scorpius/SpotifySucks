@@ -4,10 +4,14 @@ const path = require('path');
 const SWA = require('spotify-web-api-node'); //Node Spotify Wrapper
 const FriendSync = require('./friendsync.js'); // Code for FriendSync feature
 const cookieParser = require('cookie-parser'); // Module to Write Cookies
+
+
 const PORT = process.env.PORT || 1337;
 const HOSTNAME = '127.0.0.1';
 
 const app = express();
+
+
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Credentials", true);
@@ -19,10 +23,22 @@ app.use(function (req, res, next) {
   next();
 });
 
-app
-   .use(express.static(path.join('..', 'frontend', 'build')))
-   .use(cookieParser());;
+app.use(express.static(path.join('..', 'frontend', 'build'))).use(cookieParser());;
 
+
+// Home URL redirects to spotify login page
+const loginURL = '/spotify/login';
+app.get('/', function (req, res) {
+   res.redirect(loginURL);
+});
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Spotify Authentication
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 var scopes = ['user-read-private', 'user-read-email'],
    clientID = process.env.SPOTIFY_CLIENT_ID,
@@ -37,18 +53,30 @@ var spotifyApi = new SWA({
 
 var authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
 
-app.get('/spotify/login', (req, res) => {
+
+// Home URL redirects to spotify login page
+const loginURL = '/spotify/login';
+app.get('/', function (req, res) {
+   res.redirect(loginURL);
+});
+
+
+// Redirects to authorize URL
+app.get('/spotify/login', (_, res) => {
    console.log(authorizeURL);
    res.cookie('auth_state', state);
    res.redirect(authorizeURL);
 });
 
+
+// Can probably delete?
 app.get('/hey', (req, res) => {
    console.log("here");
    res.send('hi');
 });
 
 
+// Spotify callback endpoint
 app.get('/callback', (req, res) => {
    spotifyApi.authorizationCodeGrant(req.query.code).then(
       (data) => {
@@ -74,12 +102,54 @@ app.get('/callback', (req, res) => {
 });
 
 
-// Endpoints for friendsync feature
-app.get('/friendsync/invite/:userid', function (req, res) {
-    res.send(FriendSync.invite(req.params.userid));
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// FriendSync Endpoints
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/**
+ * Invites user to synchronize playback
+ * 
+ * @param groupid ID of group user is invited to
+ * @param userid Spotify ID of user to invite
+ */
+app.get('/friendsync/invite/:groupid&:userid', function (req, res) {
+    //res.send(FriendSync.invite(req.params.userid));
+    console.log(`FriendSync invite: ${groupid}, ${userid}`);
 });
 
 
+/**
+ * Controls playback of all users in a group
+ * 
+ * @param groupid ID of synchronized group
+ * @param control Media control to be communicated
+ *                play, pause, next, prev
+ */
+app.get('/friendsync/playback/:groupid&:control', function (req, res) {
+   console.log(`FriendSync control endpoint: ${req.params.groupid}, ${req.params.control}`);
+});
+
+
+/**
+ * Removes user from group
+ * 
+ * @param groupid ID of synchronized group
+ * @param userid Spotify ID of user to remove from group
+ */
+app.get('/friendsync/leave/:groupid&:userid', function (req, res) {
+   console.log(`Friendsync leave group: ${req.params.groupid}, ${req.params.userid}`);
+});
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Listen
 app.listen(PORT, HOSTNAME, () => {
     console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
 });
