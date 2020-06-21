@@ -5,7 +5,8 @@
   "main": "backend/app.js",
   "dependencies": {
     "concurrently": "^5.2.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "spotify-web-api-node": "^4.0.0"
   },
   "devDependencies": {},
   "scripts": {

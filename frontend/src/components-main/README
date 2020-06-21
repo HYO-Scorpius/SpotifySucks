@@ -1,0 +1,3 @@
+lots of repeated code in the tab classes right now. 
+I will be making a new "listview" component to 
+consolidate all of it
