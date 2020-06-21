@@ -32,7 +32,7 @@ var scopes = ['user-read-private', 'user-read-email'],
    clientID = process.env.SPOTIFY_CLIENT_ID,
    clientSECRET = process.env.SPOTIFY_CLIENT_SECRET,
    state = 'mikeamysyedkenny';
-
+//TODO(kenny): make state random
 
 var spotifyApi = new SWA({
    clientId: clientID,
@@ -45,7 +45,6 @@ var authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
 
 // Redirects to authorize URL
 app.get('/spotify/login', (_, res) => {
-   console.log(authorizeURL);
    res.cookie('auth_state', state);
    res.redirect(authorizeURL);
 });
@@ -64,18 +63,39 @@ app.get('/callback', (req, res) => {
 
          spotifyApi.setAccessToken(a_token);
          spotifyApi.setRefreshToken(r_token);
-
-         res.cookie('api_token', a_token);
+         res.cookie('api_token', a_token, {maxAge: 3600000});
          res.cookie('refresh_token', r_token);
 
          res.redirect('http://localhost:3000/');
       },
       (err) => {
-         console.log('backend::app.js::/callback spotifyApi.authorizationCodeGrant failed', err);
-      }
-   );
+         console.log('backend::app.js::/callback spotifyApi.authorizationCodeGrant failed. Error: ', err);
+      });
 });
 
+
+//Refresh spotify access token
+app.get('/refresh', (_, res) =>{
+   res.send("go away");
+   spotifyApi.refreshAccessToken().then (
+      (data) => {
+         let a_token = data.body['access_token'];
+         spotifyApi.setAccessToken(a_token);
+
+         res.cookie('api_token', a_token, {maxAge: 3600000});
+      },
+      (err) => {
+         console.log('backend::app.js::/refresh spotifyApi.refreshAccessToken failed. Error: ', err);
+      });
+});
+
+
+//Logout for dev purposes for now
+app.get('/logout', (_, res) =>{
+   res.clearCookie('api_token');
+   console.log("hit");
+   res.send("hi");
+});
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Shuffle
