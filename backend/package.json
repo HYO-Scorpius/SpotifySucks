@@ -13,7 +13,7 @@
         "nodemon": "^2.0.4"
     },
     "scripts": {
-        "start": "node app.js",
+        "start": "node server.js",
         "dev": "npx nodemon app.js"
     }
 }

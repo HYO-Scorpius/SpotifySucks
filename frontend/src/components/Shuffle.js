@@ -1,4 +1,39 @@
-import React from "react";
+import React, {useState} from "react";
+
+function Shuffle({ 
+   playlists,
+   apiToken,
+}) {
+   const [type, setType] = useState('random');
+
+         return (
+      <div>
+        <select name="options" id="options" onChange={event=>setType(event.target.value)}>
+          <option value="random" >Shuffle Randomly</option>
+          <option value="genre">Shuffle by Genre</option>
+          <option value="artist">Shuffle by Artist</option>
+          <option value="album">Shuffle by Album</option>
+        </select>
+       <div>
+            <h1> { type } </h1>
+            {playlists.map((playlist) =>{ 
+               let apiUrl = `/api/${apiToken}/shuffle/types/${type}/playlists/${playlist.id}`;
+               return (
+                  <div>
+                     <p> { apiUrl } </p>
+                     <button onClick={() => fetch(apiUrl)}> { playlist.name } </button>
+                  </div>
+
+               );
+            })}
+         </div>
+      </div>
+
+    );
+         
+}
+
+export default Shuffle;
 /* Playlist json format
  {
          "collaborative":false,
@@ -8,23 +43,7 @@ import React from "react";
          },
          "href":"https://api.spotify.com/v1/playlists/7qyJCAZ3xrFydyvjXZYZ5j",
          "id":"7qyJCAZ3xrFydyvjXZYZ5j",
-         "images":[
-            {
-               "height":640,
-               "url":"<url of above size>",
-               "width":640
-            },
-            {
-               "height":300,
-               "url":"<url of above size>",
-               "width":300
-            },
-            {
-               "height":60,
-               "url":"<url of above size>",
-               "width":60
-            }
-         ],
+         "images":[ { "height":640, "url":"<url of above size>", "width":640 }, { "height":300, "url":"<url of above size>", "width":300 }, { "height":60, "url":"<url of above size>", "width":60 } ],
          "name":"MORNING EPs",
          "owner":{
             "display_name":"Kenny",
@@ -47,29 +66,4 @@ import React from "react";
          "uri":"spotify:playlist:7qyJCAZ3xrFydyvjXZYZ5j"
       },
  */
-function Shuffle({ playlists }) {
-         return (
-      <div>
-        <select name="options" id="options">
-          <option value="mood">Shuffle by Mood</option>
-          <option value="genre">Shuffle by Genre</option>
-          <option value="artist">Shuffle by Artist</option>
-        </select>
 
-       <div>
-            {playlists.map((track) =>{ 
-               return (
-                  <div>
-                     <button type="button"> { track.name } </button>
-                  </div>
-
-               );
-            })}
-         </div>
-      </div>
-
-    );
-         
-}
-
-export default Shuffle;

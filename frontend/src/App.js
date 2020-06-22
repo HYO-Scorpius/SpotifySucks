@@ -41,23 +41,24 @@ function App() {
          (data) => {
             if (data.body) {
                setPlaylists(data.body.items);
+               console.log(data.body.items);
             }
          },
          (err) => {
             console.log('frontend::App.js spotifyApi.getUserPlaylists() failed. Error: ', err);
          });
 
-   },[apiToken, user]);
-
-
+   },[]);
 
 
   return (
      <div>
-      <Tabs>
-        <div label="Shuffle">
-          <Shuffle
-           playlists = {playlists}/>
+      <Tabs> 
+        <div label="Shuffle"> 
+           <Shuffle 
+              playlists = {playlists} 
+              apiToken = {apiToken}
+           />
         </div>
         <div label="MultiPlaylist">
         <MultiPlaylistTab />
