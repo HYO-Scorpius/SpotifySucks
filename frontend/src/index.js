@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import logo from './logo.svg';
 import * as serviceWorker from './serviceWorker';
 import Login from './components/Login';
 
