@@ -43,12 +43,14 @@ function MusicPlayer() {
     });
 
     // Ready
-    player.addListener('ready', ({ device_id }) => {
+    player.addListener('ready', async ({ device_id }) => {
       console.log('Ready with Device ID', device_id);
+     
       setDeviceID(device_id);
 
       //transferUsersPlayback(device_id);
      // skipUserPlayback(device_id);
+     console.log("Async device id" , deviceID);
      // startUserPlayback(device_id);
     });
 
@@ -114,6 +116,8 @@ function MusicPlayer() {
   function seekTrack() {
     player.nextTrack().then(() => {
       console.log('Skipped to next track!');
+      console.log("Seek device id" , deviceID);
+
     });
   }
 
@@ -140,9 +144,9 @@ function MusicPlayer() {
         <p> It worked! </p>
 
         <p>
-          <button onClick={seekTrack} > nextTrack</button>
+          <button onClick={transferUsersPlayback} > nextTrack</button>
           <button onClick={pause}>Pause</button>
-          <button onClick={resume}>Start</button>\
+          <button onClick={startUserPlayback}>Start</button>\
         </p>
       </div>
 
