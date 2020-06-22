@@ -20,7 +20,6 @@ function Shuffle({
                let apiUrl = `/api/${apiToken}/shuffle/types/${type}/playlists/${playlist.id}`;
                return (
                   <div>
-                     <p> { apiUrl } </p>
                      <button onClick={() => fetch(apiUrl)}> { playlist.name } </button>
                   </div>
 
