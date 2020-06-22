@@ -5,10 +5,12 @@ import App from './App';
 import logo from './logo.svg';
 import * as serviceWorker from './serviceWorker';
 import Login from './components/Login';
+import MusicPlayer from './components/MusicPlayer';
 
 ReactDOM.render(
   <React.StrictMode>
    <Login />
+   <MusicPlayer />
   </React.StrictMode>,
   document.getElementById('root')
 );
