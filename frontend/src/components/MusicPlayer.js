@@ -12,12 +12,15 @@ function MusicPlayer() {
   const [deviceID, setDeviceID] = useState("");
   const [token, setToken] = useState("");
 
+  // Get token from here https://developer.spotify.com/documentation/web-playback-sdk/quick-start/ (temporary)
   window.onSpotifyWebPlaybackSDKReady = () => {
-    const token = 'BQCBuSWC5qIePgRH_rQxG1gnaU7seLT2m4nT429WEdzo2Z_rbuZZQhho76xyA2nR2_CBv_BJ536pwd30orJTW3osX7vhZCjH0qkPCnGP3j2fSuLoFddTlospr2k57JpDLj7D2c0iJSqaCz-s5W1v2oyMCGccIbFODYqQnpWM1KqSqtQodhWBZdE';
+    const token = 'BQC1T8hpf1jRL6mohpYprw6lNMorxeRJIlmMCsQwS6E8hnL9GAWkt-UEAfHXohlw9oZQVLV1lQT_3XX6OLh_6cyYM227BvU-mTzMusuYeaXJlZwI5K1OKH0ewtf04Iuqi0RbitI9_XSKbNFzpGQvn7AWxflMk3IxAGQc81nio9rNk8AG9v81PvY';
     const player = new window.Spotify.Player({
       name: 'Web Playback SDK Quick Start Player',
       getOAuthToken: cb => { cb(token); },
     });
+
+    // Update state hooks
     setPlayer(player);
     setToken(token);
 
@@ -45,13 +48,7 @@ function MusicPlayer() {
     // Ready
     player.addListener('ready', async ({ device_id }) => {
       console.log('Ready with Device ID', device_id);
-     
       setDeviceID(device_id);
-
-      //transferUsersPlayback(device_id);
-     // skipUserPlayback(device_id);
-     console.log("Async device id" , deviceID);
-     // startUserPlayback(device_id);
     });
 
     // Not Ready
@@ -61,7 +58,6 @@ function MusicPlayer() {
 
 
     // Connect to the player!
-
     player.connect().then(success => {
       if (success) {
         console.log('The Web Playback SDK successfully connected to Spotify!');
@@ -70,6 +66,7 @@ function MusicPlayer() {
 
   }
 
+  // Chooses web app as the playback device
   function transferUsersPlayback() {
     fetch("https://api.spotify.com/v1/me/player", {
       method: "PUT",
@@ -85,7 +82,9 @@ function MusicPlayer() {
 
   }
 
+  // Start the music player
   function startUserPlayback() {
+    transferUsersPlayback();
 
     fetch("https://api.spotify.com/v1/me/player/play", {
       method: "PUT",
@@ -99,40 +98,30 @@ function MusicPlayer() {
     });
   }
 
-  function skipUserPlayback() {
-    fetch("https://api.spotify.com/v1/me/player/next", {
-      method: "POST",
-      headers: {
-        authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        "device_id": [ deviceID ],
-      }),
-    });
-  }
 
-
+  // Skip to the next track
   function seekTrack() {
     player.nextTrack().then(() => {
       console.log('Skipped to next track!');
       console.log("Seek device id" , deviceID);
+    });
+  }
 
+  // Go back to the previous track
+  function prevTrack() {
+    player.previousTrack().then(() => {
+      console.log('Set to previous track!');
     });
   }
 
 
+  // Pause the player
   function pause() {
     player.pause().then(() => {
       console.log('Paused!');
     });
   }
 
-  function resume() {
-    player.resume().then(() => {
-      console.log('Resumed!');
-    });
-  }
 
 
   // javascript conditional { boolean ?() : () }
@@ -141,12 +130,12 @@ function MusicPlayer() {
 
       <div>
         <img src={logo} className="albumImage" alt="logo" />
-        <p> It worked! </p>
-
+        <p><a href="https://beta.developer.spotify.com/documentation/web-playback-sdk/quick-start/#authenticating-with-spotify" target="_blank" > https://beta.developer.spotify.com/documentation/web-playback-sdk/quick-start/#authenticating-with-spotify </a></p>
         <p>
-          <button onClick={transferUsersPlayback} > nextTrack</button>
-          <button onClick={pause}>Pause</button>
-          <button onClick={startUserPlayback}>Start</button>\
+         <button onClick={prevTrack} > Previous Track</button>
+         <button onClick={pause}>Pause</button>
+         <button onClick={startUserPlayback}>Start</button>
+         <button onClick={seekTrack} > Next Track</button>
         </p>
       </div>
 
