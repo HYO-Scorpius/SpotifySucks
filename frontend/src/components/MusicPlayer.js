@@ -4,7 +4,9 @@ import './MusicPlayer.css';
 
 
 // Class components should always call base consturctor with props
-function MusicPlayer() {
+function MusicPlayer({
+  apiToken,
+}) {
 
 
   const [status, changeStatus] = useState(false);
@@ -14,7 +16,8 @@ function MusicPlayer() {
 
   // Get token from here https://developer.spotify.com/documentation/web-playback-sdk/quick-start/ (temporary)
   window.onSpotifyWebPlaybackSDKReady = () => {
-    const token = 'BQC1T8hpf1jRL6mohpYprw6lNMorxeRJIlmMCsQwS6E8hnL9GAWkt-UEAfHXohlw9oZQVLV1lQT_3XX6OLh_6cyYM227BvU-mTzMusuYeaXJlZwI5K1OKH0ewtf04Iuqi0RbitI9_XSKbNFzpGQvn7AWxflMk3IxAGQc81nio9rNk8AG9v81PvY';
+    //const token = 'BQC1T8hpf1jRL6mohpYprw6lNMorxeRJIlmMCsQwS6E8hnL9GAWkt-UEAfHXohlw9oZQVLV1lQT_3XX6OLh_6cyYM227BvU-mTzMusuYeaXJlZwI5K1OKH0ewtf04Iuqi0RbitI9_XSKbNFzpGQvn7AWxflMk3IxAGQc81nio9rNk8AG9v81PvY';
+    let token = apiToken;
     const player = new window.Spotify.Player({
       name: 'Web Playback SDK Quick Start Player',
       getOAuthToken: cb => { cb(token); },
@@ -96,6 +99,10 @@ function MusicPlayer() {
         "device_id": [ deviceID ],
       }),
     });
+
+    console.log(`Bearer ${token}` );
+    console.log("DeviceID", deviceID);
+
   }
 
 
@@ -119,6 +126,8 @@ function MusicPlayer() {
   function pause() {
     player.pause().then(() => {
       console.log('Paused!');
+      console.log(apiToken);
+      console.log(token);
     });
   }
 

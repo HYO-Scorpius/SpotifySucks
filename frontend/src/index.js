@@ -8,7 +8,6 @@ import MusicPlayer from './components/MusicPlayer';
 ReactDOM.render(
   <React.StrictMode>
    <Login />
-   <MusicPlayer />
   </React.StrictMode>,
   document.getElementById('root')
 );
