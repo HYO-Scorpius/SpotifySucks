@@ -2,7 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const path = require('path');
 const SWA = require('spotify-web-api-node'); //Node Spotify Wrapper
-const FriendSync = require('./friendsync.js'); // Code for FriendSync feature
+const FriendSync = require('./Modules/friendsync.js'); // Code for FriendSync feature
+const shuffle = require('./Modules/shuffle');
 const cookieParser = require('cookie-parser'); // Module to Write Cookies
 const PORT = process.env.PORT || 1337;
 const HOSTNAME = '127.0.0.1';
@@ -101,14 +102,11 @@ app.get('/logout', (_, res) =>{
 // Shuffle
 //////////////////////////////////////////////////////////////////////////////////////////////////
    
-app.get('/api/:access_token/shuffle/types/:type/playlists/:playlistId', (req, res) => {
-   console.log(req.params.access_token);
-   console.log(req.params.playlistId);
-   console.log(req.params.type);
+app.get('/api/:access_token/shuffle/types/:type/playlists/:playlistId', (req, _) => {
    spotifyApi.setAccessToken(req.params.access_token);
-   spotifyApi.getPlaylist(req.params.playlistId).then (
+   spotifyApi.getPlaylistTracks(req.params.playlistId).then (
       (data) => {
-         console.log(data.body);
+         shuffle(req.params.type, data.body.items);
       },
    (err) =>{
    console.log(err)
