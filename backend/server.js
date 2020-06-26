@@ -112,7 +112,6 @@ app.get('/api/:access_token/shuffle/types/:type/playlists/:playlistId', (req, _)
    console.log(err)
    });
 });
-
    
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // FriendSync Endpoints
