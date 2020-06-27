@@ -29,7 +29,26 @@ app
 // Spotify Authentication
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-var scopes = ['user-read-private', 'user-read-email'],
+var scopes = ['user-read-private',
+   'user-read-email',
+   'playlist-modify-private',
+   'ugc-image-upload',
+   'playlist-read-collaborative',
+   'playlist-modify-private',
+   'playlist-modify-public',
+   'playlist-read-private',
+   'user-read-playback-position',
+   'user-read-recently-played',
+   'user-top-read',
+   'user-modify-playback-state',
+   'user-read-currently-playing',
+   'user-read-playback-state',
+   'user-read-private',
+   'user-read-email',
+   'user-library-modify',
+   'user-library-read',
+   'user-follow-modify',
+   'user-follow-read']
    clientID = process.env.SPOTIFY_CLIENT_ID,
    clientSECRET = process.env.SPOTIFY_CLIENT_SECRET,
    state = 'mikeamysyedkenny';
@@ -104,15 +123,58 @@ app.get('/logout', (_, res) =>{
    
 app.get('/api/:access_token/shuffle/types/:type/playlists/:playlistId', (req, _) => {
    spotifyApi.setAccessToken(req.params.access_token);
-   spotifyApi.getPlaylistTracks(req.params.playlistId).then (
+   spotifyApi.getPlaylist(req.params.playlistId).then (
       (data) => {
-         shuffle(req.params.type, data.body.items);
+         let URIs = shuffle(req.params.type, data.body.tracks.items);
+         makePlaylist(spotifyApi, data.body, URIs, false, req.params.type);
       },
    (err) =>{
-   console.log(err)
+   console.log(err);
    });
 });
 
+
+const makePlaylist = (api, playlist,  URIs, replace, type) => {
+   let playlistName = playlist.name;
+   let owner = playlist.owner.id;
+   let newPlaylist = playlist;
+   if (replace) {
+      api.remvoveTracksFromPlaylist(playlist.owner.id, playlist.id, URIs).then (
+         (data) => {
+            fillPlaylist(api, URIs, newPlaylist);
+         },
+         (err) => {
+            console.log("server.js::makePlaylist error: ", err);
+         });
+   } 
+   else {
+      if (type != "random")
+      {
+         playlistName += ` shuffled by ${type} because Spotify Sucks`;
+      }
+      else
+      {
+         playlistName += " shuffled without bias because Spotify Sucks";
+      }
+      api.createPlaylist(owner, playlistName, {public: false}).then(
+         (data) => {
+            fillPlaylist(api, URIs, data.body);
+         }, 
+         (err) => {
+            console.log("server.js::makePlaylist error: ",err);
+         });
+   }
+}
+
+const fillPlaylist = (api, URIs, playlist) => {
+   api.addTracksToPlaylist(playlist.id, URIs).then (
+      (data) => {
+         console.log(data.body)
+      },
+      (err) => {
+         console.log("server.js::fillPlaylist error: ",err);
+      });
+}
    
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // FriendSync Endpoints
