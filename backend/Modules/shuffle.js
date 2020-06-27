@@ -1,16 +1,16 @@
 module.exports = function shuffle(type, playlistTracks){
-   console.log("NOW LETS BEGIN");
-   //console.log(extractURI(playlistTracks));
-   console.log(extractDict(playlistTracks, "artists"));
-   //console.log(shuffRandom(playlistTracks));
-   console.log(shuffCategory(playlistTracks, "artists"));
-
-   //console.log(extractDict(playlistTracks, "album"));
+   if (type == "random")
+   {
+      return shuffRandom(playlistTracks);
+   }
+   if (type === "artists" || type === "album")
+   {
+      return shuffCategory(playlistTracks, type);
+   }
 };
 
 const shuffRandom = (playlistTracks) => {
    let URIs = extractURI(playlistTracks);
-   let didntShuffle = true;
    let newURIs;
    newURIs = fischerYates(fischerYates(URIs));
    return newURIs;

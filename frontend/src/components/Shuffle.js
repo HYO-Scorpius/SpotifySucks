@@ -11,7 +11,7 @@ function Shuffle({
         <select name="options" id="options" onChange={event=>setType(event.target.value)}>
           <option value="random" >Shuffle Randomly</option>
           <option value="genre">Shuffle by Genre</option>
-          <option value="artist">Shuffle by Artist</option>
+          <option value="artists">Shuffle by Artist</option>
           <option value="album">Shuffle by Album</option>
         </select>
        <div>
