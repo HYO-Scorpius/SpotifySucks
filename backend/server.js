@@ -1,5 +1,7 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require('cors');
+const mongoose = require('mongoose');
 const path = require('path');
 const SWA = require('spotify-web-api-node'); //Node Spotify Wrapper
 const FriendSync = require('./Modules/friendsync.js'); // Code for FriendSync feature
@@ -7,6 +9,8 @@ const shuffle = require('./Modules/shuffle');
 const cookieParser = require('cookie-parser'); // Module to Write Cookies
 const PORT = process.env.PORT || 1337;
 const HOSTNAME = '127.0.0.1';
+const uri = process.env.ATLAS_URI;
+const connection = mongoose.connection;
 
 const app = express();
 app.use(function (req, res, next) {
@@ -221,8 +225,21 @@ app.get('/friendsync/leave/:groupid&:userid', function (req, res) {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-// Listen
+// Database
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.use(cors());
+app.use(express.json());
+
+
+mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true })
+.then(() => console.log(`Database connected successfully`))
+  .catch(err => console.log(err));
+
+connection.once('open', () => {
+  console.log("Mongo database connection established");
+})
+
 app.listen(PORT, HOSTNAME, () => {
     console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
 });
