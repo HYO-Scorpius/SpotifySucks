@@ -70,7 +70,7 @@ function App() {
           leaving empty until the other three are done
         </div>
       </Tabs>
-        <MusicPlayer />
+        <MusicPlayer apiToken = {apiToken}/>
     </div>
   );
 }
