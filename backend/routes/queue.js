@@ -26,4 +26,34 @@ router.route('/add').post((req, res) => {
 });
 
 
+// Returns item based on id value
+router.route('/:id').get((req, res) => {
+  Queue.findById(req.params.id)
+    .then(queue => res.json(queue))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// removes item 
+router.route('/:id').delete((req, res) => {
+  Queue.findByIdAndDelete(req.params.id)
+    .then(() => res.json('Queue detail removed.'))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// edits item and saves changes
+router.route('/update/:id').post((req, res) => {
+  Queue.findById(req.params.id)
+    .then(queue => {
+      queue.user_id = req.body.user_id;
+      queue.track_id = req.body.track_id;
+      queue.device_id = req.body.device_id;
+      queue.date = Date.parse(req.body.date);
+
+      queue.save()
+        .then(() => res.json('Queue has been updated.'))
+        .catch(err => res.status(400).json('Error: ' + err));
+    })
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
 module.exports = router;
