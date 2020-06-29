@@ -231,7 +231,6 @@ app.get('/friendsync/leave/:groupid&:userid', function (req, res) {
 app.use(cors());
 app.use(express.json());
 
-
 mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log(`Database connected successfully`))
   .catch(err => console.log(err));
@@ -239,6 +238,14 @@ mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true })
 connection.once('open', () => {
   console.log("Mongo database connection established");
 })
+
+// Loads the routes from other files
+const queueRoute = require('./routes/queue');
+const usersRoute = require('./routes/users');
+
+// Defining endpoints to use
+app.use('/queue', queueRoute);
+app.use('/users', usersRoute);
 
 app.listen(PORT, HOSTNAME, () => {
     console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
