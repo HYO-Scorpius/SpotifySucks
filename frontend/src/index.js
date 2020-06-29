@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import Login from './components/Login';
+import MusicPlayer from './components/MusicPlayer';
 
 ReactDOM.render(
   <React.StrictMode>
