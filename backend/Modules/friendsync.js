@@ -5,12 +5,25 @@ const Database = require('./database.js');
 const DataStructures = require('./datastructures');
 
 
+const namespaces = new Map();
+
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // EXPORTS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module.exports = {
+
+    /**
+     * 
+     * @param {string} groupid ID of user that's creating group
+     */
+    add_group: function (groupid, nsp) {
+        namespaces.set(groupid, nsp);
+    },
+
 
     /**
     * Invites user to sync playback
@@ -41,64 +54,6 @@ module.exports = {
     accept: function () {
 
     },
-
-
-
-
-    /////////////////////////////////////////////////////////////////
-    // MEDIA CONTROLS
-
-    /** 
-     * Begins playback
-     * 
-     * @param {string} groupid ID of synchronized group
-     */
-    play: function (groupid) {
-        return "play";
-    },
-
-
-    /**
-     * Pauses playback
-     * 
-     * @param {string} groupid ID of synchronized group
-     */
-    pause: function (groupid) {
-        return "pause";
-    },
-
-
-    /**
-     * Skips song
-     * 
-     * @param {string} groupid ID of synchronized group
-     */
-    skip: function (groupid) {
-        return "skip";
-    },
-
-
-    /**
-     * Restart song, or skip backwards
-     * 
-     * @param {string} groupid ID of synchronized group
-     */
-    back: function (groupid) {
-        return "back";
-    },
-
-
-    /**
-     * Add song to queue
-     * 
-     * @param {string} groupid ID of synchronized group
-     * @param {string} songid  Spotify songid
-     */
-    add_to_queue: function (groupid, songid) {
-        // get group with groupid
-        // call add_to_queue function on that group
-        return "Add to queue";
-    }
 
 };
 

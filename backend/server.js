@@ -3,6 +3,7 @@ const express = require("express");
 const path = require('path');
 const SWA = require('spotify-web-api-node'); //Node Spotify Wrapper
 const FriendSync = require('./Modules/friendsync.js'); // Code for FriendSync feature
+const SocketIO = require('socket.io');
 const shuffle = require('./Modules/shuffle');
 const cookieParser = require('cookie-parser'); // Module to Write Cookies
 const PORT = process.env.PORT || 1337;
@@ -176,9 +177,49 @@ const fillPlaylist = (api, URIs, playlist) => {
       });
 }
    
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // FriendSync Endpoints
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+const io = SocketIO();
+
+
+/**
+ * Creates namespace and places it in FriendSync mapped to groupid
+ */
+app.get('/friendsync/create_group/:groupid', function (req, res) {
+   console.log(`Creating group: ${groupid}`);
+   const nsp = io.of(`/${groupid}`);
+
+   nsp.on('connection', function (socket) {
+      nsp.emit(`${socket.id} connected!`);
+   });
+
+   nsp.on('PLAY', function() {
+      nsp.emit(`PLAY`);
+   });
+
+   nsp.on(`PAUSE`, function () {
+      nsp.emit(`PAUSE`);
+   });
+
+   nsp.on(`SKIP`, function () {
+      nsp.emit('SKIP');
+   });
+
+   nsp.on(`PREV`, function () {
+      nsp.emit(`PREV`);
+   });
+
+   FriendSync.add_group(groupid, nsp);
+
+   res.send(`/${groupid}`);
+});
 
 
 /**
@@ -194,22 +235,6 @@ app.get('/friendsync/invite/:groupid&:userid', function (req, res) {
 
 
 /**
- * Controls playback of all users in a group
- * 
- * @param groupid ID of synchronized group
- * @param control Media control to be communicated
- *                play, pause, next, prev
- */
-app.get('/friendsync/playback/:groupid&:control', function (req, res) {
-   console.log(`FriendSync control endpoint: ${req.params.groupid}, ${req.params.control}`);
-});
-
-app.post('/friendsync/queue/add/:groupid&:songid', function (req, res) {
-    FriendSync.add_to_queue(req.params.groupid, req.params.songid)
-})
-
-
-/**
  * Removes user from group
  * 
  * @param groupid ID of synchronized group
@@ -218,6 +243,11 @@ app.post('/friendsync/queue/add/:groupid&:songid', function (req, res) {
 app.get('/friendsync/leave/:groupid&:userid', function (req, res) {
    console.log(`Friendsync leave group: ${req.params.groupid}, ${req.params.userid}`);
 });
+
+
+
+
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
