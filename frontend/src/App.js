@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SWA from 'spotify-web-api-node';
 import './App.css';
-import Shuffle from './components/Shuffle';
+import Playlist from './components/Playlist';
 import MusicPlayer from './components/MusicPlayer'
 import Tabs from './components/Tabs';
 import FriendSyncTab from './components/FriendSyncTab';
@@ -55,7 +55,7 @@ function App() {
      <div>
       <Tabs> 
         <div label="Shuffle"> 
-           <Shuffle 
+           <Playlist
               playlists = {playlists} 
               apiToken = {apiToken}
            />
