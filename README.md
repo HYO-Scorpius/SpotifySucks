@@ -37,10 +37,10 @@ npm install && cd backend && npm install && cd ../frontend && npm install
    - Replace ```<password>``` with the password set when creating the user in the Database Setup
 
 ### Database
-a. Create ```New Project``` >> ```Build a cluster``` 
-b. Go to the ```Database``` tab under 'Security' and ```Add a new database user``` with a desired password.
-c. Next, go to ```Network Access``` >> ```Add an IP Address``` There should be a button where you can automatically retrieve your IP. 
-d. After the following steps, go back to ```Clusters``` and click ```Connect``` >> ```Connect your Application``` >> ```Copy```
+- Create ```New Project``` >> ```Build a cluster``` 
+- Go to the ```Database``` tab under 'Security' and ```Add a new database user``` with a desired password.
+- Next, go to ```Network Access``` >> ```Add an IP Address``` There should be a button where you can automatically retrieve your IP. 
+-  After the following steps, go back to ```Clusters``` and click ```Connect``` >> ```Connect your Application``` >> ```Copy```
   - This retrieves the database URI. It is used in the .env above to connect to the database.
 
 (Note: Under 'Collections' in the Clusters tab, you can view the data saved.)
