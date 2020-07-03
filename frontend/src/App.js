@@ -52,7 +52,7 @@ function App() {
   return (
      <div>
       <Tabs> 
-        <div label="Shuffle"> 
+        <div label="Playlist"> 
            <Playlist
               playlists = {playlists} 
               spotifyApi = {spotifyApi}

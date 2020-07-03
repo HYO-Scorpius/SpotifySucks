@@ -12,8 +12,6 @@ function Playlist({
       {pane === "outer" && (
          <div> 
             {playlists.map((playlist) =>{ 
-               let type = "bla";
-               let apiUrl = `/api/${spotifyApi.getAccessToken()}/shuffle/types/${type}/playlists/${playlist.id}`;
                return (
                   <div key={playlist.id}>
                      <button key={playlist.id} onClick={() => {
