@@ -1,12 +1,25 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Playlist from "./Playlist";
 
 function PlaylistInner({ 
    playlists,
-   apiToken,
+   spotifyApi,
+   selectedPlaylist,
 }) {
    const [type, setType] = useState('random'); 
    const [pane, setPane] = useState("inner"); 
+   const [tracks, setTracks] = useState(null); 
+
+   useEffect(() => {
+      spotifyApi.getPlaylistTracks(selectedPlaylist.id).then(
+         (data) => {
+            setTracks(data.body.items);
+         },
+         (err) => {
+            console.log('frontend::PlaylistInner.js spotifyApi.getPlaylistTracks() failed. Error: ', err);
+         });
+   },[selectedPlaylist, spotifyApi]);
+
    return (
       <div>
          {pane === "inner" && (
@@ -19,15 +32,20 @@ function PlaylistInner({
                   <option value="album">Shuffle by Album</option>
               </select> 
                <div>
-                  <h1> { type } </h1>
-                  {playlists.map((playlist) =>{ 
-                     let apiUrl = `/api/${apiToken}/shuffle/types/${type}/playlists/${playlist.id}`;
-                     return (
-                        <div>
-                           <button onClick={() => fetch(apiUrl)}> { playlist.name } </button>
-                        </div>
-                     );
-                  })}
+                  <h1> { type } </h1> 
+               {tracks && ( 
+                  <div>
+                  {tracks.map((trackItem) =>{ 
+                      return (
+                         <ul key={trackItem.track.id}>
+                            <li key={trackItem.track.id}>  { trackItem.track.name } </li>
+                         </ul>
+                      );
+                   })} 
+                  </div>
+               )}
+
+
                </div>
             </div>
          )}
@@ -35,44 +53,12 @@ function PlaylistInner({
          {pane === "outer" && (
             <Playlist
                playlists = {playlists}
-               apiToken = {apiToken} />
+               spotifyApi = {spotifyApi} />
          )}
       </div>
     );
+                     //let apiUrl = `/api/${apiToken}/shuffle/types/${type}/playlists/${playlist.id}`;
          
 }
-
 export default PlaylistInner;
-/* Playlist json format
- {
-         "collaborative":false,
-         "description":"",
-         "external_urls":{
-            "spotify":"https://open.spotify.com/playlist/7qyJCAZ3xrFydyvjXZYZ5j"
-         },
-         "href":"https://api.spotify.com/v1/playlists/7qyJCAZ3xrFydyvjXZYZ5j",
-         "id":"7qyJCAZ3xrFydyvjXZYZ5j",
-         "images":[ { "height":640, "url":"<url of above size>", "width":640 }, { "height":300, "url":"<url of above size>", "width":300 }, { "height":60, "url":"<url of above size>", "width":60 } ],
-         "name":"MORNING EPs",
-         "owner":{
-            "display_name":"Kenny",
-            "external_urls":{
-               "spotify":"https://open.spotify.com/user/nfscny9k0324ybonfy4u6xu4z"
-            },
-            "href":"https://api.spotify.com/v1/users/nfscny9k0324ybonfy4u6xu4z",
-            "id":"nfscny9k0324ybonfy4u6xu4z",
-            "type":"user",
-            "uri":"spotify:user:nfscny9k0324ybonfy4u6xu4z"
-         },
-         "primary_color":null,
-         "public":true,
-         "snapshot_id":"MTksYjMzOTAyZDA5ODBmNGQ5ZjRjYTQ0YmUzZWZjZTdhYzZkMTQzOWE3Zg==",
-         "tracks":{
-            "href":"https://api.spotify.com/v1/playlists/7qyJCAZ3xrFydyvjXZYZ5j/tracks",
-            "total":62
-         },
-         "type":"playlist",
-         "uri":"spotify:playlist:7qyJCAZ3xrFydyvjXZYZ5j"
-      },
- */
 

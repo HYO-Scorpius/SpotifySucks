@@ -57,7 +57,7 @@ function App() {
         <div label="Shuffle"> 
            <Playlist
               playlists = {playlists} 
-              apiToken = {apiToken}
+              spotifyApi = {spotifyApi}
            />
         </div>
         <div label="MultiPlaylist">
