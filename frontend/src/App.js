@@ -2,15 +2,14 @@ import React, { useState, useEffect } from 'react';
 import SWA from 'spotify-web-api-node';
 import './App.css';
 import Playlist from './components/Playlist';
-import MusicPlayer from './components/MusicPlayer'
+//import MusicPlayer from './components/MusicPlayer'
 import Tabs from './components/Tabs';
-import FriendSyncTab from './components/FriendSyncTab';
-import MultiPlaylistTab from './components/MultiPlaylistTab';
+//import FriendSyncTab from './components/FriendSyncTab';
+//import MultiPlaylistTab from './components/MultiPlaylistTab';
 import { getCookie } from './helper';
 const spotifyApi = new SWA();
 
 function App() {
-   const [apiToken, setApiToken] = useState(null);
    const [user, setUser] = useState({});
    const [playlists, setPlaylists] = useState([]);
 
@@ -19,7 +18,6 @@ function App() {
       //regularly get api token
       const token = getCookie('api_token') || null;
       if (token) {
-         setApiToken(token);
          spotifyApi.setAccessToken(token);
       }
     },[]);
@@ -61,16 +59,15 @@ function App() {
            />
         </div>
         <div label="MultiPlaylist">
-        <MultiPlaylistTab />
+           MultiPlaylistTab 
         </div>
         <div label="Friendsync">
-        <FriendSyncTab />
+           FriendSyncTab 
         </div>
         <div label="VanillaPlaylist">
           leaving empty until the other three are done
         </div>
       </Tabs>
-        <MusicPlayer apiToken = {apiToken}/>
     </div>
   );
 }
