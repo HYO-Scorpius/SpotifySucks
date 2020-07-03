@@ -1,40 +1,44 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import PlaylistInner from "./PlaylistInner";
+import PlaylistOuter from "./PlaylistOuter";
 
 function Playlist({ 
-   playlists,
    spotifyApi,
 }) {
    const [pane, setPane] = useState("outer"); 
    const [selectedPlaylist, setSelectedPlaylist] = useState(null); 
+   const [playlists, setPlaylists] = useState(null);
+   let token = spotifyApi.getAccessToken();
+   useEffect(() => {
+      spotifyApi.getUserPlaylists().then(
+         (data) => {
+            if (data.body) {
+               setPlaylists(data.body.items);
+               console.log(data.body.items);
+            }
+         },
+         (err) => {
+            console.log('frontend::Playlist.js spotifyApi.getUserPlaylists() failed. Error: ', err);
+         });
+   }, [spotifyApi, token]);
    return (
       <div>
-      {pane === "outer" && (
-         <div> 
-            {playlists.map((playlist) =>{ 
-               return (
-                  <div key={playlist.id}>
-                     <button key={playlist.id} onClick={() => {
-                        setPane("inner");
-                        setSelectedPlaylist(playlist);
-                     }}> { playlist.name } </button>
-                  </div>
-
-               );
-            })}
-         </div>
-       )}
+      {pane === "outer" && playlists && 
+         <PlaylistOuter 
+            playlists={playlists} 
+            setPane={setPane} 
+            setSelectedPlaylist = {setSelectedPlaylist}/>}
 
       {pane === "inner" && (
          <PlaylistInner 
             playlists = {playlists}
+            setPane={setPane} 
             spotifyApi = {spotifyApi}
             selectedPlaylist = {selectedPlaylist}
          />
       )}
-   </div>
-   );
-         
+      </div>
+   ); 
 }
 
 export default Playlist;

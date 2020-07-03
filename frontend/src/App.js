@@ -11,7 +11,6 @@ const spotifyApi = new SWA();
 
 function App() {
    const [user, setUser] = useState({});
-   const [playlists, setPlaylists] = useState([]);
 
 
    useEffect(() => {
@@ -33,42 +32,27 @@ function App() {
          (err) => {
             console.log('frontend::App.js spotifyApi.getMe() failed. Error: ', err);
          });
-
-      //regularly get user playlist
-      spotifyApi.getUserPlaylists().then(
-         (data) => {
-            if (data.body) {
-               setPlaylists(data.body.items);
-               console.log(data.body.items);
-            }
-         },
-         (err) => {
-            console.log('frontend::App.js spotifyApi.getUserPlaylists() failed. Error: ', err);
-         });
-
    },[]);
 
-
-  return (
-     <div>
-      <Tabs> 
-        <div label="Playlist"> 
-           <Playlist
-              playlists = {playlists} 
-              spotifyApi = {spotifyApi}
-           />
-        </div>
-        <div label="MultiPlaylist">
-           MultiPlaylistTab 
-        </div>
-        <div label="Friendsync">
-           FriendSyncTab 
-        </div>
-        <div label="VanillaPlaylist">
-          leaving empty until the other three are done
-        </div>
-      </Tabs>
-    </div>
+   return (
+       <div>
+        <Tabs> 
+          <div label="Playlist"> 
+             <Playlist
+                spotifyApi = {spotifyApi}
+             />
+          </div>
+          <div label="MultiPlaylist">
+             MultiPlaylistTab 
+          </div>
+          <div label="Friendsync">
+             FriendSyncTab 
+          </div>
+          <div label="VanillaPlaylist">
+            leaving empty until the other three are done
+          </div>
+        </Tabs>
+      </div>
   );
 }
 

@@ -126,12 +126,12 @@ app.get('/logout', (_, res) =>{
 // Shuffle
 //////////////////////////////////////////////////////////////////////////////////////////////////
    
-app.get('/api/:access_token/shuffle/types/:type/playlists/:playlistId', (req, _) => {
+app.get('/api/:access_token/shuffle/types/:type/playlists/:playlistId/replace/:replace', (req, _) => {
    spotifyApi.setAccessToken(req.params.access_token);
    spotifyApi.getPlaylist(req.params.playlistId).then (
       (data) => {
          let URIs = shuffle(req.params.type, data.body.tracks.items);
-         makePlaylist(spotifyApi, data.body, URIs, false, req.params.type);
+         makePlaylist(spotifyApi, data.body, URIs, req.params.replace === 'yes', req.params.type);
       },
    (err) =>{
    console.log(err);
@@ -140,6 +140,7 @@ app.get('/api/:access_token/shuffle/types/:type/playlists/:playlistId', (req, _)
 
 
 const makePlaylist = (api, playlist,  URIs, replace, type) => {
+   console.log(replace);
    let playlistName = playlist.name;
    let owner = playlist.owner.id;
    let newPlaylist = playlist;

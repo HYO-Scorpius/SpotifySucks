@@ -1,13 +1,11 @@
 import React, {useState, useEffect} from "react";
-import Playlist from "./Playlist";
+import Shuffle from "./Shuffle";
 
 function PlaylistInner({ 
-   playlists,
+   setPane,
    spotifyApi,
    selectedPlaylist,
 }) {
-   const [type, setType] = useState('random'); 
-   const [pane, setPane] = useState("inner"); 
    const [tracks, setTracks] = useState(null); 
 
    useEffect(() => {
@@ -21,44 +19,29 @@ function PlaylistInner({
    },[selectedPlaylist, spotifyApi]);
 
    return (
-      <div>
-         {pane === "inner" && (
-            <div> 
-               <button onClick={() =>setPane("outer")}> back </button> 
-               <select name="options" id="options" onChange={event=>setType(event.target.value)}> 
-                  <option value="random" >Shuffle Randomly</option>
-                  <option value="genre">Shuffle by Genre</option>
-                  <option value="artists">Shuffle by Artist</option>
-                  <option value="album">Shuffle by Album</option>
-              </select> 
-               <div>
-                  <h1> { type } </h1> 
-               {tracks && ( 
-                  <div>
-                  {tracks.map((trackItem) =>{ 
-                      return (
-                         <ul key={trackItem.track.id}>
-                            <li key={trackItem.track.id}>  { trackItem.track.name } </li>
-                         </ul>
-                      );
-                   })} 
-                  </div>
-               )}
-
-
-               </div>
+      <div> 
+         <div>
+            <button onClick={() =>setPane("outer")}> back </button> 
+         </div>
+         <div>
+            <Shuffle 
+               spotifyApi = {spotifyApi}
+               playlist = {selectedPlaylist} />
             </div>
-         )}
-
-         {pane === "outer" && (
-            <Playlist
-               playlists = {playlists}
-               spotifyApi = {spotifyApi} />
-         )}
+         <div>
+         {tracks && ( 
+            <div>
+            {tracks.map((trackItem) =>{ 
+                return (
+                   <ul key={trackItem.track.id}>
+                      <li key={trackItem.track.id}>  { trackItem.track.name } </li>
+                   </ul>);
+             })} 
+            </div>
+         )} 
+         </div>
       </div>
     );
-                     //let apiUrl = `/api/${apiToken}/shuffle/types/${type}/playlists/${playlist.id}`;
-         
 }
 export default PlaylistInner;
 
