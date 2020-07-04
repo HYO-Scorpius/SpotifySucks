@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import Shuffle from "./Shuffle";
+import TrackList from "./TrackList";
 
 function PlaylistInner({ 
    setPane,
@@ -29,21 +30,15 @@ function PlaylistInner({
                spotifyApi = {spotifyApi}
                playlist = {selectedPlaylist} 
                user = {user}/>
-            </div>
+         </div>
          <div>
-         {tracks && ( 
-            <div>
-            {tracks.map((trackItem) =>{ 
-                return (
-                   <ul key={trackItem.track.id}>
-                      <li key={trackItem.track.id}>  { trackItem.track.name } </li>
-                   </ul>);
-             })} 
-            </div>
-         )} 
+         {tracks && 
+            <TrackList
+               tracks = {tracks} />
+         } 
          </div>
       </div>
-    );
+   );
 }
 export default PlaylistInner;
 

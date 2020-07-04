@@ -13,10 +13,7 @@ function Playlist({
    useEffect(() => {
       spotifyApi.getUserPlaylists().then(
          (data) => {
-            if (data.body) {
-               setPlaylists(data.body.items);
-               console.log(data.body.items);
-            }
+            setPlaylists(data.body.items);
          },
          (err) => {
             console.log('frontend::Playlist.js spotifyApi.getUserPlaylists() failed. Error: ', err);

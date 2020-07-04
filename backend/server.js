@@ -140,7 +140,6 @@ app.get('/api/:access_token/shuffle/types/:type/user/:userId/playlists/:playlist
 
 
 const makePlaylist = (api, user, playlist,  URIs, replace, type) => {
-   console.log(replace);
    let playlistName = playlist.name;
    if (replace) {
       api.unfollowPlaylist( playlist.id)
@@ -168,8 +167,7 @@ const makePlaylist = (api, user, playlist,  URIs, replace, type) => {
 
 const fillPlaylist = (api, URIs, playlist) => {
    api.addTracksToPlaylist(playlist.id, URIs).then (
-      (data) => {
-         console.log(data.body)
+      (_) => {
       },
       (err) => {
          console.log("server.js::fillPlaylist error: ",err);
