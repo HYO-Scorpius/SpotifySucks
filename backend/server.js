@@ -126,12 +126,12 @@ app.get('/logout', (_, res) =>{
 // Shuffle
 //////////////////////////////////////////////////////////////////////////////////////////////////
    
-app.get('/api/:access_token/shuffle/types/:type/playlists/:playlistId', (req, _) => {
+app.get('/api/:access_token/shuffle/types/:type/user/:userId/playlists/:playlistId/replace/:replace', (req, _) => {
    spotifyApi.setAccessToken(req.params.access_token);
    spotifyApi.getPlaylist(req.params.playlistId).then (
       (data) => {
          let URIs = shuffle(req.params.type, data.body.tracks.items);
-         makePlaylist(spotifyApi, data.body, URIs, false, req.params.type);
+         makePlaylist(spotifyApi, req.params.userId, data.body, URIs, req.params.replace === 'yes', req.params.type);
       },
    (err) =>{
    console.log(err);
@@ -139,18 +139,10 @@ app.get('/api/:access_token/shuffle/types/:type/playlists/:playlistId', (req, _)
 });
 
 
-const makePlaylist = (api, playlist,  URIs, replace, type) => {
+const makePlaylist = (api, user, playlist,  URIs, replace, type) => {
    let playlistName = playlist.name;
-   let owner = playlist.owner.id;
-   let newPlaylist = playlist;
    if (replace) {
-      api.remvoveTracksFromPlaylist(playlist.owner.id, playlist.id, URIs).then (
-         (data) => {
-            fillPlaylist(api, URIs, newPlaylist);
-         },
-         (err) => {
-            console.log("server.js::makePlaylist error: ", err);
-         });
+      api.unfollowPlaylist( playlist.id)
    } 
    else {
       if (type != "random")
@@ -161,20 +153,21 @@ const makePlaylist = (api, playlist,  URIs, replace, type) => {
       {
          playlistName += " shuffled without bias because Spotify Sucks";
       }
-      api.createPlaylist(owner, playlistName, {public: false}).then(
-         (data) => {
-            fillPlaylist(api, URIs, data.body);
-         }, 
-         (err) => {
-            console.log("server.js::makePlaylist error: ",err);
-         });
    }
+   api.createPlaylist(user, playlistName, {public: false}).then(
+      (data) => {
+         fillPlaylist(api, URIs, data.body);
+      }, 
+      (err) => {
+         console.log("server.js::createPlaylist error: ",err);
+      });
+   
 }
+
 
 const fillPlaylist = (api, URIs, playlist) => {
    api.addTracksToPlaylist(playlist.id, URIs).then (
-      (data) => {
-         console.log(data.body)
+      (_) => {
       },
       (err) => {
          console.log("server.js::fillPlaylist error: ",err);
