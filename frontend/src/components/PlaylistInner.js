@@ -5,6 +5,7 @@ function PlaylistInner({
    setPane,
    spotifyApi,
    selectedPlaylist,
+   user,
 }) {
    const [tracks, setTracks] = useState(null); 
 
@@ -26,7 +27,8 @@ function PlaylistInner({
          <div>
             <Shuffle 
                spotifyApi = {spotifyApi}
-               playlist = {selectedPlaylist} />
+               playlist = {selectedPlaylist} 
+               user = {user}/>
             </div>
          <div>
          {tracks && ( 

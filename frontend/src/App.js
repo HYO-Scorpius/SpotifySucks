@@ -40,6 +40,7 @@ function App() {
           <div label="Playlist"> 
              <Playlist
                 spotifyApi = {spotifyApi}
+               user = {user}
              />
           </div>
           <div label="MultiPlaylist">

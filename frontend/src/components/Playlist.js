@@ -4,6 +4,7 @@ import PlaylistOuter from "./PlaylistOuter";
 
 function Playlist({ 
    spotifyApi,
+   user,
 }) {
    const [pane, setPane] = useState("outer"); 
    const [selectedPlaylist, setSelectedPlaylist] = useState(null); 
@@ -20,7 +21,7 @@ function Playlist({
          (err) => {
             console.log('frontend::Playlist.js spotifyApi.getUserPlaylists() failed. Error: ', err);
          });
-   }, [spotifyApi, token]);
+   }, [spotifyApi, token, pane]);
    return (
       <div>
       {pane === "outer" && playlists && 
@@ -35,6 +36,7 @@ function Playlist({
             setPane={setPane} 
             spotifyApi = {spotifyApi}
             selectedPlaylist = {selectedPlaylist}
+            user = {user}
          />
       )}
       </div>

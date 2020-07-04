@@ -3,10 +3,12 @@ import React, {useState} from "react";
 function Shuffle({ 
    spotifyApi,
    playlist,
+   user,
 }) {
    const [type, setType] = useState('random');
 
-   let apiUrl = `/api/${spotifyApi.getAccessToken()}/shuffle/types/${type}/playlists/${playlist.id}/replace/`;
+   let apiUrl = `/api/${spotifyApi.getAccessToken()}/shuffle/types/${type}/user/${user.id}/playlists/${playlist.id}/replace/`;
+   console.log(apiUrl);
    return (
       <div> 
          <select name="options" id="options" onChange={event=>setType(event.target.value)}> 
