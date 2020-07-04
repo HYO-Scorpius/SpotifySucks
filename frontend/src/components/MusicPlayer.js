@@ -9,15 +9,14 @@ function MusicPlayer({
 }) {
 
 
-  const [status, changeStatus] = useState(false);
   const [player, setPlayer] = useState(null);
   const [deviceID, setDeviceID] = useState("");
   const [token, setToken] = useState("");
 
-  // Get token from here https://developer.spotify.com/documentation/web-playback-sdk/quick-start/ (temporary)
   window.onSpotifyWebPlaybackSDKReady = () => {
-    //const token = 'BQC1T8hpf1jRL6mohpYprw6lNMorxeRJIlmMCsQwS6E8hnL9GAWkt-UEAfHXohlw9oZQVLV1lQT_3XX6OLh_6cyYM227BvU-mTzMusuYeaXJlZwI5K1OKH0ewtf04Iuqi0RbitI9_XSKbNFzpGQvn7AWxflMk3IxAGQc81nio9rNk8AG9v81PvY';
-    let token = apiToken;
+    //let token = apiToken;
+  //  const token = 'BQCRCPfjLP5t2LiMU7aaGIhp-DawYZlZpnhZRKdV8AChhdI9lVFJWT-Zye6CYqQuXxk4nXJyVkA52oRkYhi-fvAauqI-9SUr3nDPxKNnmn105KmSm0_4win5JMHqM9YUwGokqBwkEf6d0aNj76-mgPTE03EGQi0vMepp-YG-urf_WbwpCVNvEVk';
+const token = 'BQAgf9wwdi_xQ-kvayHREPns3Bp68Vk46CJ2aqZGi5blAN1n-hBLxNW8-cMNKOtWwX-s7CQRsC9zGU79k-bXfS3v79OjZblL79kgzVYoP7vwE8rdN65XnqlUqkUyRteDYchBzEozbW6HGXsAzohZyS05DHBwNnGlsSh9A3WIjwhK3YyXzs-BQleY2MwM';
     const player = new window.Spotify.Player({
       name: 'Web Playback SDK Quick Start Player',
       getOAuthToken: cb => { cb(token); },
@@ -69,9 +68,29 @@ function MusicPlayer({
 
   }
 
+  useEffect(() => {
+  getCurrentPlayback();
+  }, []); 
+
+
+  async function getCurrentPlayback(){
+    fetch('https://api.spotify.com/v1/me/player/currently-playing', { 
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      }})
+    .then(res => res.json())  
+    .then(json => {  
+      console.log("JSON",json);
+    }).catch(function() {
+      console.log("Error with current playback");
+  });
+  }
+
   // Chooses web app as the playback device
-  function transferUsersPlayback() {
-    fetch("https://api.spotify.com/v1/me/player", {
+  async function transferUsersPlayback() {
+    let request = fetch("https://api.spotify.com/v1/me/player", {
       method: "PUT",
       headers: {
         authorization: `Bearer ${token}`,
@@ -79,17 +98,22 @@ function MusicPlayer({
       },
       body: JSON.stringify({
         "device_ids": [ deviceID ],
-        "play": true,
+        "play": false,
       }),
+    }).then(async (res) => {
+      const data = await res.json();
+      console.log("POST JSON", data)
     });
-
+    console.log("TRANSFER");
+    console.log("REQBODY", request.json);
+    pause();
   }
 
   // Start the music player
-  function startUserPlayback() {
+  async function startUserPlayback() {
     transferUsersPlayback();
 
-    fetch("https://api.spotify.com/v1/me/player/play", {
+  await fetch("https://api.spotify.com/v1/me/player/play", {
       method: "PUT",
       headers: {
         authorization: `Bearer ${token}`,
@@ -98,11 +122,15 @@ function MusicPlayer({
       body: JSON.stringify({
         "device_id": [ deviceID ],
       }),
+    }).then(async (res) => {
+      const data = await res.json();
+      console.log("POST JSON", data)
     });
 
     console.log(`Bearer ${token}` );
     console.log("DeviceID", deviceID);
-
+    
+    getCurrentPlayback();
   }
 
 
@@ -143,7 +171,7 @@ function MusicPlayer({
         <p>
          <button onClick={prevTrack} > Previous Track</button>
          <button onClick={pause}>Pause</button>
-         <button onClick={startUserPlayback}>Start</button>
+         <button onClick={transferUsersPlayback}>Start</button>
          <button onClick={seekTrack} > Next Track</button>
         </p>
       </div>
