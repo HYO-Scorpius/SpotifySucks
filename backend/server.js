@@ -34,6 +34,7 @@ app
 // Spotify Authentication
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 var scopes = ['user-read-private',
    'user-read-email',
    'playlist-modify-private',
@@ -53,7 +54,10 @@ var scopes = ['user-read-private',
    'user-library-modify',
    'user-library-read',
    'user-follow-modify',
-   'user-follow-read']
+   'user-follow-read',
+   "streaming"]
+
+
    clientID = process.env.SPOTIFY_CLIENT_ID,
    clientSECRET = process.env.SPOTIFY_CLIENT_SECRET,
    state = 'mikeamysyedkenny';
