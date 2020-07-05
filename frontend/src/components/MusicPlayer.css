@@ -1,4 +1,5 @@
 .footer {
+  position:absolute;
   display: inline-block;
   background-color: rgb(46, 4, 46);
   bottom: 0;

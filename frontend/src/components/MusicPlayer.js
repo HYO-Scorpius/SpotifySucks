@@ -3,7 +3,7 @@ import logo from "./../logo.svg";
 import "./MusicPlayer.css";
 
 // Class components should always call base consturctor with props
-function MusicPlayer({ apiToken }) {
+function MusicPlayer({ spotifyApi }) {
   const [player, setPlayer] = useState(null);
   const [deviceID, setDeviceID] = useState("");
   const [token, setToken] = useState("");
@@ -14,7 +14,7 @@ function MusicPlayer({ apiToken }) {
     image_url:'https://via.placeholder.com/60'});
 
   window.onSpotifyWebPlaybackSDKReady = () => {
-    let token = apiToken;
+    let token = spotifyApi.getAccessToken();
     //const token = 'BQAPTRddtQ8P7RI2HmKA-1EZXGZ0JUdxGi4EB0NWeSVEp8Cuhchg-d-PfIoFqKsFUwKzywI_gjM6WYq0OY2FCN3Z0snUwCvBmz5m0ALTN-YJTci5wIDoUmbnVaE8V9L8z-E0ehWiLsbDlzFv_GqKDIAg6XqBa5hVT0kIA-9FNfRa0RhV0B9TLvk';
     const player = new window.Spotify.Player({
       name: "Web Playback SDK Quick Start Player",
@@ -154,8 +154,6 @@ function MusicPlayer({ apiToken }) {
   function pause() {
     player.pause().then(() => {
       console.log("Paused!");
-      console.log("Login Token Passed", apiToken);
-      console.log("Token variable", token);
     });
   }
 
