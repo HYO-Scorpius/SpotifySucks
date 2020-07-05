@@ -11,13 +11,15 @@ function Playlist({
    const [playlists, setPlaylists] = useState(null);
    let token = spotifyApi.getAccessToken();
    useEffect(() => {
-      spotifyApi.getUserPlaylists().then(
-         (data) => {
-            setPlaylists(data.body.items);
-         },
-         (err) => {
-            console.log('frontend::Playlist.js spotifyApi.getUserPlaylists() failed. Error: ', err);
-         });
+      if (token) {
+         spotifyApi.getUserPlaylists().then(
+            (data) => {
+               setPlaylists(data.body.items);
+            },
+            (err) => {
+               console.log('frontend::Playlist.js spotifyApi.getUserPlaylists() failed. Error: ', err);
+            });
+      }
    }, [spotifyApi, token, pane]);
    return (
       <div>
