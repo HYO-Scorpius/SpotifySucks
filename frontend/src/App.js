@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SWA from 'spotify-web-api-node';
 import './App.css';
 import Playlist from './components/Playlist/Playlist';
-//import MusicPlayer from './components/MusicPlayer'
+import MusicPlayer from './components/MusicPlayer'
 import Tabs from './components/Tabs';
 //import FriendSyncTab from './components/FriendSyncTab';
 //import MultiPlaylistTab from './components/MultiPlaylistTab';
@@ -53,6 +53,7 @@ function App() {
             leaving empty until the other three are done
           </div>
         </Tabs>
+        <MusicPlayer  spotifyApi = {spotifyApi}/>
       </div>
   );
 }
