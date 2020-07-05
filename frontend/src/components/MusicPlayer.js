@@ -7,7 +7,11 @@ function MusicPlayer({ apiToken }) {
   const [player, setPlayer] = useState(null);
   const [deviceID, setDeviceID] = useState("");
   const [token, setToken] = useState("");
-  const [currentPlayback, setCurrentPlayback] = useState({});
+  const [currentPlayback, setCurrentPlayback] = useState({duration:0,
+    position:0,
+    artist_name:"Artist",
+    track_name:"Track Name",
+    image_url:'https://via.placeholder.com/60'});
 
   window.onSpotifyWebPlaybackSDKReady = () => {
     let token = apiToken;
@@ -158,19 +162,20 @@ function MusicPlayer({ apiToken }) {
   // javascript conditional { boolean ?() : () }
   return (
     <div className="footer">
-      <div>
-       
-        <img src={currentPlayback} className="albumImage" alt="logo" />
+      <div className="album_info">
+        <img
+          src={currentPlayback.image_url}
+          className="albumImage"
+          alt="logo"
+        />
+      </div>
+
+      <div className="track_info">
         <p> {currentPlayback.track_name}</p>
-        <p>
-          <a
-            href="https://beta.developer.spotify.com/documentation/web-playback-sdk/quick-start/#authenticating-with-spotify"
-            target="_blank"
-          >
-            {" "}
-            https://beta.developer.spotify.com/documentation/web-playback-sdk/quick-start/#authenticating-with-spotify{" "}
-          </a>
-        </p>
+        <p> {currentPlayback.artist_name}</p>
+      </div>
+
+      <div className="player_controls">
         <p>
           <button onClick={prevTrack}> Previous Track</button>
           <button onClick={pause}>Pause</button>
@@ -178,6 +183,7 @@ function MusicPlayer({ apiToken }) {
           <button onClick={seekTrack}> Next Track</button>
         </p>
       </div>
+      
     </div>
   );
 }
