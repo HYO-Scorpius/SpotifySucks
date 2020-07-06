@@ -3,9 +3,11 @@ const SpotifyWrapper = require('spotify-web-api-node');
 const Request = require('request');
 const Database = require('./database.js');
 const DataStructures = require('./datastructures');
+const { exists } = require('../models/user.model.js');
 
 
-const namespaces = new Map();
+const groupMap = new Map();
+
 
 
 
@@ -21,7 +23,9 @@ module.exports = {
      * @param {string} groupid ID of user that's creating group
      */
     add_group: function (groupid, nsp) {
-        namespaces.set(groupid, nsp);
+        let group = new Group(groupid, nsp);
+
+
     },
 
 
@@ -31,7 +35,7 @@ module.exports = {
     * @param {string} userid Spotify user ID of desired user
     * @returns string description of outcome. Either invite sent or error
     */
-    invite: function (userid) {
+    send_invite: function (userid) {
         var sessionid;
 
         if (is_active(userid)) { sessionid = Database.get_sessionid(userid); }
@@ -51,9 +55,50 @@ module.exports = {
      * 
      * @param {*} groupid 
      */
-    accept: function () {
+    join_group: function (groupid, userid) {
 
     },
+
+
+    /**
+     * 
+     * @param {string} groupid GroupID of target group
+     * @param {string} command Command to perform
+     */
+    command_controller: function (groupid, command) {
+        // get group from group map
+
+        // group.command(command)
+    },
+
+
+    /**
+     * 
+     * @param {string} groupid GroupID of target group
+     * @param {Object} queueMod Queue modification to perform
+     * 
+     * queueMod properties:
+     * {
+     *      modification: string,
+     *      songid: spotifyID of song,
+     *      index: in queue to modify
+     * }
+     * 
+     * For example:
+     * 
+     * Add "Band on the Run" to next in queue with
+     * 
+     * {
+     *      modification: "ADD",
+     *      songid: <spotify songid of Band on the Run>,
+     *      index: 0
+     * }
+     */
+    queue_controller: function (groupid, queueMod) {
+        if (groupid in namespaces.keys) {
+            let group = namespaces
+        }
+    }
 
 };
 
@@ -62,45 +107,89 @@ module.exports = {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// CLASS GROUP
+// CLASSES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class Group {
-    groupid;
-    users = [];
+    
+    id; // {string} groupid
+    nsp; // socketio namespace object
+    users = []; // list of users
+
+    userSocketMap = new Map();
 
     queue = new DataStructures.Queue
 
+
     /**
     * @param {string} userid Spotify userID of the group's creator
+    * @param {Object} nsp SocketIO namespace object
     */
-    constructor(userid) {
-        this.groupid = userid;
+    constructor(userid, nsp) {
+        this.id = userid;
         this.add_user(userid);
+
+        nsp.on('connection', function (socket) {
+            nsp.emit(`${socket.id} connected!`);
+        });
+
+        nsp.on('PLAY', function () {
+            nsp.emit('PLAY');
+        });
+
+        nsp.on('PAUSE', function () {
+            nsp.emit('ctrl', 'PAUSE');
+        });
+
+        nsp.on('SKIP', function () {
+            nsp.emit('ctrl', 'SKIP');
+        });
+
+        nsp.on('PREV', function () {
+            nsp.emit('ctrl', 'PREV');
+        });
+
+        this.nsp = nsp;
     }
+
 
     /**
      * add user to users list
      * 
-     * @param {string} userid Spotify userID of the person to add
+     * @param {User} user User to add
      */
-    set add_user(userid) {
-        if (!this.users.includes(userid)) {
-            this.users.append(userid);
-        }
+    add_user(user) {
+        this.users.append(user)
     }
 
 
-    /**
-     * add song to queue
-     * 
-     * @param {string} songid SpotifyID of song
-     */
-    set add_to_queue(songid) {
-        this.queue.enqueue(songid);
-    }
 };
 
+
+
+
+
+class User {
+
+    userid;
+    groupid;
+    socketid;
+
+    constructor() {}
+
+    set_userid(id) {
+        this.userid = id;
+    }
+
+    set_groupid(id) {
+        this.groupid = id;
+    }
+
+    set_socketid(id) {
+        this.socketid = id;
+    }
+
+};
 
 
 

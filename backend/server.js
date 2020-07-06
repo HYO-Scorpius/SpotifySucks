@@ -199,29 +199,7 @@ const io = SocketIO();
 app.get('/friendsync/create_group/:groupid', function (req, res) {
    console.log(`Creating group: ${groupid}`);
    const nsp = io.of(`/${groupid}`);
-
-   nsp.on('connection', function (socket) {
-      nsp.emit(`${socket.id} connected!`);
-   });
-
-   nsp.on('PLAY', function() {
-      nsp.emit(`PLAY`);
-   });
-
-   nsp.on(`PAUSE`, function () {
-      nsp.emit(`PAUSE`);
-   });
-
-   nsp.on(`SKIP`, function () {
-      nsp.emit('SKIP');
-   });
-
-   nsp.on(`PREV`, function () {
-      nsp.emit(`PREV`);
-   });
-
    FriendSync.add_group(groupid, nsp);
-
    res.send(`/${groupid}`);
 });
 
