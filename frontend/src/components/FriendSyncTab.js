@@ -6,29 +6,13 @@ class FriendSyncTab extends Tab {
     render() {
         super.render();
 
-        var synced = ["billy", "bob", "joe", "omnomdomz"];
-        var syncedentries = [];
+        //Connect to socket
 
-        for (const [index, value] of synced.entries()) {
-            syncedentries.push(<li>{value}</li> )
-        }
-
-        return (
-            <div>
-                <div>
-                    <label for="fname">Synced: </label>
-                    <ul>{syncedentries}</ul>
-                    <button type="button">Add Listener</button>
-
-                </div>
-
-
-
-            </div>
-
-        )
-
-
+        return (<div></div>)
+        // Buttons
+            // join session
+            // invite to session
+            //^Onclick both buttons bring up a text box and also 'send' and 'cancel' buttons
   }
 
 }
