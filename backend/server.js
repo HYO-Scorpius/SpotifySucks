@@ -196,36 +196,12 @@ const io = SocketIO();
 /**
  * Creates namespace and places it in FriendSync mapped to groupid
  */
-app.get('/friendsync/create_group/:hostid', function (req, res) {
-   console.log(`Creating group: ${hostid}`);
+app.get('/friendsync/:hostid', function (req, res) {
+   console.log(`Creating session: ${hostid}`);
    const nsp = io.of(`/${hostid}`);
-   FriendSync.create_group(hostid, nsp);
+   FriendSync.new_session(hostid, nsp);
    res.send(`/${hostid}`);
 });
-
-
-/**
- * Invites user to synchronize playback
- * 
- * @param groupid ID of group user is invited to
- * @param userid Spotify ID of user to invite
- */
-app.get('/friendsync/invite/:groupid&:userid', function (req, res) {
-    //res.send(FriendSync.invite(req.params.userid));
-    console.log(`FriendSync invite: ${groupid}, ${userid}`);
-});
-
-
-/**
- * Removes user from group
- * 
- * @param groupid ID of synchronized group
- * @param userid Spotify ID of user to remove from group
- */
-app.get('/friendsync/leave/:groupid&:userid', function (req, res) {
-   console.log(`Friendsync leave group: ${req.params.groupid}, ${req.params.userid}`);
-});
-
 
 
 

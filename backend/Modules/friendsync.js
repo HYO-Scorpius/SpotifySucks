@@ -29,12 +29,12 @@ module.exports = {
     /**
      * 
      * @param {string} hostid ID of user that's creating group
-     * @param {Object} nsp Socket namespace
+     * @param {SocketIO.Namespace} nsp Socket namespace
      */
-    create_group: function (hostid, nsp) {
+    new_session: function (hostid, nsp) {
         //create new group
         //group will assign nsp signal handlers
-        let group = new Group(hostid, nsp);
+        let session = new Session(hostid, nsp);
 
         //store group in database
         //Database.new_group(group);
@@ -60,7 +60,7 @@ module.exports = {
      * 
      * @param {*} hostid 
      */
-    join_group: function (hostid, userid) {
+    join_session: function (hostid, userid) {
 
     }
 
@@ -74,7 +74,7 @@ module.exports = {
 // CLASSES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class Group {
+class Session {
     
     hostid; // {string} groupid
     nsp; // socketio namespace object
@@ -86,8 +86,8 @@ class Group {
 
 
     /**
-    * @param {string} hostid Spotify userID of the group's creator
-    * @param {Object} nsp SocketIO namespace object
+    * @param {string} hostid Spotify userID of the session's creator
+    * @param {SocketIO.Namespace} nsp SocketIO namespace object
     */
     constructor(hostid, nsp) {
         this.hostid = hostid;
@@ -98,7 +98,7 @@ class Group {
         });
 
         nsp.on('PLAY', function () {
-            nsp.emit('PLAY');
+            nsp.emit('crtl','PLAY');
         });
 
         nsp.on('PAUSE', function () {
