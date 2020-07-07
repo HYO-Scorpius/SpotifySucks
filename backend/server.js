@@ -226,10 +226,12 @@ connection.once('open', () => {
 // Loads the routes from other files
 const queueRoute = require('./routes/queue');
 const usersRoute = require('./routes/users');
+const sessionRoute = require('.routes/session');
 
 // Defining endpoints to use
 app.use('/queue', queueRoute);
 app.use('/users', usersRoute);
+app.use('/session', sessionRoute)
 
 app.listen(PORT, HOSTNAME, () => {
     console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
