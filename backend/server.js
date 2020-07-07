@@ -196,11 +196,11 @@ const io = SocketIO();
 /**
  * Creates namespace and places it in FriendSync mapped to groupid
  */
-app.get('/friendsync/create_group/:groupid', function (req, res) {
-   console.log(`Creating group: ${groupid}`);
-   const nsp = io.of(`/${groupid}`);
-   FriendSync.add_group(groupid, nsp);
-   res.send(`/${groupid}`);
+app.get('/friendsync/create_group/:hostid', function (req, res) {
+   console.log(`Creating group: ${hostid}`);
+   const nsp = io.of(`/${hostid}`);
+   FriendSync.create_group(hostid, nsp);
+   res.send(`/${hostid}`);
 });
 
 

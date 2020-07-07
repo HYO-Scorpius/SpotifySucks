@@ -6,6 +6,10 @@ const DataStructures = require('./datastructures');
 const { exists } = require('../models/user.model.js');
 
 
+/**
+ * @key hostid
+ * @value Group
+ */
 const groupMap = new Map();
 
 
@@ -18,14 +22,22 @@ const groupMap = new Map();
 
 module.exports = {
 
+    Group,
+    User,
+
+
     /**
      * 
-     * @param {string} groupid ID of user that's creating group
+     * @param {string} hostid ID of user that's creating group
+     * @param {Object} nsp Socket namespace
      */
-    add_group: function (groupid, nsp) {
-        let group = new Group(groupid, nsp);
+    create_group: function (hostid, nsp) {
+        //create new group
+        //group will assign nsp signal handlers
+        let group = new Group(hostid, nsp);
 
-
+        //store group in database
+        //Database.new_group(group);
     },
 
 
@@ -36,68 +48,20 @@ module.exports = {
     * @returns string description of outcome. Either invite sent or error
     */
     send_invite: function (userid) {
-        var sessionid;
+        // check for active users in database
+        // Database.get_active_users();
 
-        if (is_active(userid)) { sessionid = Database.get_sessionid(userid); }
 
-        if (sessionid == undefined) {
-            return "User does not exist or is inactive";
-        }
-        else {
-            // send sync invite to target
-            return "Invite sent"
-        }
     },
 
 
     /**
      * Adds user to group
      * 
-     * @param {*} groupid 
+     * @param {*} hostid 
      */
-    join_group: function (groupid, userid) {
+    join_group: function (hostid, userid) {
 
-    },
-
-
-    /**
-     * 
-     * @param {string} groupid GroupID of target group
-     * @param {string} command Command to perform
-     */
-    command_controller: function (groupid, command) {
-        // get group from group map
-
-        // group.command(command)
-    },
-
-
-    /**
-     * 
-     * @param {string} groupid GroupID of target group
-     * @param {Object} queueMod Queue modification to perform
-     * 
-     * queueMod properties:
-     * {
-     *      modification: string,
-     *      songid: spotifyID of song,
-     *      index: in queue to modify
-     * }
-     * 
-     * For example:
-     * 
-     * Add "Band on the Run" to next in queue with
-     * 
-     * {
-     *      modification: "ADD",
-     *      songid: <spotify songid of Band on the Run>,
-     *      index: 0
-     * }
-     */
-    queue_controller: function (groupid, queueMod) {
-        if (groupid in namespaces.keys) {
-            let group = namespaces
-        }
     }
 
 };
@@ -112,7 +76,7 @@ module.exports = {
 
 class Group {
     
-    id; // {string} groupid
+    hostid; // {string} groupid
     nsp; // socketio namespace object
     users = []; // list of users
 
@@ -122,11 +86,11 @@ class Group {
 
 
     /**
-    * @param {string} userid Spotify userID of the group's creator
+    * @param {string} hostid Spotify userID of the group's creator
     * @param {Object} nsp SocketIO namespace object
     */
-    constructor(userid, nsp) {
-        this.id = userid;
+    constructor(hostid, nsp) {
+        this.hostid = hostid;
         this.add_user(userid);
 
         nsp.on('connection', function (socket) {
@@ -192,36 +156,3 @@ class User {
 };
 
 
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// HELPER FUNCTIONS
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Checks if user with userid is currently connected to this app
- * 
- * @param {string} userid Spotify user ID of desired user
- * @returns sessionid of user if active, null otherwise
- */
-function is_active(userid) {
-    // check spotify API for userid
-    // check database for active users
-    return user_exists(userid) && Database.test_true;
-}
-
-
-/**
- * Checks spotify is username is valid
- * 
- * @param {string} userid Spotify user ID of desired user
- * @returns true if exists, false otherwise
- */
-function user_exists(userid) {
-    var exists;
-    SpotifyWrapper.getUser(userid).then(
-        function (data) { exists = true;  },
-        function (err)  { exists = false; }
-    );
-    return exists;
-}
