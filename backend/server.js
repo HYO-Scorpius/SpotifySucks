@@ -146,7 +146,19 @@ app.get('/api/:access_token/shuffle/types/:type/user/:userId/playlists/:playlist
 const makePlaylist = (api, user, playlist,  URIs, replace, type) => {
    let playlistName = playlist.name;
    if (replace) {
-      api.unfollowPlaylist( playlist.id)
+      let replaceURIs = [];
+      URIs.forEach((uri) => {
+         let objRet = {};
+         objRet['uri'] = uri;
+         replaceURIs.push(objRet);
+      });
+      api.removeTracksFromPlaylist(playlist.id, replaceURIs).then(
+         (_) => {
+            fillPlaylist(api, URIs, playlist);
+         },
+         (err) => {
+            console.log("server.js::makePlaylist removeTracksFromPlaylist failed error: ",err);
+         }); 
    } 
    else {
       if (type != "random")
@@ -157,15 +169,15 @@ const makePlaylist = (api, user, playlist,  URIs, replace, type) => {
       {
          playlistName += " shuffled without bias because Spotify Sucks";
       }
-   }
-   api.createPlaylist(user, playlistName, {public: false}).then(
+
+      api.createPlaylist(user, playlistName, {public: false}).then(
       (data) => {
          fillPlaylist(api, URIs, data.body);
       }, 
       (err) => {
-         console.log("server.js::createPlaylist error: ",err);
+         console.log("server.js::makePlaylist createPlaylist failed error: ",err);
       });
-   
+   }
 }
 
 
