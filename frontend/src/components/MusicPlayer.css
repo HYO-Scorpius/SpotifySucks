@@ -1,32 +1,152 @@
 .footer {
-  position:absolute;
-  display: inline-block;
-  background-color: rgb(46, 4, 46);
-  bottom: 0;
-  width: 100%;
-  padding-left: 20px;
+    position: fixed;
+    background-color: black;
+    bottom: 0;
+    width: 100%;
+	padding: 20px;
+	display: inline-flex;
+	flex-direction: row;
+	justify-items: center;
+	align-items: center;
+}
+/* #2FA7A4*/
+
+.info {
+	display: inline-flex;
+	flex-direction: row;
 }
 
 .album_info {
-  padding-top: 30px ;
-  height: 100px;
-  width: 100px;
-  float: left;
+	width: 100px;
+	display: flex;
+	justify-items: center;
+	align-items: center;
 }
 
 .track_info {
-  padding-top: 30px;
-  padding-right: 20px;
-  color: #fff;
-  float: left;
+    color: #fff;
+	width: 150px;
+	display: flex;
+	flex-direction: column;
+	justify-items: flex-start;
+	align-items: center;
+	text-overflow: ellipsis;
 }
 
-p {
-  margin: 0;
-  padding: 0;
+.track_info > p {
+	margin: auto;
+	margin-left: 0;
+	width: 150px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* The actual popup (appears on top) */
+.popuptext {
+	align-self: start;
+	font-size: x-small;
+	opacity: 0;
+	visibility: hidden;
+	max-width: 150px;
+	background-color: rgb(54, 54, 54);
+	color: #fff;
+	border: 1px solid rgba(255,255,255,0.8);
+	padding: 5px;
+	position: fixed;
+	z-index: 1;
+	bottom: 94px;
+	transition: 0.4s;
+}
+
+.popup:hover > .popuptext {
+	visibility: visible;
+	opacity: 1;
+}
+
+.player {
+	width: calc(100% - 290px);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-items: center;
+}
+
+.progressBar {
+	width: 90%;
+	margin-top: 10px;
+	display: flex;
+	justify-content: center;
+	vertical-align: middle;
+	align-items: center;
+}
+
+.progressText {
+	color: white;
+	width: 25px;
+	font-size: 10px;
+	text-align: center;
+	vertical-align: middle;
+	margin:0;
 }
 
 .player_controls {
- padding: 30px;
+	margin: 0;
+}
+
+.playerButton {
+	background-color: transparent;
+	outline: none;
+	vertical-align: middle;
+	border: none;
+	font-size: 10px;
+	color: white;
+	line-height: 10px;
+}
+
+.playerButton:hover {
+	color: #2FA7A4;
+}
+
+.fa-pause-circle, .fa-play-circle {
+	font-size:  25px;
+}
+
+input[type='range'] {
+	overflow: hidden;
+	width: 70%;
+	height: 5px;
+	-webkit-appearance: none;
+	background-color: grey;
+	border-radius: 8px;
 }
   
+input[type='range']::-webkit-slider-runnable-track {
+	height: 5px;
+	-webkit-appearance: none;
+}
+
+input[type='range']::-webkit-slider-thumb {
+	box-shadow: -10000px 0 0 10000px #2FA7A4;
+	-webkit-appearance: none;
+	border: none;
+	color: transparent;
+	background-color: transparent;
+    height: 5px;
+    width: 0px;
+}
+
+/* Firefox compatibility */
+input[type="range"]::-moz-range-progress {
+	background-color: #2FA7A4;
+}
+
+input[type=range]::-moz-range-thumb {
+	background-color: transparent;
+	border: none;
+}
+
+/* IE*/
+input[type="range"]::-ms-fill-lower {
+	background-color: #2FA7A4; 
+}
