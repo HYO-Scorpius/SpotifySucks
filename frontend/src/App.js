@@ -19,7 +19,7 @@ function App() {
       if (token) {
          spotifyApi.setAccessToken(token);
       }
-    },[]);
+   },[]);
 
    useEffect(() => {
      //regularly get user
@@ -35,25 +35,25 @@ function App() {
    },[]);
 
    return (
-       <div>
-        <Tabs> 
-          <div label="Playlist"> 
-             <Playlist
-                spotifyApi = {spotifyApi}
-               user = {user}
-             />
-          </div>
-          <div label="MultiPlaylist">
-             MultiPlaylistTab 
-          </div>
-          <div label="Friendsync">
-             FriendSyncTab 
-          </div>
-          <div label="VanillaPlaylist">
-            leaving empty until the other three are done
-          </div>
-        </Tabs>
-        <MusicPlayer  spotifyApi = {spotifyApi}/>
+      <div>
+         <Tabs> 
+            <div label="Playlist"> 
+               <Playlist
+                  spotifyApi = {spotifyApi}
+                  user = {user}
+               />
+            </div>
+            <div label="MultiPlaylist">
+               MultiPlaylistTab 
+            </div>
+            <div label="Friendsync">
+               FriendSyncTab 
+            </div>
+            <div label="VanillaPlaylist">
+               leaving empty until the other three are done
+            </div>
+         </Tabs>
+         <MusicPlayer  spotifyApi = {spotifyApi}/>
       </div>
   );
 }
