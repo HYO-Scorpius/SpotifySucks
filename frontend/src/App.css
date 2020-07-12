@@ -1,7 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200&family=Open+Sans:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
 
 html, body {
   font-family: 'Montserrat', sans-serif;
+  background-color: #0b1414;
+  color: white;
 }
 
 .App {
@@ -43,38 +45,10 @@ html, body {
   }
 }
 
-.tab-list {
-  border-bottom: 1px solid #ccc;
-  padding-left: 0;
-}
-
-.tab-list-item {
-  display: inline-block;
-  list-style: none;
-  margin-bottom: -1px;
-  padding: 0.5rem 0.75rem;
-}
-
-.tab-list-active {
-  background-color: white;
-  border: solid #ccc;
-  border-width: 1px 1px 0 1px;
-}
+/* login page */
 
 .Login-header:hover {
   color: #61dafb;
-}
-
-#bar {
-  top:0;
-  width: 100vw;
-  background-color: #61dafb;
-}
-
-#linksMenu {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
 }
 
 .Login {
@@ -93,4 +67,61 @@ html, body {
 .icon {
   transform: scale(4,4);
   color: grey;
+}
+
+/* menu */
+
+.tab-list {
+  position: fixed;
+  width: 100%;
+  height: 32px;
+  padding: 10px;
+  margin-bottom: 20px;
+  top: 0;
+  background-color: #2FA7A4;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.title {
+  width: 140px;
+  color: white;
+  text-shadow: 1px 1px 3px black;
+  vertical-align: middle;
+  cursor: context-menu;
+}
+
+.tabs {
+  color: black;
+  font-weight: bold;
+  display: inline-flex;
+  float: right;
+  align-items: center;
+}
+
+.tab-list-item {
+  padding: 10px;
+  font-weight: bold;
+  opacity: 0.4;
+  transition: 0.2s;
+}
+
+.tab-list-item:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.tab-list-active {
+  opacity: 1;
+  text-shadow: 1px 1px 3px white;
+}
+
+/* tab content */
+
+.tab-content {
+  z-index: -1;
+  margin-top: 52px;
+  margin-bottom: 100px;
+  padding: 15px;
 }
