@@ -7,7 +7,7 @@ function MusicPlayer({spotifyApi}) {
   const [player, setPlayer] = useState(null);
   const [deviceID, setDeviceID] = useState("");
   const [token, setToken] = useState("");
-  const [progress, setSeconds] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [currentPlayback, setCurrentPlayback] = useState({duration:0,
     position:0,
     paused: true,
@@ -79,7 +79,7 @@ function MusicPlayer({spotifyApi}) {
         image_url,
       });
 
-      setSeconds(position)
+      setProgress(position)
 
       // Testing
       console.log("TRACK NAME", track_name);
@@ -108,8 +108,6 @@ function MusicPlayer({spotifyApi}) {
       }
     });
 
-    
-    
   };
 
   function getCurrentPlayback() {
@@ -171,14 +169,29 @@ function MusicPlayer({spotifyApi}) {
     });
   }
 
+  // Seek To Position In Currently Playing Track
+  function seekPosition(value) {
+    player.seek(value, deviceID).then(() => {
+      console.log("Seeked position " + value)
+    })
+  }
+
   // update progress bar every second
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!currentPlayback.paused) setSeconds(progress => progress + 1000);
+      if (!currentPlayback.paused) setProgress(progress => progress + 1000);
     }, 1000);
     return () => clearInterval(interval);
   });
 
+  // convert ms to min:sec
+  function msToMinAndSec(ms) {
+    ms = (ms - ms % 1000) / 1000;
+    var secs = ms % 60;
+    ms = (ms - secs) / 60;
+    var mins = ms % 60;
+    return mins + ':' + ((Math.log(secs) * Math.LOG10E + 1 | 0) > 1 ? secs : "0" + secs);
+  }
 
   // javascript conditional { boolean ?() : () }
   return (
@@ -203,38 +216,24 @@ function MusicPlayer({spotifyApi}) {
       
 
       <div className="player">
+
         <p className="player_controls">
           <button className="playerButton" onClick={prevTrack}><i className="fas fa-step-backward"></i></button>
           {!currentPlayback.paused && <button className="playerButton" onClick={pause}><i className="far fa-pause-circle"></i></button>}
           {currentPlayback.paused && <button className="playerButton" onClick={startUserPlayback}><i className="far fa-play-circle"></i></button>}
           <button className="playerButton" onClick={seekTrack}><i className="fas fa-step-forward"></i></button>
         </p>
-      <ProgressBar currentPlayback={currentPlayback} progress={progress} />
+
+        <div className="progressBar">
+          <p style={{paddingRight:2}} className="progressText">{msToMinAndSec(progress)}</p>
+          <input style={{margin:0}} value={progress} max={currentPlayback.duration} min="0" type="range" step="1000" onChange={e => seekPosition(e.target.value)}></input>
+          <p style={{paddingLeft:2}} className="progressText">{msToMinAndSec(currentPlayback.duration)}</p>
+        </div>
+
       </div>
       
     </div>
   );
-}
-
-function ProgressBar({currentPlayback, progress}) {
-
-  function msToMinAndSec(s) {
-    s = (s - s % 1000) / 1000;
-    var secs = s % 60;
-    s = (s - secs) / 60;
-    var mins = s % 60;
-    return mins + ':' + ((Math.log(secs) * Math.LOG10E + 1 | 0) > 1 ? secs : "0" + secs);
-  }
-
-  return(
-    <div className="progressBar">
-      <p style={{paddingRight:2}} className="progressText">{msToMinAndSec(progress)}</p>
-      <input style={{margin:0}} value={progress} max={currentPlayback.duration} min="0" step="1000" type="range" disabled></input>
-      <p style={{paddingLeft:2}} className="progressText">{msToMinAndSec(currentPlayback.duration)}</p>
-    </div>
-    
-  )
-
 }
 
 export default MusicPlayer;

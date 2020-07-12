@@ -1,7 +1,8 @@
 .footer {
     position: fixed;
     background-color: black;
-    bottom: 0;
+	bottom: 0;
+	height: 60px;
     width: 100%;
 	padding: 20px;
 	display: inline-flex;
@@ -9,7 +10,6 @@
 	justify-items: center;
 	align-items: center;
 }
-/* #2FA7A4*/
 
 .info {
 	display: inline-flex;
@@ -37,6 +37,7 @@
 	margin: auto;
 	margin-left: 0;
 	width: 150px;
+	cursor: default;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -106,6 +107,7 @@
 
 .playerButton:hover {
 	color: #2FA7A4;
+	cursor: pointer;
 }
 
 .fa-pause-circle, .fa-play-circle {
@@ -113,6 +115,7 @@
 }
 
 input[type='range'] {
+	cursor: pointer;
 	overflow: hidden;
 	width: 70%;
 	height: 5px;
