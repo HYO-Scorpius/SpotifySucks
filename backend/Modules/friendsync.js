@@ -4,13 +4,14 @@ const Request = require('request');
 const Database = require('./database.js');
 const DataStructures = require('./datastructures');
 const { exists } = require('../models/user.model.js');
+const io = require("socket.io-emitter")({ host: "127.0.0.1", port: 2030 });
 
 
 /**
  * @key hostid
  * @value Group
  */
-const groupMap = new Map();
+const sessionMap = new Map();
 
 
 
@@ -22,7 +23,7 @@ const groupMap = new Map();
 
 module.exports = {
 
-    Group,
+    Session,
     User,
 
 
@@ -30,39 +31,54 @@ module.exports = {
      * 
      * @param {string} hostid ID of user that's creating group
      * @param {SocketIO.Namespace} nsp Socket namespace
+     * 
+     * @returns {boolean} true if success, false if already hosting
      */
-    new_session: function (hostid, nsp) {
-        //create new group
-        //group will assign nsp signal handlers
-        let session = new Session(hostid, nsp);
+    new_session: function (hostid) {
+        // check if hostid already hosting
+        // if so return false;
 
-        //store group in database
-        //Database.new_group(group);
+        // if not then create new room
+
+        // create Session object with hostid and room
+
+        // store in database
+
+        return true;
     },
 
 
     /**
     * Invites user to sync playback
     *   
-    * @param {string} userid Spotify user ID of desired user
+    * @param {string} to Spotify user ID of desired user
+    * @param {string} from Spotify user ID of sender
+    * 
     * @returns string description of outcome. Either invite sent or error
     */
-    send_invite: function (userid) {
-        // check for active users in database
-        // Database.get_active_users();
+    send_invite: function (to, from) {
+        // check if user is active
+        if (Database.user_is_active(to)) {
+            // get socket.id
 
-
+            // send invite
+            return true;
+        }
+        else {
+            return false;
+        }
     },
 
 
     /**
      * Adds user to group
      * 
+     * @param {string} userid 
      * @param {*} hostid 
      */
-    join_session: function (hostid, userid) {
+    join_session: function (userid, hostid) {
 
-    }
+    },
 
 };
 

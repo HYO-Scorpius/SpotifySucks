@@ -187,20 +187,40 @@ const fillPlaylist = (api, URIs, playlist) => {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-// FriendSync Endpoints
+// FriendSync
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-const io = SocketIO();
+const io = SocketIO(2020);
+
+const redis = require("socket.io-redis");
+io.adapter(redis({ host: "localhost", port: 2030 }));
 
 
-/**
- * Creates namespace and places it in FriendSync mapped to groupid
- */
-app.get('/friendsync/:hostid', function (req, res) {
-   console.log(`Creating session: ${hostid}`);
-   const nsp = io.of(`/${hostid}`);
-   FriendSync.new_session(hostid, nsp);
-   res.send(`/${hostid}`);
+io.on('connect', socket => {
+   socket.emit('success');
+
+   socket.on('create', (hostid) => {
+      let status = FriendSync.new_session(hostid);
+      socket.emit('create_res', status);
+   });
+
+   socket.on('join', (hostid) => {
+      let status = FriendSync.join_session(socket.id, hostid);
+      if (status) {
+         socket.join(`${hostid}`);
+      }
+      socket.emit('join_res', status);
+   });
+
+   socket.on('invite', (userid) => {
+      let status = FriendSync.send_invite(userid, socket.id);
+      socket.emit('invite_res', status);
+   });
+
+   socket.on('accept', (returnid) => {
+      
+   });
+
 });
 
 
