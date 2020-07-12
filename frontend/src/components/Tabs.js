@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import Tab from './Tab';
 
 class Tabs extends Component {
@@ -32,21 +31,25 @@ class Tabs extends Component {
     } = this;
 
     return (
-      <div className="tabs">
-        <ol className="tab-list">
-          {children.map((child) => {
-            const { label } = child.props;
-
-            return (
-              <Tab
-                activeTab={activeTab}
-                key={label}
-                label={label}
-                onClick={onClickTabItem}
-              />
-            );
-          })}
-        </ol>
+      <div className="page">
+        <div className="tab-list">
+          <div className="title">
+            <h3>Spotify<em>Sucks</em></h3>
+          </div>
+          <div className="tabs">
+            {children.map((child) => {
+              const { label } = child.props;
+              return (
+                <Tab
+                  activeTab={activeTab}
+                  key={label}
+                  label={label}
+                  onClick={onClickTabItem}
+                />
+              );
+            })}
+          </div>
+        </div>
         <div className="tab-content">
           {children.map((child) => {
             if (child.props.label !== activeTab) return undefined;
