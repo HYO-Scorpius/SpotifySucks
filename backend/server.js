@@ -206,14 +206,17 @@ io.adapter(redis({ host: "localhost", port: 2030 }));
 
 
 io.on('connect', socket => {
-   socket.emit('success');
+   console.log(`${socket.id} connected`);
+   socket.emit('connected');
 
    socket.on('create', (hostid) => {
+      console.log(`${socket.id} create`);
       let status = FriendSync.new_session(hostid);
       socket.emit('create_res', status);
    });
 
    socket.on('join', (hostid) => {
+      console.log(`${socket.id} join`);
       let status = FriendSync.join_session(socket.id, hostid);
       if (status) {
          socket.join(`${hostid}`);
@@ -222,12 +225,13 @@ io.on('connect', socket => {
    });
 
    socket.on('invite', (userid) => {
+      console.log(`${socket.id} invite`)
       let status = FriendSync.send_invite(userid, socket.id);
       socket.emit('invite_res', status);
    });
 
    socket.on('accept', (returnid) => {
-      
+      console.log(`${socket.id} accept`);
    });
 
 });
