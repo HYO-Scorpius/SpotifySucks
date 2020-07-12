@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const SWA = require('spotify-web-api-node'); //Node Spotify Wrapper
 const FriendSync = require('./Modules/friendsync.js'); // Code for FriendSync feature
+const SocketIO = require('socket.io');
 const shuffle = require('./Modules/shuffle');
 const cookieParser = require('cookie-parser'); // Module to Write Cookies
 const PORT = process.env.PORT || 1337;
@@ -33,6 +34,7 @@ app
 // Spotify Authentication
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 var scopes = ['user-read-private',
    'user-read-email',
    'playlist-modify-private',
@@ -52,7 +54,10 @@ var scopes = ['user-read-private',
    'user-library-modify',
    'user-library-read',
    'user-follow-modify',
-   'user-follow-read']
+   'user-follow-read',
+   "streaming"]
+
+
    clientID = process.env.SPOTIFY_CLIENT_ID,
    clientSECRET = process.env.SPOTIFY_CLIENT_SECRET,
    state = 'mikeamysyedkenny';
@@ -125,12 +130,12 @@ app.get('/logout', (_, res) =>{
 // Shuffle
 //////////////////////////////////////////////////////////////////////////////////////////////////
    
-app.get('/api/:access_token/shuffle/types/:type/playlists/:playlistId', (req, _) => {
+app.get('/api/:access_token/shuffle/types/:type/user/:userId/playlists/:playlistId/replace/:replace', (req, _) => {
    spotifyApi.setAccessToken(req.params.access_token);
    spotifyApi.getPlaylist(req.params.playlistId).then (
       (data) => {
          let URIs = shuffle(req.params.type, data.body.tracks.items);
-         makePlaylist(spotifyApi, data.body, URIs, false, req.params.type);
+         makePlaylist(spotifyApi, req.params.userId, data.body, URIs, req.params.replace === 'yes', req.params.type);
       },
    (err) =>{
    console.log(err);
@@ -138,18 +143,22 @@ app.get('/api/:access_token/shuffle/types/:type/playlists/:playlistId', (req, _)
 });
 
 
-const makePlaylist = (api, playlist,  URIs, replace, type) => {
+const makePlaylist = (api, user, playlist,  URIs, replace, type) => {
    let playlistName = playlist.name;
-   let owner = playlist.owner.id;
-   let newPlaylist = playlist;
    if (replace) {
-      api.remvoveTracksFromPlaylist(playlist.owner.id, playlist.id, URIs).then (
-         (data) => {
-            fillPlaylist(api, URIs, newPlaylist);
+      let replaceURIs = [];
+      URIs.forEach((uri) => {
+         let objRet = {};
+         objRet['uri'] = uri;
+         replaceURIs.push(objRet);
+      });
+      api.removeTracksFromPlaylist(playlist.id, replaceURIs).then(
+         (_) => {
+            fillPlaylist(api, URIs, playlist);
          },
          (err) => {
-            console.log("server.js::makePlaylist error: ", err);
-         });
+            console.log("server.js::makePlaylist removeTracksFromPlaylist failed error: ",err);
+         }); 
    } 
    else {
       if (type != "random")
@@ -160,29 +169,70 @@ const makePlaylist = (api, playlist,  URIs, replace, type) => {
       {
          playlistName += " shuffled without bias because Spotify Sucks";
       }
-      api.createPlaylist(owner, playlistName, {public: false}).then(
-         (data) => {
-            fillPlaylist(api, URIs, data.body);
-         }, 
-         (err) => {
-            console.log("server.js::makePlaylist error: ",err);
-         });
+
+      api.createPlaylist(user, playlistName, {public: false}).then(
+      (data) => {
+         fillPlaylist(api, URIs, data.body);
+      }, 
+      (err) => {
+         console.log("server.js::makePlaylist createPlaylist failed error: ",err);
+      });
    }
 }
 
+
 const fillPlaylist = (api, URIs, playlist) => {
    api.addTracksToPlaylist(playlist.id, URIs).then (
-      (data) => {
-         console.log(data.body)
+      (_) => {
       },
       (err) => {
          console.log("server.js::fillPlaylist error: ",err);
       });
 }
    
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // FriendSync Endpoints
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+const io = SocketIO();
+
+
+/**
+ * Creates namespace and places it in FriendSync mapped to groupid
+ */
+app.get('/friendsync/create_group/:groupid', function (req, res) {
+   console.log(`Creating group: ${groupid}`);
+   const nsp = io.of(`/${groupid}`);
+
+   nsp.on('connection', function (socket) {
+      nsp.emit(`${socket.id} connected!`);
+   });
+
+   nsp.on('PLAY', function() {
+      nsp.emit(`PLAY`);
+   });
+
+   nsp.on(`PAUSE`, function () {
+      nsp.emit(`PAUSE`);
+   });
+
+   nsp.on(`SKIP`, function () {
+      nsp.emit('SKIP');
+   });
+
+   nsp.on(`PREV`, function () {
+      nsp.emit(`PREV`);
+   });
+
+   FriendSync.add_group(groupid, nsp);
+
+   res.send(`/${groupid}`);
+});
 
 
 /**
@@ -198,22 +248,6 @@ app.get('/friendsync/invite/:groupid&:userid', function (req, res) {
 
 
 /**
- * Controls playback of all users in a group
- * 
- * @param groupid ID of synchronized group
- * @param control Media control to be communicated
- *                play, pause, next, prev
- */
-app.get('/friendsync/playback/:groupid&:control', function (req, res) {
-   console.log(`FriendSync control endpoint: ${req.params.groupid}, ${req.params.control}`);
-});
-
-app.post('/friendsync/queue/add/:groupid&:songid', function (req, res) {
-    FriendSync.add_to_queue(req.params.groupid, req.params.songid)
-})
-
-
-/**
  * Removes user from group
  * 
  * @param groupid ID of synchronized group
@@ -222,6 +256,11 @@ app.post('/friendsync/queue/add/:groupid&:songid', function (req, res) {
 app.get('/friendsync/leave/:groupid&:userid', function (req, res) {
    console.log(`Friendsync leave group: ${req.params.groupid}, ${req.params.userid}`);
 });
+
+
+
+
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
