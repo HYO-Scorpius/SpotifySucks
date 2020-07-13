@@ -8,6 +8,10 @@ const FriendSync = require('./Modules/friendsync.js'); // Code for FriendSync fe
 const SocketIO = require('socket.io');
 const shuffle = require('./Modules/shuffle');
 const cookieParser = require('cookie-parser'); // Module to Write Cookies
+const http = require("http");
+const redis = require("socket.io-redis");
+
+
 const PORT = process.env.PORT || 1337;
 const HOSTNAME = '127.0.0.1';
 const uri = process.env.ATLAS_URI;
@@ -199,15 +203,16 @@ const fillPlaylist = (api, URIs, playlist) => {
 // FriendSync
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-const io = SocketIO(2020);
+var server = http.createServer(app);
+var io = SocketIO(server);
 
-const redis = require("socket.io-redis");
+
 io.adapter(redis({ host: "localhost", port: 2030 }));
 
 
-io.on('connect', socket => {
+io.on('connection', (socket) => {
    console.log(`${socket.id} connected`);
-   socket.emit('connected');
+   socket.emit('success');
 
    socket.on('create', (hostid) => {
       console.log(`${socket.id} create`);
@@ -266,7 +271,12 @@ app.use('/queue', queueRoute);
 app.use('/users', usersRoute);
 app.use('/session', sessionRoute)
 
+/*
 app.listen(PORT, HOSTNAME, () => {
     console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
 });
+*/
 
+server.listen(PORT, () => {
+   console.log(`Server running at *:${PORT}`)
+})
