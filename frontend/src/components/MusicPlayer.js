@@ -38,6 +38,7 @@ function MusicPlayer({spotifyApi}) {
 
     player.addListener("authentication_error", ({ message }) => {
       console.error("Auth Error", message);
+      window.location.reload(false);
     });
 
     player.addListener("account_error", ({ message }) => {
