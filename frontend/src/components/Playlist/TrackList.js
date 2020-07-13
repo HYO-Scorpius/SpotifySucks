@@ -1,4 +1,5 @@
 import React from "react";
+import {msToMinAndSec} from './../../helper'
 
 function TrackList({
    tracks,
@@ -7,9 +8,11 @@ function TrackList({
       <div>
       {tracks.map((trackItem) =>{ 
           return (
-             <ul key={trackItem.track.id}>
-                <li key={trackItem.track.id}>  { trackItem.track.name } </li>
-             </ul>
+             <div class="track-container" key={trackItem.track.id}>
+                <p className="track-title" key={trackItem.track.id}><i className="fas fa-music marginIcon"></i> { trackItem.track.name } </p>
+                <p className="track-artist"> { trackItem.track.artists.map(artist => artist.name).join(", ") } </p>
+                <p className="track-duration"> { msToMinAndSec(trackItem.track.duration_ms) } </p>
+             </div>
           );
        })} 
       </div> 

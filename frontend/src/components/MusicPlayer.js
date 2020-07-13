@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import logo from "./../logo.svg";
 import "./MusicPlayer.css";
+import {msToMinAndSec} from './../helper'
 
 // Class components should always call base consturctor with props
 function MusicPlayer({spotifyApi}) {
@@ -37,6 +38,7 @@ function MusicPlayer({spotifyApi}) {
 
     player.addListener("authentication_error", ({ message }) => {
       console.error("Auth Error", message);
+      window.location.reload(false);
     });
 
     player.addListener("account_error", ({ message }) => {
@@ -183,15 +185,6 @@ function MusicPlayer({spotifyApi}) {
     }, 1000);
     return () => clearInterval(interval);
   });
-
-  // convert ms to min:sec
-  function msToMinAndSec(ms) {
-    ms = (ms - ms % 1000) / 1000;
-    var secs = ms % 60;
-    ms = (ms - secs) / 60;
-    var mins = ms % 60;
-    return mins + ':' + ((Math.log(secs) * Math.LOG10E + 1 | 0) > 1 ? secs : "0" + secs);
-  }
 
   // javascript conditional { boolean ?() : () }
   return (
