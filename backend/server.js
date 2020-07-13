@@ -203,11 +203,11 @@ const fillPlaylist = (api, URIs, playlist) => {
 // FriendSync
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-var server = http.createServer(app);
-var io = SocketIO(server);
+
+var io = SocketIO(2020);
 
 
-io.adapter(redis({ host: "localhost", port: 2030 }));
+//io.adapter(redis({ host: "localhost", port: 2030 }));
 
 
 io.on('connection', (socket) => {
@@ -264,19 +264,14 @@ connection.once('open', () => {
 // Loads the routes from other files
 const queueRoute = require('./routes/queue');
 const usersRoute = require('./routes/users');
-const sessionRoute = require('.routes/session');
+//const sessionRoute = require('.routes/session');
 
 // Defining endpoints to use
 app.use('/queue', queueRoute);
 app.use('/users', usersRoute);
-app.use('/session', sessionRoute)
+//app.use('/session', sessionRoute)
 
-/*
+
 app.listen(PORT, HOSTNAME, () => {
     console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
 });
-*/
-
-server.listen(PORT, () => {
-   console.log(`Server running at *:${PORT}`)
-})

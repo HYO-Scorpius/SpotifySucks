@@ -4,7 +4,7 @@ const Request = require('request');
 const Database = require('./database.js');
 const DataStructures = require('./datastructures');
 const { exists } = require('../models/user.model.js');
-const io = require("socket.io-emitter")({ host: "127.0.0.1", port: 2030 });
+//const io = require("socket.io-emitter")({ host: "127.0.0.1", port: 2030 });
 
 
 /**
