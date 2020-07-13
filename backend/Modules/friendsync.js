@@ -23,10 +23,6 @@ const sessionMap = new Map();
 
 module.exports = {
 
-    Session,
-    User,
-
-
     /**
      * 
      * @param {string} hostid ID of user that's creating group
@@ -78,7 +74,7 @@ module.exports = {
      */
     join_session: function (userid, hostid) {
 
-    },
+    }
 
 };
 
@@ -103,33 +99,11 @@ class Session {
 
     /**
     * @param {string} hostid Spotify userID of the session's creator
-    * @param {SocketIO.Namespace} nsp SocketIO namespace object
     */
-    constructor(hostid, nsp) {
+    constructor(hostid) {
         this.hostid = hostid;
         this.add_user(userid);
 
-        nsp.on('connection', function (socket) {
-            nsp.emit(`${socket.id} connected!`);
-        });
-
-        nsp.on('PLAY', function () {
-            nsp.emit('crtl','PLAY');
-        });
-
-        nsp.on('PAUSE', function () {
-            nsp.emit('ctrl', 'PAUSE');
-        });
-
-        nsp.on('SKIP', function () {
-            nsp.emit('ctrl', 'SKIP');
-        });
-
-        nsp.on('PREV', function () {
-            nsp.emit('ctrl', 'PREV');
-        });
-
-        this.nsp = nsp;
     }
 
 
