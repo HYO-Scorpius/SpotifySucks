@@ -11,7 +11,7 @@ function PlaylistOuter({
       {playlists.map((playlist) =>{ 
          return (
             <div key={playlist.id}>
-               <div key={playlist.id} className="playlist-info popup-play" onClick={() => {
+               <div className="playlist-info popup-play" onClick={() => {
                   setPane("inner");
                   setSelectedPlaylist(playlist);
                }}> 

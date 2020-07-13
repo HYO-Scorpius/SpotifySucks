@@ -13,10 +13,9 @@ function PlaylistInner({
    useEffect(() => {
       spotifyApi.getPlaylistTracks(selectedPlaylist.id).then(
          (data) => {
-            setTracks(data.body.items);
+            setTracks(data.items);
 
-         },
-         (err) => {
+         }). catch((err) => {
             console.log('frontend::PlaylistInner.js spotifyApi.getPlaylistTracks() failed. Error: ', err);
          });
    },[selectedPlaylist, spotifyApi]);
