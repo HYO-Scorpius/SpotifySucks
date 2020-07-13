@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 function PlaylistOuter({ 
    playlists,
@@ -7,14 +7,18 @@ function PlaylistOuter({
 }) {
 
  return (
-   <div> 
+   <div className="playlist-grid"> 
       {playlists.map((playlist) =>{ 
          return (
             <div key={playlist.id}>
-               <button key={playlist.id} onClick={() => {
+               <div key={playlist.id} className="playlist-info popup-play" onClick={() => {
                   setPane("inner");
                   setSelectedPlaylist(playlist);
-               }}> { playlist.name } </button>
+               }}> 
+               <img src={playlist.images[0].url}></img>
+               <span className="playlist-name">{ playlist.name }</span> 
+               <span className="popuptext playlist-text">{ playlist.name }</span> 
+               </div>
             </div>
 
          );
@@ -22,5 +26,6 @@ function PlaylistOuter({
    </div>
    );
 }
+
 export default PlaylistOuter;
 

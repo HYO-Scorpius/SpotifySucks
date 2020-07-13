@@ -1,0 +1,136 @@
+.playlist-info img {
+    width: 200px;
+    margin-bottom: 5px;
+}
+
+.playlist-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.playlist-info {
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    transition: 0.2s;
+}
+
+.playlist-info:hover {
+    background-color: #2FA7A4;
+}
+
+.playlist-info:hover > .playlist-name {
+    text-shadow: 1px 1px 2px black;
+}
+
+.popuptext.playlist-text, .popuptext.track-text {
+    margin:0;
+    bottom: 100px;
+    right: 0;
+    max-width: 100vw;
+}
+
+.playlist-info:hover > .playlist-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.playlist-name {
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.track-container:hover > .track-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* shuffle */
+
+#options {
+    float: left;
+    background-color: white;
+    padding: 5px;
+    border: 0px solid white;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+.back {
+    float: left;
+    font-weight: bold;
+    opacity: 0.7;
+    background-color: #2FA7A4;
+    color: black;
+    border-color: #2FA7A4;
+    transition: 0.2s;
+}
+
+.back:hover {
+    opacity: 1;
+}
+
+.marginIcon {
+    margin-right: 2px;
+}
+
+.shuffle-buttons > button:hover {
+    background-color: rgb(213, 219, 219);
+    border-color:rgb(213, 219, 219);
+}
+
+.playlist-title {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    cursor: context-menu;
+}
+
+.track-container {
+    padding: 8px;
+    background-color: black;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 2px;
+    border-bottom: 1px solid white;
+    border-radius: 4px;
+    font-size: smaller;
+    cursor: context-menu;
+}
+
+.track-title {
+    width: calc(60% - 8px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.track-artist {
+    margin: 0;
+    margin-left: 15px;
+    width: calc(30% - 15px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.track-duration {
+    text-align: right;
+    margin: 0;
+    margin-left: 15px;
+    width: calc(10% - 15px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+

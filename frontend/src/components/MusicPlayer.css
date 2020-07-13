@@ -11,6 +11,19 @@
 	align-items: center;
 }
 
+.loading {
+	position: fixed;
+	display: flex;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+	background-color: #0b1414;
+}
+
 .info {
 	display: inline-flex;
 	flex-direction: row;
@@ -92,6 +105,10 @@
 }
 
 .player_controls {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	justify-self: center;
 	margin: 0;
 }
 
@@ -102,11 +119,13 @@
 	border: none;
 	font-size: 10px;
 	color: white;
+	opacity: 0.7;
+	transition: 0.1s;
 	line-height: 10px;
 }
 
 .playerButton:hover {
-	color: #2FA7A4;
+	opacity: 1;
 	cursor: pointer;
 }
 

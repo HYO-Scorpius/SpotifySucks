@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import logo from "./../logo.svg";
 import "./MusicPlayer.css";
+import {msToMinAndSec} from './../helper'
 
 // Class components should always call base consturctor with props
 function MusicPlayer({spotifyApi}) {
+  const [loading, setLoading] = useState("visible")
   const [player, setPlayer] = useState(null);
   const [deviceID, setDeviceID] = useState("");
   const [token, setToken] = useState("");
@@ -93,7 +94,7 @@ function MusicPlayer({spotifyApi}) {
     player.addListener("ready", async ({ device_id }) => {
       console.log("Ready with Device ID", device_id);
       setDeviceID(device_id);
-      
+      setLoading("hidden");
     });
 
     // Not Ready
@@ -184,18 +185,13 @@ function MusicPlayer({spotifyApi}) {
     return () => clearInterval(interval);
   });
 
-  // convert ms to min:sec
-  function msToMinAndSec(ms) {
-    ms = (ms - ms % 1000) / 1000;
-    var secs = ms % 60;
-    ms = (ms - secs) / 60;
-    var mins = ms % 60;
-    return mins + ':' + ((Math.log(secs) * Math.LOG10E + 1 | 0) > 1 ? secs : "0" + secs);
-  }
-
   // javascript conditional { boolean ?() : () }
   return (
     <div className="footer">
+
+      <div className="loading" style={{visibility: loading}}>
+        <img src={require('./img/loading.gif')} ></img>
+      </div>
 
       <div className="info">
         <div className="album_info">
@@ -218,10 +214,13 @@ function MusicPlayer({spotifyApi}) {
       <div className="player">
 
         <p className="player_controls">
+          {/* shuffle and repeat buttons not working yet */}
+          <button className="playerButton" disabled><i className="fas fa-random"></i></button>
           <button className="playerButton" onClick={prevTrack}><i className="fas fa-step-backward"></i></button>
           {!currentPlayback.paused && <button className="playerButton" onClick={pause}><i className="far fa-pause-circle"></i></button>}
           {currentPlayback.paused && <button className="playerButton" onClick={startUserPlayback}><i className="far fa-play-circle"></i></button>}
           <button className="playerButton" onClick={seekTrack}><i className="fas fa-step-forward"></i></button>
+          <button className="playerButton" disabled><i className="fas fa-retweet"></i></button>
         </p>
 
         <div className="progressBar">

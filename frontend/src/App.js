@@ -46,7 +46,7 @@ function App() {
             <div label="MultiPlaylist">
                MultiPlaylistTab 
             </div>
-            <div label="Friendsync">
+            <div label="FriendSync">
                FriendSyncTab 
             </div>
             <div label="VanillaPlaylist">
