@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react";
+import "./Playlist.css";
 import PlaylistInner from "./PlaylistInner";
 import PlaylistOuter from "./PlaylistOuter";
 
@@ -12,13 +13,13 @@ function Playlist({
    let token = spotifyApi.getAccessToken();
    useEffect(() => {
       if (token) {
-         spotifyApi.getUserPlaylists().then(
-            (data) => {
-               setPlaylists(data.body.items);
-            },
-            (err) => {
+         spotifyApi.getUserPlaylists().then( (data) =>
+            setPlaylists(data.items)
+         )
+         .catch( (err) => {
                console.log('frontend::Playlist.js spotifyApi.getUserPlaylists() failed. Error: ', err);
-            });
+            }
+         )         
       }
    }, [spotifyApi, token, pane]);
    return (

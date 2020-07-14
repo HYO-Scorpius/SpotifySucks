@@ -13,9 +13,9 @@ function PlaylistInner({
    useEffect(() => {
       spotifyApi.getPlaylistTracks(selectedPlaylist.id).then(
          (data) => {
-            setTracks(data.body.items);
-         },
-         (err) => {
+            setTracks(data.items);
+
+         }). catch((err) => {
             console.log('frontend::PlaylistInner.js spotifyApi.getPlaylistTracks() failed. Error: ', err);
          });
    },[selectedPlaylist, spotifyApi]);
@@ -23,7 +23,7 @@ function PlaylistInner({
    return (
       <div> 
          <div>
-            <button onClick={() =>setPane("outer")}> back </button> 
+            <button className="back" onClick={() =>setPane("outer")}><i className="fas fa-chevron-circle-left marginIcon"></i> Go Back </button> 
          </div>
          <div>
             <Shuffle 

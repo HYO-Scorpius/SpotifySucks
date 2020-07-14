@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import SWA from 'spotify-web-api-node';
+import SWA from 'spotify-web-api-js';
 import './App.css';
 import Playlist from './components/Playlist/Playlist';
 import MusicPlayer from './components/MusicPlayer'
@@ -23,15 +23,15 @@ function App() {
 
    useEffect(() => {
      //regularly get user
-      spotifyApi.getMe().then(
+      let response = spotifyApi.getMe().then(
          (data) => {
-            if (data.body) {
-               setUser(data.body);
+            if (data) {
+               setUser(data);
             }
          },
          (err) => {
             console.log('frontend::App.js spotifyApi.getMe() failed. Error: ', err);
-         });
+         });      
    },[]);
 
    return (
@@ -46,7 +46,7 @@ function App() {
             <div label="MultiPlaylist">
                MultiPlaylistTab 
             </div>
-            <div label="Friendsync">
+            <div label="FriendSync">
                FriendSyncTab 
             </div>
             <div label="VanillaPlaylist">

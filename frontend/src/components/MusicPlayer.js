@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import logo from "./../logo.svg";
 import "./MusicPlayer.css";
+import {msToMinAndSec} from './../helper'
 
 // Class components should always call base consturctor with props
 function MusicPlayer({spotifyApi}) {
+  const [loading, setLoading] = useState("visible")
   const [player, setPlayer] = useState(null);
   const [deviceID, setDeviceID] = useState("");
   const [token, setToken] = useState("");
@@ -11,6 +12,8 @@ function MusicPlayer({spotifyApi}) {
   const [currentPlayback, setCurrentPlayback] = useState({duration:0,
     position:0,
     paused: true,
+    shuffle: false,
+    repeat_mode: 0,
     artist_name:"Artist",
     track_name:"Track Name",
     playlist: "Playlist Name",
@@ -51,10 +54,10 @@ function MusicPlayer({spotifyApi}) {
     player.addListener("player_state_changed", (state) => {
       console.log(state); // Print out json containing track state
 
-      let playlist = state.context.metadata.context_description
+      const playlist = state.context.metadata.context_description
 
       // Get information from json
-      const { duration, position, paused} = state;
+      const { duration, position, paused, shuffle, repeat_mode } = state;
       const {
         current_track,
         next_tracks: [next_track],
@@ -73,6 +76,8 @@ function MusicPlayer({spotifyApi}) {
         duration,
         position,
         paused,
+        shuffle,
+        repeat_mode,
         artist_name,
         track_name,
         playlist,
@@ -93,7 +98,7 @@ function MusicPlayer({spotifyApi}) {
     player.addListener("ready", async ({ device_id }) => {
       console.log("Ready with Device ID", device_id);
       setDeviceID(device_id);
-      
+      setLoading("hidden");
     });
 
     // Not Ready
@@ -129,22 +134,18 @@ function MusicPlayer({spotifyApi}) {
 
   // Chooses web app as the playback device
   function transferUsersPlayback() {
-    let request = fetch("https://api.spotify.com/v1/me/player", {
-      method: "PUT",
-      headers: {
-        authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        device_ids: [deviceID],
+    spotifyApi.transferMyPlayback([deviceID], {
         play: true,
-      }),
-    });
+      },)
   }
 
   // Start the music player
   function startUserPlayback() {
     transferUsersPlayback();
+  }
+
+  function toggleShuffle() {
+    spotifyApi.setShuffle(!currentPlayback.shuffle)
   }
 
   // Skip to the next track
@@ -160,6 +161,14 @@ function MusicPlayer({spotifyApi}) {
     player.previousTrack().then(() => {
       console.log("Set to previous track!");
     });
+  }
+
+  function repeatMode() {
+    let mode = "";
+    if (currentPlayback.repeat_mode === 2) mode = "off";
+    else if (currentPlayback.repeat_mode === 1) mode = "track"
+    else mode = "context"
+    spotifyApi.setRepeat(mode)
   }
 
   // Pause the player
@@ -184,18 +193,13 @@ function MusicPlayer({spotifyApi}) {
     return () => clearInterval(interval);
   });
 
-  // convert ms to min:sec
-  function msToMinAndSec(ms) {
-    ms = (ms - ms % 1000) / 1000;
-    var secs = ms % 60;
-    ms = (ms - secs) / 60;
-    var mins = ms % 60;
-    return mins + ':' + ((Math.log(secs) * Math.LOG10E + 1 | 0) > 1 ? secs : "0" + secs);
-  }
-
   // javascript conditional { boolean ?() : () }
   return (
     <div className="footer">
+
+      <div className="loading" style={{visibility: loading}}>
+        <img src={require('./img/loading.gif')} ></img>
+      </div>
 
       <div className="info">
         <div className="album_info">
@@ -218,10 +222,33 @@ function MusicPlayer({spotifyApi}) {
       <div className="player">
 
         <p className="player_controls">
-          <button className="playerButton" onClick={prevTrack}><i className="fas fa-step-backward"></i></button>
+          {/* shuffle and repeat buttons not working yet */}
+          <button className="playerButton" onClick={toggleShuffle} style={{color: currentPlayback.shuffle ? "#2FA7A4" : "white"}}>
+            <i className="fas fa-random"></i>
+          </button>
+
+          <button className="playerButton" onClick={prevTrack}>
+            <i className="fas fa-step-backward"></i>
+          </button>
+
           {!currentPlayback.paused && <button className="playerButton" onClick={pause}><i className="far fa-pause-circle"></i></button>}
           {currentPlayback.paused && <button className="playerButton" onClick={startUserPlayback}><i className="far fa-play-circle"></i></button>}
-          <button className="playerButton" onClick={seekTrack}><i className="fas fa-step-forward"></i></button>
+
+          <button className="playerButton" onClick={seekTrack}>
+            <i className="fas fa-step-forward"></i>
+          </button>
+
+          {(currentPlayback.repeat_mode === 2) &&
+            <button onClick={repeatMode} className="playerButton"> 
+              <img src={require("./img/repeat.svg")}></img>
+            </button>}
+
+          
+          { !(currentPlayback.repeat_mode === 2) &&
+            <button onClick={repeatMode} className="playerButton" style={{color: (currentPlayback.repeat_mode === 0) ? "white" : "#2FA7A4" }}>
+            <i className="fas fa-retweet"></i>
+            </button>}
+
         </p>
 
         <div className="progressBar">
