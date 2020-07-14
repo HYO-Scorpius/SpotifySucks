@@ -7,6 +7,7 @@ import Tabs from './components/Tabs';
 //import FriendSyncTab from './components/FriendSyncTab';
 //import MultiPlaylistTab from './components/MultiPlaylistTab';
 import { getCookie } from './helper';
+import MultiPlaylistTab from './components/MultiPlaylistTab';
 const spotifyApi = new SWA();
 
 function App() {
@@ -44,7 +45,7 @@ function App() {
                />
             </div>
             <div label="MultiPlaylist">
-               MultiPlaylistTab 
+               <MultiPlaylistTab />
             </div>
             <div label="Friendsync">
                FriendSyncTab 

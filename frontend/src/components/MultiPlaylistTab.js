@@ -1,55 +1,64 @@
-import Tab from './Tab';
-import React, { Component } from 'react';
+import React, { useEffect, useState } from "react";
+import io from "socket.io-client";
 
-class MultiPlaylistTab extends Tab {
+function MultiPlaylistTab() {
+  const [socket, setSocket] = useState(null);
+  const [isConnected, setConnectedState] = useState(false);
 
-    render() {
-        super.render();
+  // After render, establish socket and set instance
+  useEffect(() => {
+    setSocket(io("http://localhost:1337"));
+  }, []);
 
-        var friends = ["billy", "bob", "joe"];
-        var listentries = [];
+  useEffect(() => {
+    if (!socket) return;
+    
+    console.log("Socket is connected");
+    socket.on("connect", () => {
+      setConnectedState(socket.connected); // True
+      socket.emit("isClicked", "true"); // Send back to the server
+    });
 
-        for (const [index, value] of friends.entries()) {
-            listentries.push(<li>{value}</li> )
-        }
+    socket.on("disconnect", () => {
+      setConnectedState(socket.connected); // False
+    });
 
-        var sharedplaylists = ["bob's playlist", "joe's playlist", "billy's playlist"];
-        var sharedentries = [];
+  }, [socket]);
 
-        for (const [index, value] of sharedplaylists.entries()) {
-            sharedentries.push(<li>{value}</li> )
-        }
-
-        return (
-            <div>
-                <div>
-                    <label for="fname">Add Friend: </label>
-                    <input type="text" id="fname" name="fname"></input>
-                </div>
-
-                <div>
-                    <label for="fname">Contributors: </label>
-                    <ul>{listentries}</ul>
-                </div>
-
-                <div>
-                    <label for="fname">Create Playlist: </label>
-                    <input type="text" id="fname" name="fname"></input>
-                    <button type="button">Create</button>
-                </div>
-
-                <div>
-                    <label for="fname">All Accessible Playlists: </label>
-                    <ul>{sharedentries}</ul>
-                </div>
-
-            </div>
-        )
-                     
-
-
+  function toggleConnection() {
+    if(isConnected){ 
+      socket.disconnect();
+    } else {
+      socket.connect();
     }
+  }
 
+
+  return (
+    <div>
+      <div>
+        <input type="button" onClick={toggleConnection} value={isConnected ? "Disconnect" : "Connect"} />
+      </div>
+      <div>
+        <label for="fname">Add Friend: </label>
+        <input type="text" id="fname" name="fname"></input>
+      </div>
+
+      <div>
+        <label for="fname">Contributors: </label>
+      </div>
+
+      <div>
+        <label for="fname">Create Playlist: </label>
+        <input type="text" id="fname" name="fname"></input>
+        <button type="button">Create</button>
+      </div>
+
+      <div>
+        <label for="fname">All Accessible Playlists: </label>
+      </div>
+    </div>
+  );
 }
 
 export default MultiPlaylistTab;
