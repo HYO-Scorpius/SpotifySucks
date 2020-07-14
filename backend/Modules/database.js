@@ -3,31 +3,6 @@
 module.exports = {
 
     /**
-     * For testing purposes
-     * 
-     * @returns true
-     */
-    test_true: function () {
-        return true;
-    },
-
-
-
-
-
-    /**
-     * for testing purposes
-     * 
-     * @returns false
-     */
-    test_false: function () {
-        return false;
-    },
-
-
-
-
-    /**
      * Checks database for active users to determine if user is active
      * 
      * @param {string} userid SpotifyID of target
