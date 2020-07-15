@@ -3,9 +3,16 @@ const SpotifyWrapper = require('spotify-web-api-node');
 const Request = require('request');
 const Database = require('./database.js');
 const DataStructures = require('./datastructures');
+const { exists } = require('../models/user.model.js');
+//const io = require("socket.io-emitter")({ host: "127.0.0.1", port: 2030 });
 
 
-const namespaces = new Map();
+/**
+ * @key hostid
+ * @value Group
+ */
+const sessionMap = new Map();
+
 
 
 
@@ -18,30 +25,43 @@ module.exports = {
 
     /**
      * 
-     * @param {string} groupid ID of user that's creating group
+     * @param {string} hostid ID of user that's creating group
+     * @param {SocketIO.Namespace} nsp Socket namespace
+     * 
+     * @returns {boolean} true if success, false if already hosting
      */
-    add_group: function (groupid, nsp) {
-        namespaces.set(groupid, nsp);
+    new_session: function (hostid) {
+        // check if hostid already hosting
+        // if so return false;
+
+        // if not then create new room
+
+        // create Session object with hostid and room
+
+        // store in database
+
+        return true;
     },
 
 
     /**
     * Invites user to sync playback
     *   
-    * @param {string} userid Spotify user ID of desired user
+    * @param {string} to Spotify user ID of desired user
+    * @param {string} from Spotify user ID of sender
+    * 
     * @returns string description of outcome. Either invite sent or error
     */
-    invite: function (userid) {
-        var sessionid;
+    send_invite: function (to, from) {
+        // check if user is active
+        if (Database.user_is_active(to)) {
+            // get socket.id
 
-        if (is_active(userid)) { sessionid = Database.get_sessionid(userid); }
-
-        if (sessionid == undefined) {
-            return "User does not exist or is inactive";
+            // send invite
+            return true;
         }
         else {
-            // send sync invite to target
-            return "Invite sent"
+            return false;
         }
     },
 
@@ -49,11 +69,12 @@ module.exports = {
     /**
      * Adds user to group
      * 
-     * @param {*} groupid 
+     * @param {string} userid 
+     * @param {*} hostid 
      */
-    accept: function () {
+    join_session: function (userid, hostid) {
 
-    },
+    }
 
 };
 
@@ -62,77 +83,66 @@ module.exports = {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// CLASS GROUP
+// CLASSES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class Group {
-    groupid;
-    users = [];
+class Session {
+    
+    hostid; // {string} groupid
+    nsp; // socketio namespace object
+    users = []; // list of users
+
+    userSocketMap = new Map();
 
     queue = new DataStructures.Queue
 
+
     /**
-    * @param {string} userid Spotify userID of the group's creator
+    * @param {string} hostid Spotify userID of the session's creator
     */
-    constructor(userid) {
-        this.groupid = userid;
+    constructor(hostid) {
+        this.hostid = hostid;
         this.add_user(userid);
+
     }
+
 
     /**
      * add user to users list
      * 
-     * @param {string} userid Spotify userID of the person to add
+     * @param {User} user User to add
      */
-    set add_user(userid) {
-        if (!this.users.includes(userid)) {
-            this.users.append(userid);
-        }
+    add_user(user) {
+        this.users.append(user)
     }
 
 
-    /**
-     * add song to queue
-     * 
-     * @param {string} songid SpotifyID of song
-     */
-    set add_to_queue(songid) {
-        this.queue.enqueue(songid);
-    }
 };
 
 
 
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// HELPER FUNCTIONS
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class User {
 
-/**
- * Checks if user with userid is currently connected to this app
- * 
- * @param {string} userid Spotify user ID of desired user
- * @returns sessionid of user if active, null otherwise
- */
-function is_active(userid) {
-    // check spotify API for userid
-    // check database for active users
-    return user_exists(userid) && Database.test_true;
-}
+    userid;
+    groupid;
+    socketid;
+
+    constructor() {}
+
+    set_userid(id) {
+        this.userid = id;
+    }
+
+    set_groupid(id) {
+        this.groupid = id;
+    }
+
+    set_socketid(id) {
+        this.socketid = id;
+    }
+
+};
 
 
-/**
- * Checks spotify is username is valid
- * 
- * @param {string} userid Spotify user ID of desired user
- * @returns true if exists, false otherwise
- */
-function user_exists(userid) {
-    var exists;
-    SpotifyWrapper.getUser(userid).then(
-        function (data) { exists = true;  },
-        function (err)  { exists = false; }
-    );
-    return exists;
-}
