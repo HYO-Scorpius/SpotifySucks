@@ -84,53 +84,55 @@ function App() {
  
      // Add listener for current state of the music player
      player.addListener("player_state_changed", (state) => {
-       console.log(state); // Print out json containing track state
- 
-       const playlist = state.context.metadata.context_description
-       const uri = state.context.uri
- 
-       // Get information from json
-       const { duration, position, paused, shuffle, repeat_mode } = state;
-       const {
-         current_track,
-         next_tracks: [next_track],
-       } = state.track_window;
-       const {
-         artists,
-         album,
-         id
-       } = state.track_window.current_track;
- 
-       const artist_name = artists.map(artist => artist.name).join(", ")
-       const track_name = current_track.name;
-       const image_url = album.images[1].url;
-       const id_opt2 = state.track_window.current_track.linked_from.id;
- 
-       // Pass to currentPlayback to be used in html
-       setCurrentPlayback({
-         duration: duration,
-         position: position,
-         paused: paused,
-         shuffle: shuffle,
-         repeat_mode: repeat_mode,
-         uri: uri,
-         id_opt2: id_opt2,
-         id: id,
-         artist_name: artist_name,
-         track_name: track_name,
-         playlist: playlist,
-         image_url: image_url,
-       });
- 
-       setProgress(position)
- 
-       // Testing
-       console.log("TRACK NAME", track_name);
-       console.log("ARTIST NAME(S)", artist_name);
-       console.log("DURATION", duration);
-       console.log("SRC", image_url);
-       console.log("PLAYLIST", playlist)
-     });
+        if (state){ 
+          console.log(state); // Print out json containing track state
+    
+          const playlist = state.context.metadata.context_description
+          const uri = state.context.uri
+    
+          // Get information from json
+          const { duration, position, paused, shuffle, repeat_mode } = state;
+          const {
+            current_track,
+            next_tracks: [next_track],
+          } = state.track_window;
+          const {
+            artists,
+            album,
+            id
+          } = state.track_window.current_track;
+    
+          const artist_name = artists.map(artist => artist.name).join(", ")
+          const track_name = current_track.name;
+          const image_url = album.images[1].url;
+          const id_opt2 = state.track_window.current_track.linked_from.id;
+    
+          // Pass to currentPlayback to be used in html
+          setCurrentPlayback({
+            duration: duration,
+            position: position,
+            paused: paused,
+            shuffle: shuffle,
+            repeat_mode: repeat_mode,
+            uri: uri,
+            id_opt2: id_opt2,
+            id: id,
+            artist_name: artist_name,
+            track_name: track_name,
+            playlist: playlist,
+            image_url: image_url,
+          });
+    
+          setProgress(position)
+    
+          // Testing
+          console.log("TRACK NAME", track_name);
+          console.log("ARTIST NAME(S)", artist_name);
+          console.log("DURATION", duration);
+          console.log("SRC", image_url);
+          console.log("PLAYLIST", playlist)
+     }});
+     
  
      // Ready
      player.addListener("ready", async ({ device_id }) => {
