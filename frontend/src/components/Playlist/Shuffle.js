@@ -11,17 +11,24 @@ function Shuffle({
    return (
       <div> 
          <select name="options" id="options" onChange={event=>setType(event.target.value)}> 
-            <option value="random" >Shuffle Randomly</option>
+            <option value="random">Shuffle Randomly</option>
             <option value="artists">Shuffle by Artist</option>
             <option value="album">Shuffle by Album</option>
         </select>
         <div>
-            <h1> { type } </h1>
-            <div>
-               <button onClick={() => fetch(apiUrl + 'yes')}> Shuffle Current Playlist </button>
-               <button onClick={() => fetch(apiUrl + 'no')}> Create Shuffled Playlist </button>
+            <div className="shuffle-buttons">
+
+               {(user.id === playlist.owner.id) && <button onClick={() => fetch(apiUrl + 'yes').then(console.log("shuffled playlist")).catch((err) => console.log("was not able to shuffle current playlist"))}>
+                  <i className="fas fa-greater-than marginIcon"></i>  Shuffle Current Playlist 
+               </button>}
+
+               <button onClick={() => fetch(apiUrl + 'no').then(console.log("created shuffled playlist")).catch((err) => console.log("was not able to create shuffled playlist"))}>
+                  <i className="fas fa-plus marginIcon"></i>  Create Shuffled Playlist 
+               </button>
+
             </div>
         </div>
+        <h3 className="playlist-title"><i className="fab fa-spotify marginIcon"></i> {playlist.name}</h3>
       </div>
 
     );

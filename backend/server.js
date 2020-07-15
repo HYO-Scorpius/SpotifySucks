@@ -8,6 +8,10 @@ const FriendSync = require('./Modules/friendsync.js'); // Code for FriendSync fe
 const SocketIO = require('socket.io');
 const shuffle = require('./Modules/shuffle');
 const cookieParser = require('cookie-parser'); // Module to Write Cookies
+const http = require("http");
+const redis = require("socket.io-redis");
+
+
 const PORT = process.env.PORT || 1337;
 const HOSTNAME = '127.0.0.1';
 const uri = process.env.ATLAS_URI;
@@ -196,67 +200,46 @@ const fillPlaylist = (api, URIs, playlist) => {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-// FriendSync Endpoints
+// FriendSync
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-const io = SocketIO();
+
+var io = SocketIO(2020);
 
 
-/**
- * Creates namespace and places it in FriendSync mapped to groupid
- */
-app.get('/friendsync/create_group/:groupid', function (req, res) {
-   console.log(`Creating group: ${groupid}`);
-   const nsp = io.of(`/${groupid}`);
+//io.adapter(redis({ host: "localhost", port: 2030 }));
 
-   nsp.on('connection', function (socket) {
-      nsp.emit(`${socket.id} connected!`);
+
+io.on('connection', (socket) => {
+   console.log(`${socket.id} connected`);
+   socket.emit('success');
+
+   socket.on('create', (hostid) => {
+      console.log(`${socket.id} create`);
+      let status = FriendSync.new_session(hostid);
+      socket.emit('create_res', status);
    });
 
-   nsp.on('PLAY', function() {
-      nsp.emit(`PLAY`);
+   socket.on('join', (hostid) => {
+      console.log(`${socket.id} join`);
+      let status = FriendSync.join_session(socket.id, hostid);
+      if (status) {
+         socket.join(`${hostid}`);
+      }
+      socket.emit('join_res', status);
    });
 
-   nsp.on(`PAUSE`, function () {
-      nsp.emit(`PAUSE`);
+   socket.on('invite', (userid) => {
+      console.log(`${socket.id} invite`)
+      let status = FriendSync.send_invite(userid, socket.id);
+      socket.emit('invite_res', status);
    });
 
-   nsp.on(`SKIP`, function () {
-      nsp.emit('SKIP');
+   socket.on('accept', (returnid) => {
+      console.log(`${socket.id} accept`);
    });
 
-   nsp.on(`PREV`, function () {
-      nsp.emit(`PREV`);
-   });
-
-   FriendSync.add_group(groupid, nsp);
-
-   res.send(`/${groupid}`);
 });
-
-
-/**
- * Invites user to synchronize playback
- * 
- * @param groupid ID of group user is invited to
- * @param userid Spotify ID of user to invite
- */
-app.get('/friendsync/invite/:groupid&:userid', function (req, res) {
-    //res.send(FriendSync.invite(req.params.userid));
-    console.log(`FriendSync invite: ${groupid}, ${userid}`);
-});
-
-
-/**
- * Removes user from group
- * 
- * @param groupid ID of synchronized group
- * @param userid Spotify ID of user to remove from group
- */
-app.get('/friendsync/leave/:groupid&:userid', function (req, res) {
-   console.log(`Friendsync leave group: ${req.params.groupid}, ${req.params.userid}`);
-});
-
 
 
 
@@ -281,12 +264,14 @@ connection.once('open', () => {
 // Loads the routes from other files
 const queueRoute = require('./routes/queue');
 const usersRoute = require('./routes/users');
+//const sessionRoute = require('.routes/session');
 
 // Defining endpoints to use
 app.use('/queue', queueRoute);
 app.use('/users', usersRoute);
+//app.use('/session', sessionRoute)
+
 
 app.listen(PORT, HOSTNAME, () => {
     console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
 });
-

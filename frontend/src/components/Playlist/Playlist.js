@@ -1,24 +1,28 @@
 import React, {useState, useEffect} from "react";
+import "./Playlist.css";
 import PlaylistInner from "./PlaylistInner";
 import PlaylistOuter from "./PlaylistOuter";
 
 function Playlist({ 
    spotifyApi,
    user,
+   currentPlayback,
+   player,
+   deviceID,
+   token
 }) {
    const [pane, setPane] = useState("outer"); 
    const [selectedPlaylist, setSelectedPlaylist] = useState(null); 
    const [playlists, setPlaylists] = useState(null);
-   let token = spotifyApi.getAccessToken();
    useEffect(() => {
       if (token) {
-         spotifyApi.getUserPlaylists().then(
-            (data) => {
-               setPlaylists(data.body.items);
-            },
-            (err) => {
+         spotifyApi.getUserPlaylists().then( (data) =>
+            setPlaylists(data.items)
+         )
+         .catch( (err) => {
                console.log('frontend::Playlist.js spotifyApi.getUserPlaylists() failed. Error: ', err);
-            });
+            }
+         )         
       }
    }, [spotifyApi, token, pane]);
    return (
@@ -27,7 +31,11 @@ function Playlist({
          <PlaylistOuter 
             playlists={playlists} 
             setPane={setPane} 
-            setSelectedPlaylist = {setSelectedPlaylist}/>}
+            setSelectedPlaylist = {setSelectedPlaylist}
+            spotifyApi = {spotifyApi}
+            user = {user}
+         />
+         }
 
       {pane === "inner" && (
          <PlaylistInner 
@@ -36,6 +44,10 @@ function Playlist({
             spotifyApi = {spotifyApi}
             selectedPlaylist = {selectedPlaylist}
             user = {user}
+            currentPlayback = {currentPlayback}
+            player = {player}
+            deviceID = {deviceID}
+            token = {token}
          />
       )}
       </div>
