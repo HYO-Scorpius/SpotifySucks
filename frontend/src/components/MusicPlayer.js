@@ -3,154 +3,35 @@ import "./MusicPlayer.css";
 import {msToMinAndSec} from './../helper'
 
 // Class components should always call base consturctor with props
-function MusicPlayer({spotifyApi}) {
-  const [loading, setLoading] = useState("visible")
-  const [player, setPlayer] = useState(null);
-  const [deviceID, setDeviceID] = useState("");
-  const [token, setToken] = useState("");
-  const [progress, setProgress] = useState(0);
-  const [currentPlayback, setCurrentPlayback] = useState({duration:0,
-    position:0,
-    paused: true,
-    shuffle: false,
-    repeat_mode: 0,
-    artist_name:"Artist",
-    track_name:"Track Name",
-    playlist: "Playlist Name",
-    image_url:'https://via.placeholder.com/60'});
+function MusicPlayer({
+  spotifyApi,
+  loading,
+  deviceID,
+  progress,
+  currentPlayback,
+  setProgress
+}) {
 
-  window.onSpotifyWebPlaybackSDKReady = () => {
-    let token = spotifyApi.getAccessToken();
-    //const token = 'BQAPTRddtQ8P7RI2HmKA-1EZXGZ0JUdxGi4EB0NWeSVEp8Cuhchg-d-PfIoFqKsFUwKzywI_gjM6WYq0OY2FCN3Z0snUwCvBmz5m0ALTN-YJTci5wIDoUmbnVaE8V9L8z-E0ehWiLsbDlzFv_GqKDIAg6XqBa5hVT0kIA-9FNfRa0RhV0B9TLvk';
-    const player = new window.Spotify.Player({
-      name: "Web Playback SDK Quick Start Player",
-      getOAuthToken: (cb) => {
-        cb(token);
-      },
-    });
-
-    // Update state hooks
-    setPlayer(player);
-    setToken(token);
-
-    // SDK Error handling
-    player.addListener("initialization_error", ({ message }) => {
-      console.error("Init Error", message);
-    });
-
-    player.addListener("authentication_error", ({ message }) => {
-      console.error("Auth Error", message);
-    });
-
-    player.addListener("account_error", ({ message }) => {
-      console.error("Acct Error", message);
-    });
-
-    player.addListener("playback_error", ({ message }) => {
-      console.error("Playback Error", message);
-    });
-
-    // Add listener for current state of the music player
-    player.addListener("player_state_changed", (state) => {
-      console.log(state); // Print out json containing track state
-
-      const playlist = state.context.metadata.context_description
-
-      // Get information from json
-      const { duration, position, paused, shuffle, repeat_mode } = state;
-      const {
-        current_track,
-        next_tracks: [next_track],
-      } = state.track_window;
-      const {
-        artists,
-        album,
-      } = state.track_window.current_track;
-
-      let artist_name = artists.map(artist => artist.name).join(", ")
-      let track_name = current_track.name;
-      let image_url = album.images[1].url;
-
-      // Pass to currentPlayback to be used in html
-      setCurrentPlayback({
-        duration,
-        position,
-        paused,
-        shuffle,
-        repeat_mode,
-        artist_name,
-        track_name,
-        playlist,
-        image_url,
-      });
-
-      setProgress(position)
-
-      // Testing
-      console.log("TRACK NAME", track_name);
-      console.log("ARTIST NAME(S)", artist_name);
-      console.log("DURATION", duration);
-      console.log("SRC", image_url);
-      console.log("PLAYLIST", playlist)
-    });
-
-    // Ready
-    player.addListener("ready", async ({ device_id }) => {
-      console.log("Ready with Device ID", device_id);
-      setDeviceID(device_id);
-      setLoading("hidden");
-    });
-
-    // Not Ready
-    player.addListener("not_ready", ({ device_id }) => {
-      console.log("Device ID has gone offline", device_id);
-    });
-
-    // Connect to the player!
-    player.connect().then((success) => {
-      if (success) {
-        console.log("The Web Playback SDK successfully connected to Spotify!");
-      }
-    });
-
-  };
-
-  function getCurrentPlayback() {
-    fetch("https://api.spotify.com/v1/me/player/currently-playing", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        console.log("JSON", json);
-      })
-      .catch(function () {
-        console.log("Error with current playback");
-      });
-  }
-
-  // Chooses web app as the playback device
-  function transferUsersPlayback() {
-    spotifyApi.transferMyPlayback([deviceID], {
-        play: true,
-      },)
-  }
-
-  // Start the music player
+  // Play song already loaded
   function startUserPlayback() {
-    transferUsersPlayback();
+    spotifyApi.play();
   }
 
+  // Pause the player
+  function pause() {
+    spotifyApi.pause().then(() => {
+      console.log("Paused!");
+    });
+  }
+
+  // toggle shuffle
   function toggleShuffle() {
-    spotifyApi.setShuffle(!currentPlayback.shuffle)
+    spotifyApi.setShuffle(!currentPlayback.shuffle);
   }
 
   // Skip to the next track
   function seekTrack() {
-    player.nextTrack().then(() => {
+    spotifyApi.skipToNext().then(() => {
       console.log("Skipped to next track!");
       console.log("Seek device id", deviceID);
     });
@@ -158,11 +39,12 @@ function MusicPlayer({spotifyApi}) {
 
   // Go back to the previous track
   function prevTrack() {
-    player.previousTrack().then(() => {
+    spotifyApi.skipToPrevious().then(() => {
       console.log("Set to previous track!");
     });
   }
 
+  // select repeat mode
   function repeatMode() {
     let mode = "";
     if (currentPlayback.repeat_mode === 2) mode = "off";
@@ -171,16 +53,9 @@ function MusicPlayer({spotifyApi}) {
     spotifyApi.setRepeat(mode)
   }
 
-  // Pause the player
-  function pause() {
-    player.pause().then(() => {
-      console.log("Paused!");
-    });
-  }
-
   // Seek To Position In Currently Playing Track
   function seekPosition(value) {
-    player.seek(value, deviceID).then(() => {
+    spotifyApi.seek(value).then(() => {
       console.log("Seeked position " + value)
     })
   }
@@ -244,8 +119,13 @@ function MusicPlayer({spotifyApi}) {
             </button>}
 
           
-          { !(currentPlayback.repeat_mode === 2) &&
-            <button onClick={repeatMode} className="playerButton" style={{color: (currentPlayback.repeat_mode === 0) ? "white" : "#2FA7A4" }}>
+          { (currentPlayback.repeat_mode === 1) &&
+            <button onClick={repeatMode} className="playerButton" style={{color: "#2FA7A4" }}>
+            <i className="fas fa-retweet"></i>
+            </button>}
+          
+          { (currentPlayback.repeat_mode === 0) &&
+            <button onClick={repeatMode} className="playerButton" style={{color: "white" }}>
             <i className="fas fa-retweet"></i>
             </button>}
 

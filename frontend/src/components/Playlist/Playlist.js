@@ -6,11 +6,14 @@ import PlaylistOuter from "./PlaylistOuter";
 function Playlist({ 
    spotifyApi,
    user,
+   currentPlayback,
+   player,
+   deviceID,
+   token
 }) {
    const [pane, setPane] = useState("outer"); 
    const [selectedPlaylist, setSelectedPlaylist] = useState(null); 
    const [playlists, setPlaylists] = useState(null);
-   let token = spotifyApi.getAccessToken();
    useEffect(() => {
       if (token) {
          spotifyApi.getUserPlaylists().then( (data) =>
@@ -28,7 +31,11 @@ function Playlist({
          <PlaylistOuter 
             playlists={playlists} 
             setPane={setPane} 
-            setSelectedPlaylist = {setSelectedPlaylist}/>}
+            setSelectedPlaylist = {setSelectedPlaylist}
+            spotifyApi = {spotifyApi}
+            user = {user}
+         />
+         }
 
       {pane === "inner" && (
          <PlaylistInner 
@@ -37,6 +44,10 @@ function Playlist({
             spotifyApi = {spotifyApi}
             selectedPlaylist = {selectedPlaylist}
             user = {user}
+            currentPlayback = {currentPlayback}
+            player = {player}
+            deviceID = {deviceID}
+            token = {token}
          />
       )}
       </div>

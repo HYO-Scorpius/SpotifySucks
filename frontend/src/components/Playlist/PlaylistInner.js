@@ -7,6 +7,8 @@ function PlaylistInner({
    spotifyApi,
    selectedPlaylist,
    user,
+   currentPlayback,
+   player
 }) {
    const [tracks, setTracks] = useState(null); 
 
@@ -14,7 +16,6 @@ function PlaylistInner({
       spotifyApi.getPlaylistTracks(selectedPlaylist.id).then(
          (data) => {
             setTracks(data.items);
-
          }). catch((err) => {
             console.log('frontend::PlaylistInner.js spotifyApi.getPlaylistTracks() failed. Error: ', err);
          });
@@ -34,7 +35,12 @@ function PlaylistInner({
          <div>
          {tracks && 
             <TrackList
-               tracks = {tracks} />
+               tracks = {tracks} 
+               playlist={selectedPlaylist} 
+               spotifyApi={spotifyApi} 
+               currentPlayback = {currentPlayback}
+               player = {player}
+            />
          } 
          </div>
       </div>

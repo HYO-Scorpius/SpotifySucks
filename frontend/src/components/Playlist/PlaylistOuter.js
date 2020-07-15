@@ -3,7 +3,7 @@ import React, { useState } from "react";
 function PlaylistOuter({ 
    playlists,
    setPane,
-   setSelectedPlaylist,
+   setSelectedPlaylist
 }) {
 
  return (

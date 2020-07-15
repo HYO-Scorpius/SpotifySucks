@@ -134,3 +134,11 @@
     white-space: nowrap;
 }
 
+.track-title button {
+    background: transparent;
+    border: none;
+    margin:0;
+    padding: 0;
+    outline: none;
+    color: white;
+}
