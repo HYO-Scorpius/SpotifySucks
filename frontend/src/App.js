@@ -44,6 +44,7 @@ function App() {
      paused: true,
      shuffle: false,
      repeat_mode: 0,
+     connected: false,
      uri: "",
      id: "",
      artist_name:"Artist",
@@ -114,6 +115,7 @@ function App() {
             paused: paused,
             shuffle: shuffle,
             repeat_mode: repeat_mode,
+            connected: true,
             uri: uri,
             id_opt2: id_opt2,
             id: id,
@@ -131,7 +133,24 @@ function App() {
           console.log("DURATION", duration);
           console.log("SRC", image_url);
           console.log("PLAYLIST", playlist)
-     }});
+      } else {
+         setCurrentPlayback(state => ({
+            duration: state.duration,
+            position: state.position,
+            connected: false,
+            paused: true,
+            shuffle: state.shuffle,
+            repeat_mode: state.repeat_mode,
+            uri: state.uri,
+            id_opt2: state.id_opt2,
+            id: state.id,
+            artist_name: state.artist_name,
+            track_name: state.track_name,
+            playlist: state.playlist,
+            image_url: state.image_url,
+          }));
+      }
+   });
      
  
      // Ready

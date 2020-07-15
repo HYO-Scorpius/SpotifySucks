@@ -8,7 +8,8 @@ function PlaylistInner({
    selectedPlaylist,
    user,
    currentPlayback,
-   player
+   player,
+   deviceID
 }) {
    const [tracks, setTracks] = useState(null); 
 
@@ -40,6 +41,7 @@ function PlaylistInner({
                spotifyApi={spotifyApi} 
                currentPlayback = {currentPlayback}
                player = {player}
+               deviceID = {deviceID}
             />
          } 
          </div>

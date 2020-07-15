@@ -5,7 +5,8 @@ function TrackList({
    tracks,
    playlist,
    spotifyApi,
-   currentPlayback
+   currentPlayback, 
+   deviceID
 }) {
   
 
@@ -19,6 +20,7 @@ function TrackList({
          playlist={playlist} 
          spotifyApi={spotifyApi}
          currentPlayback = {currentPlayback}
+         deviceID = {deviceID}
       />)} 
       </div> 
    );
@@ -29,6 +31,7 @@ function Track({trackItem,
    playlist, 
    spotifyApi, 
    currentPlayback,
+   deviceID
 }) {
 
    const [hovered, setHover] = useState(false)
@@ -43,6 +46,7 @@ function Track({trackItem,
 
    function startPlaying() {
       spotifyApi.play({
+         "device_id": deviceID,
          "context_uri": playlist.uri,
          "offset": {
            "position": index
