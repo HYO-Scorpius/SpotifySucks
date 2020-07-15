@@ -65,7 +65,7 @@ function Track({trackItem,
          {/* music icon: not hovered over, either selected song is paused or song not selected */}
         { !hovered && 
             ( (((currentPlayback.id === trackItem.track.id) || (currentPlayback.id_opt2 === trackItem.track.id))  && (currentPlayback.uri === playlist.uri) && (currentPlayback.paused)) 
-            || !((currentPlayback.id === trackItem.track.id) || (currentPlayback.id_opt2 === trackItem.track.id))  )
+            || !(((currentPlayback.id === trackItem.track.id) || (currentPlayback.id_opt2 === trackItem.track.id)) && (currentPlayback.uri === playlist.uri) ))
             && <p className="track-title" >
            <i className="fas fa-music marginIcon" style={{fontSize:13, marginRight: 5}}></i>
            { trackItem.track.name }
@@ -73,7 +73,7 @@ function Track({trackItem,
         {/* play button: on hover if song is not selected / selected but not playing*/}
         { hovered &&
             ( (((currentPlayback.id === trackItem.track.id) || (currentPlayback.id_opt2 === trackItem.track.id))  && (currentPlayback.uri === playlist.uri) && (currentPlayback.paused)) 
-            || !((currentPlayback.id === trackItem.track.id) || (currentPlayback.id_opt2 === trackItem.track.id))  )
+            || !(((currentPlayback.id === trackItem.track.id) || (currentPlayback.id_opt2 === trackItem.track.id)) && (currentPlayback.uri === playlist.uri) ))
             && <p className="track-title" >
            <button onClick={startPlaying}><i className="far fa-play-circle marginIcon" style={{fontSize:13, marginRight: 5}}></i></button>
            { trackItem.track.name }
