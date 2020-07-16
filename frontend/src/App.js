@@ -172,7 +172,12 @@ function App() {
                />
             </div>
             <div label="MultiPlaylist">
-               <MultiPlaylistTab />
+               <MultiPlaylistTab 
+                  spotifyApi = {spotifyApi}
+                  user = {user}
+                  deviceID = {deviceID}
+                  token = {token}
+               />
             </div>
             <div label="FriendSync">
                FriendSyncTab 
