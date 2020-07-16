@@ -14,50 +14,73 @@ function MusicPlayer({
 
   // Play song already loaded
   function startUserPlayback() {
-    spotifyApi.play();
+    if (currentPlayback.connected) {
+      spotifyApi.play({
+        "device_id": deviceID
+      }).catch(err => console.log(err));
+    } else {
+      spotifyApi.transferMyPlayback([deviceID], {
+        play: true
+      });
+    }
+    
   }
 
   // Pause the player
   function pause() {
     spotifyApi.pause().then(() => {
       console.log("Paused!");
-    });
+    }).catch(err => console.log(err));
   }
 
   // toggle shuffle
   function toggleShuffle() {
-    spotifyApi.setShuffle(!currentPlayback.shuffle);
+    if (currentPlayback.connected) {
+      spotifyApi.setShuffle(!currentPlayback.shuffle).catch(err => console.log(err));
+    }
   }
 
   // Skip to the next track
   function seekTrack() {
-    spotifyApi.skipToNext().then(() => {
-      console.log("Skipped to next track!");
-      console.log("Seek device id", deviceID);
-    });
+    if (currentPlayback.connected) {
+      spotifyApi.skipToNext().then(() => {
+        console.log("Skipped to next track!");
+        console.log("Seek device id", deviceID);
+      }).catch(err => console.log(err));
+    }
+    
   }
 
   // Go back to the previous track
   function prevTrack() {
-    spotifyApi.skipToPrevious().then(() => {
-      console.log("Set to previous track!");
-    });
+    if (currentPlayback.connected) {
+      spotifyApi.skipToPrevious().then(() => {
+        console.log("Set to previous track!");
+      }).catch(err => console.log(err));
+    }
+    
   }
 
   // select repeat mode
   function repeatMode() {
-    let mode = "";
-    if (currentPlayback.repeat_mode === 2) mode = "off";
-    else if (currentPlayback.repeat_mode === 1) mode = "track"
-    else mode = "context"
-    spotifyApi.setRepeat(mode)
+    if (currentPlayback.connected) {
+      let mode = "";
+      if (currentPlayback.repeat_mode === 2) mode = "off";
+      else if (currentPlayback.repeat_mode === 1) mode = "track"
+      else mode = "context"
+      spotifyApi.setRepeat(mode).catch(err => console.log(err));
+    }
+    
   }
 
   // Seek To Position In Currently Playing Track
   function seekPosition(value) {
-    spotifyApi.seek(value).then(() => {
-      console.log("Seeked position " + value)
-    })
+    if (currentPlayback.connected) {
+      spotifyApi.seek(value).then(() => {
+        console.log("Seeked position " + value)
+      }).catch(err => console.log(err));
+    }
+    
   }
 
   // update progress bar every second
@@ -86,6 +109,7 @@ function MusicPlayer({
         </div>
   
         <div className="track_info popup">
+          {!currentPlayback.connected && <p style={{fontSize:10, fontWeight:"bold"}}>Disconnected - click play to reconnect</p> }
           <p> {currentPlayback.track_name}</p>
           <span className="popuptext" id="myPopup">{currentPlayback.track_name} <br></br> {"by " + currentPlayback.artist_name} <br></br> {"from " + currentPlayback.playlist} </span>
           <p style={{fontSize:12}}> {currentPlayback.artist_name}</p>

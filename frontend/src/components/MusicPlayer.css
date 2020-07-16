@@ -38,7 +38,7 @@
 
 .track_info {
     color: #fff;
-	width: 150px;
+	width: 200px;
 	display: flex;
 	flex-direction: column;
 	justify-items: flex-start;
@@ -49,10 +49,10 @@
 .track_info > p {
 	margin: auto;
 	margin-left: 0;
-	width: 150px;
+	max-width: 200px;
 	cursor: default;
-	white-space: nowrap;
 	overflow: hidden;
+	white-space: nowrap;
 	text-overflow: ellipsis;
 }
 
@@ -62,7 +62,7 @@
 	font-size: x-small;
 	opacity: 0;
 	visibility: hidden;
-	max-width: 150px;
+	max-width: 200px;
 	background-color: rgb(54, 54, 54);
 	color: #fff;
 	border: 1px solid rgba(255,255,255,0.8);
@@ -128,7 +128,7 @@
 	cursor: pointer;
 }
 
-.fa-pause-circle, .fa-play-circle {
+.player_controls button .fa-pause-circle, .player_controls button .fa-play-circle {
 	font-size:  25px;
 }
 
@@ -148,7 +148,7 @@ input[type='range']::-webkit-slider-runnable-track {
 }
 
 input[type='range']::-webkit-slider-thumb {
-	box-shadow: -10000px 0 0 10000px #2FA7A4;
+	box-shadow: -10000px 0 0 10000px #27918f;
 	-webkit-appearance: none;
 	border: none;
 	color: transparent;
@@ -159,7 +159,7 @@ input[type='range']::-webkit-slider-thumb {
 
 /* Firefox compatibility */
 input[type="range"]::-moz-range-progress {
-	background-color: #2FA7A4;
+	background-color: #27918f;
 }
 
 input[type=range]::-moz-range-thumb {
@@ -169,5 +169,5 @@ input[type=range]::-moz-range-thumb {
 
 /* IE*/
 input[type="range"]::-ms-fill-lower {
-	background-color: #2FA7A4; 
+	background-color: #27918f; 
 }

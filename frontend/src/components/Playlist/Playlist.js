@@ -16,7 +16,7 @@ function Playlist({
    const [playlists, setPlaylists] = useState(null);
    useEffect(() => {
       if (token) {
-         spotifyApi.getUserPlaylists().then( (data) =>
+         spotifyApi.getUserPlaylists({limit:50}).then( (data) =>
             setPlaylists(data.items)
          )
          .catch( (err) => {
@@ -34,6 +34,7 @@ function Playlist({
             setSelectedPlaylist = {setSelectedPlaylist}
             spotifyApi = {spotifyApi}
             user = {user}
+            token = {token}
          />
          }
 
