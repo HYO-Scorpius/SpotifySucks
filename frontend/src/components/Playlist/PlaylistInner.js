@@ -9,6 +9,7 @@ function PlaylistInner({
    user,
    currentPlayback,
    player,
+   token,
    deviceID
 }) {
    const [tracks, setTracks] = useState(null); 
@@ -31,7 +32,9 @@ function PlaylistInner({
             <Shuffle 
                spotifyApi = {spotifyApi}
                playlist = {selectedPlaylist} 
-               user = {user}/>
+               user = {user}
+               token = {token}
+            />
          </div>
          <div>
          {tracks && 

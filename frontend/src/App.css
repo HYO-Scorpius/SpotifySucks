@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway&family=Roboto:wght@700&display=swap');
 
 html, body {
-  font-family: 'Montserrat', sans-serif;
-  background-color: #0b1414;
+  font-family: 'Raleway', sans-serif;
+  background-color: #0a0f0f;
   color: white;
 }
 
@@ -73,37 +73,42 @@ html, body {
 
 .tab-list {
   position: fixed;
+  font-family: 'Nunito Sans', sans-serif;
   z-index: 2;
   width: 100%;
   height: 32px;
   padding: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   top: 0;
-  background-color: #2FA7A4;
+  font-size: 20px;
+  color: black;
+  background-color: #1f6d6c;
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
 .title {
-  width: 140px;
+  padding-right: 40px;
+  margin-left: 20px;
   color: white;
-  text-shadow: 1px 1px 3px black;
+  text-shadow: 1px 1px 6px black;
   vertical-align: middle;
   cursor: context-menu;
 }
 
 .tabs {
   color: black;
-  font-weight: bold;
   display: inline-flex;
-  float: right;
-  align-items: center;
+  font-weight: 700;
+  margin-left: auto;
+  margin-right: 40px;
+  flex-wrap: nowrap;
 }
 
 .tab-list-item {
   padding: 10px;
-  font-weight: bold;
+  font-size: 18px;
   opacity: 0.4;
   transition: 0.2s;
 }
@@ -115,7 +120,7 @@ html, body {
 
 .tab-list-active {
   opacity: 1;
-  text-shadow: 1px 1px 3px white;
+  text-shadow: 1px 1px 1px rgb(61, 61, 61);
 }
 
 /* tab content */
@@ -135,8 +140,8 @@ button {
   border: 1px solid white;
   border-radius: 3px;
   cursor: pointer;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: bold;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 550;
   margin-bottom: 10px;
   margin-right: 10px;
 }
