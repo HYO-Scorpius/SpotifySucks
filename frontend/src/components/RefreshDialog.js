@@ -8,49 +8,50 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { getCookie } from '../helper';
 
 function RefreshDialog({
-   spotifyApi,
-   open,
-   setOpen
+    spotifyApi,
+    open,
+    setOpen
 }) {
-
-   const handleClose = () => {
-      setOpen(false);
+    
+    const handleClose = () => {
+        setOpen(false);
     };
-
-   const refreshToken = () => {
-      let refreshURl = "";
-      fetch("/refresh")
-         .then(() => {
+    
+    const refreshToken = () => {
+        let refreshURl = "";
+        fetch("/refresh")
+        .then(() => {
             let token = getCookie('api_token') || null;
             spotifyApi.setAccessToken(token); 
             handleClose();
-         })
-         .catch((err) => console.log("refresh failed: ", err))
-   };
-
-   return (
-      <div>
-         <Dialog 
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-         >
-            <DialogTitle id="alert-dialog-title">{"Session Expired"}</DialogTitle> 
-            <DialogContent> 
-               <DialogContentText id="alert-dialog-description"> 
-                  Your session expired. To carry on, please click the button below to refresh your access token.
-               </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-               <Button onClick={refreshToken} color="primary" autoFocus> 
-                  Refresh
-               </Button> 
-            </DialogActions>
-         </Dialog>
-      </div>
-   );
+        })
+        .catch((err) => console.log("refresh failed: ", err))
+    };
+    
+    return (
+        <div>
+            <Dialog 
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Session Expired"}</DialogTitle> 
+                <DialogContent> 
+                    <DialogContentText id="alert-dialog-description"> 
+                        Your session expired. To carry on, please click the button below to refresh your access token.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={refreshToken} color="primary" autoFocus> 
+                        Refresh
+                    </Button> 
+                </DialogActions>
+            </Dialog>
+        </div>
+    );
 }
-
-
+    
+    
 export default RefreshDialog;
+    
