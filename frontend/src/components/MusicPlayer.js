@@ -109,7 +109,7 @@ function MusicPlayer({
         </div>
   
         <div className="track_info popup">
-          {!currentPlayback.connected && <p style={{fontSize:10, fontWeight:"bold"}}>Disconnected - click play to reconnect</p> }
+          {!currentPlayback.connected && <p style={{fontSize:10, fontWeight:"bold"}}>Disconnected - click play to connect</p> }
           <p> {currentPlayback.track_name}</p>
           <span className="popuptext" id="myPopup">{currentPlayback.track_name} <br></br> {"by " + currentPlayback.artist_name} <br></br> {"from " + currentPlayback.playlist} </span>
           <p style={{fontSize:12}}> {currentPlayback.artist_name}</p>
@@ -149,7 +149,7 @@ function MusicPlayer({
             </button>}
           
           { (currentPlayback.repeat_mode === 0) &&
-            <button onClick={repeatMode} className="playerButton" style={{color: "white" }}>
+            <button onClick={repeatMode} className="playerButton">
             <i className="fas fa-retweet"></i>
             </button>}
 
@@ -161,6 +161,12 @@ function MusicPlayer({
           <p style={{paddingLeft:2}} className="progressText">{msToMinAndSec(currentPlayback.duration)}</p>
         </div>
 
+      </div>
+
+      <div className="sound-device">
+        <button onClick={repeatMode} className="playerButton" style={{color: "white", marginLeft:5 }}>
+        <img src={require("./img/speaker.svg")}></img>
+        </button>
       </div>
       
     </div>

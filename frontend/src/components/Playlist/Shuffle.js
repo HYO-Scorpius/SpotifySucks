@@ -29,7 +29,7 @@ function Shuffle({
                <img src={playlist.images[0].url}></img>
 
                <div className="playlist-description">
-                  <h3 className="playlist-title"><i className="fab fa-spotify marginIcon"></i> {playlist.name}</h3>
+                  <h2 className="playlist-title"><i className="fab fa-spotify marginIcon"></i> {playlist.name}</h2>
                   <p className="created-by">created by {playlist.owner.display_name} </p>
                   <p className="inner-playlist-descr">{playlist.description} </p>
                   <p className="followers"> tracks: {playlist.tracks.total}  &bull; followers: {followers} </p>

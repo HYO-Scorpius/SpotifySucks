@@ -154,24 +154,67 @@ function App() {
      
  
      // Ready
-     player.addListener("ready", async ({ device_id }) => {
-       console.log("Ready with Device ID", device_id);
-       setDeviceID(device_id);
-       spotifyApi.transferMyPlayback([device_id]);
-       setLoading("hidden");
-     });
+    player.addListener("ready", async ({ device_id }) => {
+      console.log("Ready with Device ID", device_id);
+      setDeviceID(device_id);
+
+      // get currently playing track or last played track if not playing
+      spotifyApi.getMyCurrentPlayingTrack().then(
+        data => {
+          if (data.item) {
+            const track = data.item
+            setCurrentPlayback(state => ({
+              duration: track.duration_ms,
+              position: data.progress_ms,
+              connected: state.connected,
+              paused: state.paused,
+              shuffle: state.shuffle,
+              repeat_mode: state.repeat_mode,
+              uri: state.uri,
+              id_opt2: state.id_opt2,
+              id: track.id,
+              artist_name: track.artists.map(artist => artist.name).join(", "),
+              track_name: track.name,
+              playlist: state.playlist,
+              image_url: track.album.images[2].url,
+            }));
+          } else {
+            spotifyApi.getMyRecentlyPlayedTracks({
+              limit: 1,
+            }).then( data => {
+              const track = data.items[0].track
+              setCurrentPlayback({
+                duration: track.duration_ms,
+                position: 0,
+                connected: false,
+                paused: true,
+                shuffle: false,
+                repeat_mode: 0,
+                uri: null,
+                id_opt2: null,
+                id: track.id,
+                artist_name: track.artists.map(artist => artist.name).join(", "),
+                track_name: track.name,
+                playlist: "",
+                image_url: track.album.images[2].url,
+              });
+            })
+          }
+        })
+      setLoading("hidden");
+    });
  
-     // Not Ready
-     player.addListener("not_ready", ({ device_id }) => {
-       console.log("Device ID has gone offline", device_id);
-     });
- 
-     // Connect to the player!
-     player.connect().then((success) => {
-       if (success) {
-         console.log("The Web Playback SDK successfully connected to Spotify!");
-       }
-     });
+    // Not Ready
+    player.addListener("not_ready", ({ device_id }) => {
+      console.log("Device ID has gone offline", device_id);
+    });
+
+    // Connect to the player!
+    player.connect().then((success) => {
+      if (success) {
+        console.log("The Web Playback SDK successfully connected to Spotify!");
+      }
+    });
  
    };
 
@@ -207,6 +250,7 @@ function App() {
             progress = {progress}
             setProgress = {setProgress}
             currentPlayback = {currentPlayback}
+            setCurrentPlayback = {setCurrentPlayback}
          />
       </div>
   );
