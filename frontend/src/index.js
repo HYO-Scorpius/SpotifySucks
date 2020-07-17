@@ -5,10 +5,10 @@ import * as serviceWorker from './serviceWorker';
 import Login from './components/Login';
 
 ReactDOM.render(
-  <React.StrictMode>
-   <Login />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <Login />
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change

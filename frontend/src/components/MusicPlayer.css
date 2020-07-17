@@ -79,7 +79,7 @@
 }
 
 .player {
-	width: calc(100% - 290px);
+	width: calc(90% - 290px);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
