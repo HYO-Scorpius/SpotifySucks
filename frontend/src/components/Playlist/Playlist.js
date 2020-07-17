@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import "./Playlist.css";
 import PlaylistInner from "./PlaylistInner";
 import PlaylistOuter from "./PlaylistOuter";
+import RefreshDialog from "../RefreshDialog";
 
 function Playlist({ 
    spotifyApi,

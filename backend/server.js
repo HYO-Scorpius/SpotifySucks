@@ -149,6 +149,7 @@ app.get('/api/:access_token/shuffle/types/:type/user/:userId/playlists/:playlist
 
 const makePlaylist = (api, user, playlist,  URIs, replace, type) => {
    let playlistName = playlist.name;
+   let playlistDets = playlist.name;
    if (replace) {
       let replaceURIs = [];
       URIs.forEach((uri) => {
@@ -165,16 +166,17 @@ const makePlaylist = (api, user, playlist,  URIs, replace, type) => {
          }); 
    } 
    else {
+      playlistName += ` [${type} shuffle]`;
       if (type != "random")
       {
-         playlistName += ` shuffled by ${type} because Spotify Sucks`;
+         playlistDets += ` shuffled  by ${type} because Spotify Sucks (not really, their API is actually pretty cool)`;
       }
       else
       {
-         playlistName += " shuffled without bias because Spotify Sucks";
+         playlistDets += " shuffled without bias because Spotify Sucks (not really, their API is actually pretty cool)";
       }
 
-      api.createPlaylist(user, playlistName, {public: false}).then(
+      api.createPlaylist(user, playlistName, {public: false, description: playlistDets}).then(
       (data) => {
          fillPlaylist(api, URIs, data.body);
       }, 
