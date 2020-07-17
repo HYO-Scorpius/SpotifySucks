@@ -69,9 +69,14 @@ function MusicPlayer({
 	// Go back to the previous track
 	function prevTrack() {
 		if (currentPlayback.connected) {
-			spotifyApi.skipToPrevious().then(() => {
-				console.log("Set to previous track!");
-			}).catch(err => console.log(err));
+            if (progress < 3000) {
+                spotifyApi.skipToPrevious().then(() => {
+    				console.log("Set to previous track!");
+    			}).catch(err => console.log(err));
+            } else {
+                spotifyApi.seek(0).catch(err => console.log(err));
+            }
+			
 		}
 		
 	}
