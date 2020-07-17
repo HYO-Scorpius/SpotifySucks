@@ -14,7 +14,6 @@ function MusicPlayer({
 }) {
 
     const [devices, setDevices] = useState([])
-    const [activeDevice, setActiveDevice] = useState(deviceID)
     const [popup, setPopup] = useState(false)
 
     useEffect( () => {
@@ -22,7 +21,7 @@ function MusicPlayer({
         spotifyApi.getMyDevices().then(
             data =>  setDevices(data.devices)
         ).catch( err => console.log(err))
-    }, [spotifyApi, deviceID])
+    }, [spotifyApi, deviceID, currentPlayback])
 
     function togglePopup() {
         setPopup( state => (!state))
@@ -192,11 +191,9 @@ function MusicPlayer({
 
             { popup &&
                 <div className="devices-available">
-                    {devices.map(device => {
-                        return(
-                            <p key={device.id} style={{color: device.is_active? "#27918f" : "white"}}> <i className="fas fa-desktop marginIcon"></i> {device.name} </p>
-                        )
-                    })}
+                    {devices.map(device => 
+                        <Device key={device.id} device={device} spotifyApi={spotifyApi} />
+                    )}
                     <div className="arrow"></div>
                 </div> 
             }            
@@ -204,6 +201,20 @@ function MusicPlayer({
         </div>
 		
 	);
+}
+
+function Device({device, spotifyApi}) {
+
+    const device_id = device.id
+
+    function tranfer() {
+        spotifyApi.transferMyPlayback([device_id]);
+    }
+
+    return(
+        <p onClick={tranfer} style={{color: device.is_active? "#27918f" : "white"}}> <i className="fas fa-desktop marginIcon"></i> {device.name} </p>
+    )
+
 }
 
 export default MusicPlayer;

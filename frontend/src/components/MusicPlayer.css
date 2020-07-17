@@ -141,6 +141,7 @@
 	font-size: 11px;
 	right: 20px;
 	max-width: 200px;
+	min-width: 70px;
 	background-color: rgb(37, 37, 37);
 	color: #fff;
 	border-radius: 10px;
