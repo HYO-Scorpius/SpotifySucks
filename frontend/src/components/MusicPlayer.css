@@ -1,173 +1,216 @@
 .footer {
     position: fixed;
     background-color: black;
-	bottom: 0;
-	height: 60px;
+    bottom: 0;
+    height: 60px;
     width: 100%;
-	padding: 20px;
-	display: inline-flex;
-	flex-direction: row;
-	justify-items: center;
-	align-items: center;
+    padding: 20px;
+    display: inline-flex;
+    flex-direction: row;
+    justify-items: center;
+    align-items: center;
 }
 
 .loading {
-	position: fixed;
-	display: flex;
-	z-index: 1;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
-	justify-content: center;
-	align-items: center;
-	background-color: #0b1414;
+    position: fixed;
+    display: flex;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: #0b1414;
 }
 
 .info {
-	display: inline-flex;
-	flex-direction: row;
+    display: inline-flex;
+    flex-direction: row;
 }
 
 .album_info {
-	width: 100px;
-	display: flex;
-	justify-items: center;
-	align-items: center;
+    width: 100px;
+    display: flex;
+    justify-items: center;
+    align-items: center;
 }
 
 .track_info {
     color: #fff;
-	width: 200px;
-	display: flex;
-	flex-direction: column;
-	justify-items: flex-start;
-	align-items: center;
-	text-overflow: ellipsis;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-items: flex-start;
+    align-items: center;
+    text-overflow: ellipsis;
 }
 
 .track_info > p {
-	margin: auto;
-	margin-left: 0;
-	max-width: 200px;
-	cursor: default;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
+    margin: auto;
+    margin-left: 0;
+    max-width: 200px;
+    cursor: default;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 /* The actual popup (appears on top) */
 .popuptext {
-	align-self: start;
-	font-size: x-small;
-	opacity: 0;
-	visibility: hidden;
-	max-width: 200px;
-	background-color: rgb(54, 54, 54);
-	color: #fff;
-	border: 1px solid rgba(255,255,255,0.8);
-	padding: 5px;
-	position: fixed;
-	z-index: 1;
-	bottom: 94px;
-	transition: 0.4s;
+    align-self: start;
+    font-size: x-small;
+    opacity: 0;
+    visibility: hidden;
+    max-width: 200px;
+    background-color: rgb(54, 54, 54);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.8);
+    padding: 5px;
+    position: fixed;
+    z-index: 1;
+    bottom: 94px;
+    transition: 0.4s;
 }
 
 .popup:hover > .popuptext {
-	visibility: visible;
-	opacity: 1;
+    visibility: visible;
+    opacity: 1;
 }
 
 .player {
-	width: calc(90% - 290px);
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-items: center;
+    width: calc(90% - 290px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
 }
 
 .progressBar {
-	width: 90%;
-	margin-top: 10px;
-	display: flex;
-	justify-content: center;
-	vertical-align: middle;
-	align-items: center;
+    width: 90%;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    vertical-align: middle;
+    align-items: center;
 }
 
 .progressText {
-	color: white;
-	width: 25px;
-	font-size: 10px;
-	text-align: center;
-	vertical-align: middle;
-	margin:0;
+    color: white;
+    width: 25px;
+    font-size: 10px;
+    text-align: center;
+    vertical-align: middle;
+    margin:0;
 }
 
 .player_controls {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	justify-self: center;
-	margin: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    justify-self: center;
+    margin: 0;
 }
 
 .playerButton {
-	background-color: transparent;
-	outline: none;
-	vertical-align: middle;
-	border: none;
-	font-size: 10px;
-	color: white;
-	opacity: 0.7;
-	line-height: 10px;
+    background-color: transparent;
+    outline: none;
+    vertical-align: middle;
+    border: none;
+    font-size: 10px;
+    color: white;
+    opacity: 0.7;
+    line-height: 10px;
 }
 
 .playerButton:hover {
-	opacity: 1;
-	cursor: pointer;
+    opacity: 1;
+    cursor: pointer;
 }
 
 .player_controls button .fa-pause-circle, .player_controls button .fa-play-circle {
-	font-size:  25px;
+    font-size:  25px;
+}
+
+.device {
+    margin-left: auto;
+    margin-right: 40px;
+}
+
+.devices-available {
+    font-size: 11px;
+    right: 20px;
+    max-width: 200px;
+    min-width: 70px;
+    background-color: rgb(37, 37, 37);
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    position: fixed;
+    z-index: 1;
+    bottom: 80px;
+}
+
+.arrow {
+    content: "";
+    position: fixed;
+    right: 41px;
+    bottom: 70px;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(37, 37, 37) transparent transparent transparent;
+}
+
+.devices-available p:hover {
+    cursor: pointer;
+    background-color: rgb(56, 56, 56);
+}
+
+.devices-available p {
+    padding: 10px;
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 input[type='range'] {
-	cursor: pointer;
-	overflow: hidden;
-	width: 70%;
-	height: 5px;
-	-webkit-appearance: none;
-	background-color: grey;
-	border-radius: 8px;
+    cursor: pointer;
+    overflow: hidden;
+    width: 70%;
+    height: 5px;
+    -webkit-appearance: none;
+    background-color: grey;
+    border-radius: 8px;
 }
   
 input[type='range']::-webkit-slider-runnable-track {
-	height: 5px;
-	-webkit-appearance: none;
+    height: 5px;
+    -webkit-appearance: none;
 }
 
 input[type='range']::-webkit-slider-thumb {
-	box-shadow: -10000px 0 0 10000px #27918f;
-	-webkit-appearance: none;
-	border: none;
-	color: transparent;
-	background-color: transparent;
+    box-shadow: -10000px 0 0 10000px #27918f;
+    -webkit-appearance: none;
+    border: none;
+    color: transparent;
+    background-color: transparent;
     height: 5px;
     width: 0px;
 }
 
 /* Firefox compatibility */
 input[type="range"]::-moz-range-progress {
-	background-color: #27918f;
+    background-color: #27918f;
 }
 
 input[type=range]::-moz-range-thumb {
-	background-color: transparent;
-	border: none;
+    background-color: transparent;
+    border: none;
 }
 
 /* IE*/
 input[type="range"]::-ms-fill-lower {
-	background-color: #27918f; 
+    background-color: #27918f; 
 }
