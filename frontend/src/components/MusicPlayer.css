@@ -132,6 +132,48 @@
 	font-size:  25px;
 }
 
+.device {
+	margin-left: auto;
+	margin-right: 40px;
+}
+
+.devices-available {
+	font-size: 11px;
+	right: 20px;
+	max-width: 200px;
+	background-color: rgb(37, 37, 37);
+	color: #fff;
+	border-radius: 10px;
+	padding: 10px;
+	position: fixed;
+	z-index: 1;
+	bottom: 80px;
+}
+
+.arrow {
+	content: "";
+    position: fixed;
+    right: 41px;
+    bottom: 70px;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(37, 37, 37) transparent transparent transparent;
+}
+
+.devices-available p:hover {
+	cursor: pointer;
+	background-color: rgb(56, 56, 56);
+}
+
+.devices-available p {
+	padding: 10px;
+	margin: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
 input[type='range'] {
 	cursor: pointer;
 	overflow: hidden;

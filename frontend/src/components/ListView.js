@@ -19,7 +19,7 @@ class ListView extends Component {
         
         return (
             <div>
-            <ul>{ElementArray}</ul>
+                <ul>{ElementArray}</ul>
             </div>
         )
             

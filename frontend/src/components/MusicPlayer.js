@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./MusicPlayer.css";
 import {msToMinAndSec} from './../helper'
+import { act } from "react-dom/test-utils";
 
 // Class components should always call base consturctor with props
 function MusicPlayer({
@@ -11,6 +12,21 @@ function MusicPlayer({
 	currentPlayback,
 	setProgress
 }) {
+
+    const [devices, setDevices] = useState([])
+    const [activeDevice, setActiveDevice] = useState(deviceID)
+    const [popup, setPopup] = useState(false)
+
+    useEffect( () => {
+        // get available devices
+        spotifyApi.getMyDevices().then(
+            data =>  setDevices(data.devices)
+        ).catch( err => console.log(err))
+    }, [spotifyApi, deviceID])
+
+    function togglePopup() {
+        setPopup( state => (!state))
+    }
 
 	// Play song already loaded
 	function startUserPlayback() {
@@ -93,83 +109,100 @@ function MusicPlayer({
 
 	// javascript conditional { boolean ?() : () }
 	return (
-		<div className="footer">
 
-			<div className="loading" style={{visibility: loading}}>
-				<img src={require('./img/loading.gif')} ></img>
-			</div>
+        <div>
 
-			<div className="info">
-				<div className="album_info">
-					<img
-						src={currentPlayback.image_url}
-						className="albumImage"
-						alt="logo"
-					/>
-				</div>
-	
-				<div className="track_info popup">
-					{!currentPlayback.connected && <p style={{fontSize:10, fontWeight:"bold"}}>Disconnected - click play to connect</p> }
-					<p> {currentPlayback.track_name}</p>
-					<span className="popuptext" id="myPopup">{currentPlayback.track_name} <br></br> {"by " + currentPlayback.artist_name} <br></br> {"from " + currentPlayback.playlist} </span>
-					<p style={{fontSize:12}}> {currentPlayback.artist_name}</p>
-					<p style={{fontSize:10, fontWeight:"bold", color:"#2FA7A4"}}> {currentPlayback.playlist}</p>
-				</div>
-			</div>
-			
+            <div className="footer">
+            
+                <div className="loading" style={{visibility: loading}}>
+                    <img src={require('./img/loading.gif')} ></img>
+                </div>
+                
+                <div className="info">
+                    <div className="album_info">
+                        <img
+                            src={currentPlayback.image_url}
+                            className="albumImage"
+                            alt="logo"
+                        />
+                    </div>
+                
+                    <div className="track_info popup">
+                        {!currentPlayback.connected && <p style={{fontSize:10, fontWeight:"bold"}}>Disconnected - click play to connect</p> }
+                        <p> {currentPlayback.track_name}</p>
+                        <span className="popuptext" id="myPopup">{currentPlayback.track_name} <br></br> {"by " + currentPlayback.artist_name} <br></br> {"from " + currentPlayback.playlist} </span>
+                        <p style={{fontSize:12}}> {currentPlayback.artist_name}</p>
+                        <p style={{fontSize:10, fontWeight:"bold", color:"#2FA7A4"}}> {currentPlayback.playlist}</p>
+                    </div>
+                </div>
+                
+                
+                <div className="player">
+                
+                    <p className="player_controls">
+                        {/* shuffle and repeat buttons not working yet */}
+                        <button className="playerButton" onClick={toggleShuffle} style={{color: currentPlayback.shuffle ? "#2FA7A4" : "white"}}>
+                            <i className="fas fa-random"></i>
+                        </button>
+                
+                        <button className="playerButton" onClick={prevTrack}>
+                            <i className="fas fa-step-backward"></i>
+                        </button>
+                
+                        {!currentPlayback.paused && <button className="playerButton" onClick={pause}><i className="far fa-pause-circle"></i></button>}
+                        {currentPlayback.paused && <button className="playerButton" onClick={startUserPlayback}><i className="far fa-play-circle"></i></button>}
+                
+                        <button className="playerButton" onClick={seekTrack}>
+                            <i className="fas fa-step-forward"></i>
+                        </button>
+                
+                        {(currentPlayback.repeat_mode === 2) &&
+                            <button onClick={repeatMode} className="playerButton"> 
+                                <img src={require("./img/repeat.svg")}></img>
+                            </button>}
+                
+                        
+                        { (currentPlayback.repeat_mode === 1) &&
+                            <button onClick={repeatMode} className="playerButton" style={{color: "#2FA7A4" }}>
+                            <i className="fas fa-retweet"></i>
+                            </button>}
+                        
+                        { (currentPlayback.repeat_mode === 0) &&
+                            <button onClick={repeatMode} className="playerButton">
+                            <i className="fas fa-retweet"></i>
+                            </button>}
+                
+                    </p>
+                
+                    <div className="progressBar">
+                        <p style={{paddingRight:2}} className="progressText">{msToMinAndSec(progress)}</p>
+                        <input style={{margin:0}} value={progress} max={currentPlayback.duration} min="0" type="range" step="1000" onChange={e => seekPosition(e.target.value)}></input>
+                        <p style={{paddingLeft:2}} className="progressText">{msToMinAndSec(currentPlayback.duration)}</p>
+                    </div>
+                
+                </div>
+                
+                <div className="device">
+                    <button onClick={togglePopup} className="playerButton device-button" style={{color: "white", marginLeft:"auto" }}>
+                        <img style={{ marginLeft:"auto" }}src={require("./img/speaker.svg")}></img>
+                    </button>
+                </div>    
 
-			<div className="player">
+            </div>
 
-				<p className="player_controls">
-					{/* shuffle and repeat buttons not working yet */}
-					<button className="playerButton" onClick={toggleShuffle} style={{color: currentPlayback.shuffle ? "#2FA7A4" : "white"}}>
-						<i className="fas fa-random"></i>
-					</button>
+            { popup &&
+                <div className="devices-available">
+                    {devices.map(device => {
+                        return(
+                            <p key={device.id} style={{color: device.is_active? "#27918f" : "white"}}> <i className="fas fa-desktop marginIcon"></i> {device.name} </p>
+                        )
+                    })}
+                    <div className="arrow"></div>
+                </div> 
+            }            
 
-					<button className="playerButton" onClick={prevTrack}>
-						<i className="fas fa-step-backward"></i>
-					</button>
-
-					{!currentPlayback.paused && <button className="playerButton" onClick={pause}><i className="far fa-pause-circle"></i></button>}
-					{currentPlayback.paused && <button className="playerButton" onClick={startUserPlayback}><i className="far fa-play-circle"></i></button>}
-
-					<button className="playerButton" onClick={seekTrack}>
-						<i className="fas fa-step-forward"></i>
-					</button>
-
-					{(currentPlayback.repeat_mode === 2) &&
-						<button onClick={repeatMode} className="playerButton"> 
-							<img src={require("./img/repeat.svg")}></img>
-						</button>}
-
-					
-					{ (currentPlayback.repeat_mode === 1) &&
-						<button onClick={repeatMode} className="playerButton" style={{color: "#2FA7A4" }}>
-						<i className="fas fa-retweet"></i>
-						</button>}
-					
-					{ (currentPlayback.repeat_mode === 0) &&
-						<button onClick={repeatMode} className="playerButton">
-						<i className="fas fa-retweet"></i>
-						</button>}
-
-				</p>
-
-				<div className="progressBar">
-					<p style={{paddingRight:2}} className="progressText">{msToMinAndSec(progress)}</p>
-					<input style={{margin:0}} value={progress} max={currentPlayback.duration} min="0" type="range" step="1000" onChange={e => seekPosition(e.target.value)}></input>
-					<p style={{paddingLeft:2}} className="progressText">{msToMinAndSec(currentPlayback.duration)}</p>
-				</div>
-
-			</div>
-
-			<div className="sound-device">
-				<button onClick={repeatMode} className="playerButton" style={{color: "white", marginLeft:5 }}>
-				<img src={require("./img/speaker.svg")}></img>
-				</button>
-			</div>
-			
-		</div>
+        </div>
+		
 	);
 }
 
