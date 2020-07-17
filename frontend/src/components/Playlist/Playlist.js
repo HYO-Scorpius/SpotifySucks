@@ -13,7 +13,6 @@ function Playlist({
    token
 }) {
    const [pane, setPane] = useState("outer"); 
-   const [refresh, setRefresh] = useState(false);
    const [selectedPlaylist, setSelectedPlaylist] = useState(null); 
    const [playlists, setPlaylists] = useState(null);
    useEffect(() => {
@@ -22,9 +21,6 @@ function Playlist({
             setPlaylists(data.items)
          )
          .catch( (err) => {
-               if (err.statusCode == 401) {
-                  setRefresh(true);
-               }
                console.log('frontend::Playlist.js spotifyApi.getUserPlaylists() failed. Error: ', err);
             }
          )         
@@ -32,10 +28,6 @@ function Playlist({
    }, [spotifyApi, token, pane]);
    return (
       <div>
-      {refresh && 
-         <RefreshDialog 
-            spotifyApi={spotifyApi} />}
-
       {pane === "outer" && playlists && 
          <PlaylistOuter 
             playlists={playlists} 
