@@ -225,11 +225,11 @@ function App() {
     }, [token]);
 
     useEffect(() => {
-        if (token) {
+        if (token && window.Spotify) {
             console.log(token);
             window.onSpotifyWebPlaybackSDKReady();
         }
-    },[token]);
+    },[token, window.onSpotifyWebPlaybackSDKReady]);
 
     return (
         <div>
