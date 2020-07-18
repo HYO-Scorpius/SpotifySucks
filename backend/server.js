@@ -116,22 +116,19 @@ app.get("/callback", (req, res) => {
 });
 
 //Refresh spotify access token
-app.get("/refresh", (_, res) => {
-  res.send("go away");
-  spotifyApi.refreshAccessToken().then(
-    (data) => {
-      let a_token = data.body["access_token"];
-      spotifyApi.setAccessToken(a_token);
+app.get('/refresh/:r_token', (req, res) =>{
+   spotifyApi.setRefreshToken(req.params.r_token);
+   spotifyApi.refreshAccessToken().then (
+      (data) => {
+         let a_token = data.body['access_token'];
+         spotifyApi.setAccessToken(a_token);
 
-      res.cookie("api_token", a_token, { maxAge: 3600000 });
-    },
-    (err) => {
-      console.log(
-        "backend::app.js::/refresh spotifyApi.refreshAccessToken failed. Error: ",
-        err
-      );
-    }
-  );
+         res.cookie('api_token', a_token, {maxAge: 3600000});
+         res.send(a_token);
+      },
+      (err) => {
+         console.log('backend::app.js::/refresh spotifyApi.refreshAccessToken failed. Error: ', err);
+      });
 });
 
 //Logout for dev purposes for now
@@ -161,41 +158,42 @@ app.get(
           req.params.type
         );
       },
-      (err) => {
-        console.log(err);
-      }
-    );
-  }
-);
+   (err) =>{
+       console.log(err);
+   });
+});
 
-const makePlaylist = (api, user, playlist, URIs, replace, type) => {
-  let playlistName = playlist.name;
-  if (replace) {
-    let replaceURIs = [];
-    URIs.forEach((uri) => {
-      let objRet = {};
-      objRet["uri"] = uri;
-      replaceURIs.push(objRet);
-    });
-    api.removeTracksFromPlaylist(playlist.id, replaceURIs).then(
-      (_) => {
-        fillPlaylist(api, URIs, playlist);
-      },
-      (err) => {
-        console.log(
-          "server.js::makePlaylist removeTracksFromPlaylist failed error: ",
-          err
-        );
-      }
-    );
-  } else {
-    if (type != "random") {
-      playlistName += ` shuffled by ${type} because Spotify Sucks`;
-    } else {
-      playlistName += " shuffled without bias because Spotify Sucks";
-    }
 
-    api.createPlaylist(user, playlistName, { public: false }).then(
+const makePlaylist = (api, user, playlist,  URIs, replace, type) => {
+   let playlistName = playlist.name;
+   let playlistDets = playlist.name;
+   if (replace) {
+      let replaceURIs = [];
+      URIs.forEach((uri) => {
+         let objRet = {};
+         objRet['uri'] = uri;
+         replaceURIs.push(objRet);
+      });
+      api.removeTracksFromPlaylist(playlist.id, replaceURIs).then(
+         (_) => {
+            fillPlaylist(api, URIs, playlist);
+         },
+         (err) => {
+            console.log("server.js::makePlaylist removeTracksFromPlaylist failed error: ",err);
+         }); 
+   } 
+   else {
+      playlistName += ` [${type} shuffle]`;
+      if (type != "random")
+      {
+         playlistDets += ` shuffled  by ${type} because Spotify Sucks (not really, their API is actually pretty cool)`;
+      }
+      else
+      {
+         playlistDets += " shuffled without bias because Spotify Sucks (not really, their API is actually pretty cool)";
+      }
+
+      api.createPlaylist(user, playlistName, {public: false, description: playlistDets}).then(
       (data) => {
         fillPlaylist(api, URIs, data.body);
       },

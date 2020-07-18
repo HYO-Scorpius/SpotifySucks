@@ -1,30 +1,40 @@
 .playlist-info img {
-    width: 200px;
-    margin-bottom: 5px;
+    object-fit: cover;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 10px;
 }
 
 .playlist-grid {
+    margin-top: 15px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
 }
 
+
 .playlist-info {
-    padding: 15px;
+    padding: 14px;
+    color: white;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     border-radius: 15px;
     transition: 0.2s;
+    margin-right: 15px;
+    background-color: black;
+    border: 1px solid rgba(255, 255, 255, 0.39);
+    margin-bottom: 15px;
 }
 
 .playlist-info:hover {
-    background-color: #2FA7A4;
+    background-color: #1f6d6c;
 }
 
-.playlist-info:hover > .playlist-name {
-    text-shadow: 1px 1px 2px black;
+.playlist-by {
+    padding-top: 5px;
+    font-size: small;
 }
 
 .popuptext.playlist-text, .popuptext.track-text {
@@ -40,7 +50,9 @@
 }
 
 .playlist-name {
-    width: 200px;
+    width: 150px;
+    font-weight: 900;
+    font-size: smaller;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -54,20 +66,18 @@
 /* shuffle */
 
 #options {
-    float: left;
     background-color: white;
     padding: 5px;
     border: 0px solid white;
     border-radius: 3px;
     cursor: pointer;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: bold;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 550;
     margin-bottom: 10px;
     margin-right: 10px;
 }
 
 .back {
-    float: left;
     font-weight: bold;
     opacity: 0.7;
     background-color: #2FA7A4;
@@ -81,7 +91,7 @@
 }
 
 .marginIcon {
-    margin-right: 2px;
+    margin-right: 5px;
 }
 
 .shuffle-buttons > button:hover {
@@ -89,10 +99,65 @@
     border-color:rgb(213, 219, 219);
 }
 
-.playlist-title {
-    margin-top: 20px;
-    margin-bottom: 15px;
+.playlist-header {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.playlist-header select {
+    width: 300px;
+    margin-left: auto;
+    height: 30px;
+    text-align-last:center;
+    padding-right: 29px;
+}
+
+.playlist-header button {
+    width: 300px;
+    margin-left: auto;
+    height: 30px;
+}
+
+.shuffle-buttons {
+    display: flex;
+    margin-left: auto;
+    justify-items: flex-end;
+    flex-direction: column;
+}
+
+.playlist-header img {
+    object-fit: cover;
+    width: 240px;
+    height: 240px;
+}
+
+.playlist-description {
     cursor: context-menu;
+    margin-top: 0;
+    padding-top: 5px;
+    padding-left: 30px;
+    padding-right: 30px;
+    height: 100%;
+    margin-bottom: auto;
+}
+
+.playlist-title {
+    display: flex;
+    margin-top: 0;
+    margin-right: auto;
+    margin-bottom: 15px;
+}
+
+.playlist-title .marginIcon {
+    margin-right: 7px;
+    font-size: larger;
+}
+
+.created-by {
+    color: #299997;
 }
 
 .track-container {
@@ -101,10 +166,17 @@
     display: flex;
     flex-direction: row;
     margin-bottom: 6px;
+    height: 17px;
     border-bottom: 1px solid white;
     border-radius: 4px;
     font-size: smaller;
     cursor: context-menu;
+}
+
+.smallicon {
+    margin: 0;
+    margin-right: 5px;
+    font-size: 12px;
 }
 
 .track-title {
@@ -127,8 +199,7 @@
 .track-duration {
     text-align: right;
     margin: 0;
-    margin-left: 15px;
-    width: calc(10% - 15px);
+    margin-left: auto;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

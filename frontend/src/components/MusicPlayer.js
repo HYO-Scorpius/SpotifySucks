@@ -1,146 +1,228 @@
 import React, { useState, useEffect } from "react";
 import "./MusicPlayer.css";
 import {msToMinAndSec} from './../helper'
+//import { act } from "react-dom/test-utils";
 
 // Class components should always call base consturctor with props
 function MusicPlayer({
-  spotifyApi,
-  loading,
-  deviceID,
-  progress,
-  currentPlayback,
-  setProgress
+	spotifyApi,
+	loading,
+	deviceID,
+	progress,
+	setProgress,
+	currentPlayback,
+    token
 }) {
 
-  // Play song already loaded
-  function startUserPlayback() {
-    spotifyApi.play();
-  }
+    const [devices, setDevices] = useState([])
+    const [popup, setPopup] = useState(false)
 
-  // Pause the player
-  function pause() {
-    spotifyApi.pause().then(() => {
-      console.log("Paused!");
-    });
-  }
+    useEffect( () => {
+        if (token) {
+            // get available devices
+            spotifyApi.getMyDevices().then(
+                data =>  setDevices(data.devices)
+            ).catch( err => console.log(err))
+        }
+    }, [token, spotifyApi, deviceID, currentPlayback])
 
-  // toggle shuffle
-  function toggleShuffle() {
-    spotifyApi.setShuffle(!currentPlayback.shuffle);
-  }
+    function togglePopup() {
+        setPopup( state => (!state))
+    }
 
-  // Skip to the next track
-  function seekTrack() {
-    spotifyApi.skipToNext().then(() => {
-      console.log("Skipped to next track!");
-      console.log("Seek device id", deviceID);
-    });
-  }
+	// Play song already loaded
+	function startUserPlayback() {
+		if (currentPlayback.connected) {
+			spotifyApi.play({
+				"device_id": deviceID
+			}).catch(err => console.log(err));
+		} else {
+			spotifyApi.transferMyPlayback([deviceID], {
+				play: true
+			});
+		}
+		
+	}
 
-  // Go back to the previous track
-  function prevTrack() {
-    spotifyApi.skipToPrevious().then(() => {
-      console.log("Set to previous track!");
-    });
-  }
+	// Pause the player
+	function pause() {
+		spotifyApi.pause().then(() => {
+			console.log("Paused!");
+		}).catch(err => console.log(err));
+	}
 
-  // select repeat mode
-  function repeatMode() {
-    let mode = "";
-    if (currentPlayback.repeat_mode === 2) mode = "off";
-    else if (currentPlayback.repeat_mode === 1) mode = "track"
-    else mode = "context"
-    spotifyApi.setRepeat(mode)
-  }
+	// toggle shuffle
+	function toggleShuffle() {
+		if (currentPlayback.connected) {
+			spotifyApi.setShuffle(!currentPlayback.shuffle).catch(err => console.log(err));
+		}
+	}
 
-  // Seek To Position In Currently Playing Track
-  function seekPosition(value) {
-    spotifyApi.seek(value).then(() => {
-      console.log("Seeked position " + value)
-    })
-  }
+	// Skip to the next track
+	function seekTrack() {
+		if (currentPlayback.connected) {
+			spotifyApi.skipToNext().then(() => {
+				console.log("Skipped to next track!");
+				console.log("Seek device id", deviceID);
+			}).catch(err => console.log(err));
+		}
+		
+	}
 
-  // update progress bar every second
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!currentPlayback.paused) setProgress(progress => progress + 1000);
-    }, 1000);
-    return () => clearInterval(interval);
-  });
+	// Go back to the previous track
+	function prevTrack() {
+		if (currentPlayback.connected) {
+            if (progress < 3000) {
+                spotifyApi.skipToPrevious().then(() => {
+    				console.log("Set to previous track!");
+    			}).catch(err => console.log(err));
+            } else {
+                spotifyApi.seek(0).catch(err => console.log(err));
+            }
+			
+		}
+		
+	}
 
-  // javascript conditional { boolean ?() : () }
-  return (
-    <div className="footer">
+	// select repeat mode
+	function repeatMode() {
+		if (currentPlayback.connected) {
+			let mode = "";
+			if (currentPlayback.repeat_mode === 2) mode = "off";
+			else if (currentPlayback.repeat_mode === 1) mode = "track"
+			else mode = "context"
+			spotifyApi.setRepeat(mode).catch(err => console.log(err));
+		}
+		
+	}
 
-      <div className="loading" style={{visibility: loading}}>
-        <img src={require('./img/loading.gif')} ></img>
-      </div>
+	// Seek To Position In Currently Playing Track
+	function seekPosition(value) {
+		if (currentPlayback.connected) {
+			spotifyApi.seek(value).then(() => {
+				console.log("Seeked position " + value)
+			}).catch(err => console.log(err));
+		}
+		
+	}
 
-      <div className="info">
-        <div className="album_info">
-          <img
-            src={currentPlayback.image_url}
-            className="albumImage"
-            alt="logo"
-          />
+	// update progress bar every second
+	useEffect(() => {
+		const interval = setInterval(() => {
+			if (!currentPlayback.paused) setProgress(progress => progress + 1000);
+		}, 1000);
+		return () => clearInterval(interval);
+	},[token, setProgress, currentPlayback.paused]);
+
+	// javascript conditional { boolean ?() : () }
+	return (
+
+        <div>
+
+            <div className="footer">
+            
+                <div className="loading" style={{visibility: loading}}>
+                    <img alt= "loading" src={require('./img/loading.gif')} ></img>
+                </div>
+                
+                <div className="info">
+                    <div className="album_info">
+                        <img
+                            src={currentPlayback.image_url}
+                            className="albumImage"
+                            alt="logo"
+                        />
+                    </div>
+                
+                    <div className="track_info popup">
+                        {!currentPlayback.connected && <p style={{fontSize:10, fontWeight:"bold"}}>Disconnected - click play to connect</p> }
+                        <p> {currentPlayback.track_name}</p>
+                        <span className="popuptext" id="myPopup">{currentPlayback.track_name} <br></br> {"by " + currentPlayback.artist_name} <br></br> {"from " + currentPlayback.playlist} </span>
+                        <p style={{fontSize:12}}> {currentPlayback.artist_name}</p>
+                        <p style={{fontSize:10, fontWeight:"bold", color:"#2FA7A4"}}> {currentPlayback.playlist}</p>
+                    </div>
+                </div>
+                
+                
+                <div className="player">
+                
+                    <p className="player_controls">
+                        {/* shuffle and repeat buttons not working yet */}
+                        <button className="playerButton" onClick={toggleShuffle} style={{color: currentPlayback.shuffle ? "#2FA7A4" : "white"}}>
+                            <i className="fas fa-random"></i>
+                        </button>
+                
+                        <button className="playerButton" onClick={prevTrack}>
+                            <i className="fas fa-step-backward"></i>
+                        </button>
+                
+                        {!currentPlayback.paused && <button className="playerButton" onClick={pause}><i className="far fa-pause-circle"></i></button>}
+                        {currentPlayback.paused && <button className="playerButton" onClick={startUserPlayback}><i className="far fa-play-circle"></i></button>}
+                
+                        <button className="playerButton" onClick={seekTrack}>
+                            <i className="fas fa-step-forward"></i>
+                        </button>
+                
+                        {(currentPlayback.repeat_mode === 2) &&
+                            <button onClick={repeatMode} className="playerButton"> 
+                                <img alt="repeat" src={require("./img/repeat.svg")}></img>
+                            </button>}
+                
+                        
+                        { (currentPlayback.repeat_mode === 1) &&
+                            <button onClick={repeatMode} className="playerButton" style={{color: "#2FA7A4" }}>
+                            <i className="fas fa-retweet"></i>
+                            </button>}
+                        
+                        { (currentPlayback.repeat_mode === 0) &&
+                            <button onClick={repeatMode} className="playerButton">
+                            <i className="fas fa-retweet"></i>
+                            </button>}
+                
+                    </p>
+                
+                    <div className="progressBar">
+                        <p style={{paddingRight:2}} className="progressText">{msToMinAndSec(progress)}</p>
+                        <input style={{margin:0}} value={progress} max={currentPlayback.duration} min="0" type="range" step="1000" onChange={e => seekPosition(e.target.value)}></input>
+                        <p style={{paddingLeft:2}} className="progressText">{msToMinAndSec(currentPlayback.duration)}</p>
+                    </div>
+                
+                </div>
+                
+                <div className="device">
+                    <button onClick={togglePopup} className="playerButton device-button" style={{color: "white", marginLeft:"auto" }}>
+                        <img alt="speaker" style={{ marginLeft:"auto" }}src={require("./img/speaker.svg")}></img>
+                    </button>
+                </div>    
+
+            </div>
+
+            { popup &&
+                <div className="devices-available">
+                    {devices.map(device => 
+                        <Device key={device.id} device={device} spotifyApi={spotifyApi} />
+                    )}
+                    <div className="arrow"></div>
+                </div> 
+            }            
+
         </div>
-  
-        <div className="track_info popup">
-          <p> {currentPlayback.track_name}</p>
-          <span className="popuptext" id="myPopup">{currentPlayback.track_name} <br></br> {"by " + currentPlayback.artist_name} <br></br> {"from " + currentPlayback.playlist} </span>
-          <p style={{fontSize:12}}> {currentPlayback.artist_name}</p>
-          <p style={{fontSize:10, fontWeight:"bold", color:"#2FA7A4"}}> {currentPlayback.playlist}</p>
-        </div>
-      </div>
-      
+		
+	);
+}
 
-      <div className="player">
+function Device({device, spotifyApi}) {
 
-        <p className="player_controls">
-          {/* shuffle and repeat buttons not working yet */}
-          <button className="playerButton" onClick={toggleShuffle} style={{color: currentPlayback.shuffle ? "#2FA7A4" : "white"}}>
-            <i className="fas fa-random"></i>
-          </button>
+    const device_id = device.id
 
-          <button className="playerButton" onClick={prevTrack}>
-            <i className="fas fa-step-backward"></i>
-          </button>
+    function tranfer() {
+        spotifyApi.transferMyPlayback([device_id]);
+    }
 
-          {!currentPlayback.paused && <button className="playerButton" onClick={pause}><i className="far fa-pause-circle"></i></button>}
-          {currentPlayback.paused && <button className="playerButton" onClick={startUserPlayback}><i className="far fa-play-circle"></i></button>}
+    return(
+        <p onClick={tranfer} style={{color: device.is_active? "#27918f" : "white"}}> <i className="fas fa-desktop marginIcon"></i> {device.name} </p>
+    )
 
-          <button className="playerButton" onClick={seekTrack}>
-            <i className="fas fa-step-forward"></i>
-          </button>
-
-          {(currentPlayback.repeat_mode === 2) &&
-            <button onClick={repeatMode} className="playerButton"> 
-              <img src={require("./img/repeat.svg")}></img>
-            </button>}
-
-          
-          { (currentPlayback.repeat_mode === 1) &&
-            <button onClick={repeatMode} className="playerButton" style={{color: "#2FA7A4" }}>
-            <i className="fas fa-retweet"></i>
-            </button>}
-          
-          { (currentPlayback.repeat_mode === 0) &&
-            <button onClick={repeatMode} className="playerButton" style={{color: "white" }}>
-            <i className="fas fa-retweet"></i>
-            </button>}
-
-        </p>
-
-        <div className="progressBar">
-          <p style={{paddingRight:2}} className="progressText">{msToMinAndSec(progress)}</p>
-          <input style={{margin:0}} value={progress} max={currentPlayback.duration} min="0" type="range" step="1000" onChange={e => seekPosition(e.target.value)}></input>
-          <p style={{paddingLeft:2}} className="progressText">{msToMinAndSec(currentPlayback.duration)}</p>
-        </div>
-
-      </div>
-      
-    </div>
-  );
 }
 
 export default MusicPlayer;
