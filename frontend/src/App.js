@@ -38,7 +38,7 @@ function App() {
                 }
                 console.log('frontend::App.js spotifyApi.getMe() failed. Error: ', err);
             });      
-    },[needsRefresh]);
+    },[]);
   
     const [loading, setLoading] = useState("visible")
     const [player, setPlayer] = useState(null);
@@ -224,7 +224,7 @@ function App() {
                 player.connect();
             };
         }
-    }, [token, needsRefresh]);
+    }, [token]);
 
     return (
         <div>
