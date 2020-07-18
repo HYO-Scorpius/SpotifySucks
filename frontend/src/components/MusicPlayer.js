@@ -9,8 +9,9 @@ function MusicPlayer({
 	loading,
 	deviceID,
 	progress,
+	setProgress,
 	currentPlayback,
-	setProgress
+    token
 }) {
 
     const [devices, setDevices] = useState([])
@@ -21,7 +22,7 @@ function MusicPlayer({
         spotifyApi.getMyDevices().then(
             data =>  setDevices(data.devices)
         ).catch( err => console.log(err))
-    }, [spotifyApi, deviceID, currentPlayback])
+    }, [token, spotifyApi, deviceID, currentPlayback])
 
     function togglePopup() {
         setPopup( state => (!state))
@@ -109,7 +110,7 @@ function MusicPlayer({
 			if (!currentPlayback.paused) setProgress(progress => progress + 1000);
 		}, 1000);
 		return () => clearInterval(interval);
-	});
+	},[token, setProgress, currentPlayback.paused]);
 
 	// javascript conditional { boolean ?() : () }
 	return (
@@ -118,9 +119,11 @@ function MusicPlayer({
 
             <div className="footer">
             
+        {/*
                 <div className="loading" style={{visibility: loading}}>
                     <img src={require('./img/loading.gif')} ></img>
                 </div>
+        */}
                 
                 <div className="info">
                     <div className="album_info">
@@ -162,7 +165,7 @@ function MusicPlayer({
                 
                         {(currentPlayback.repeat_mode === 2) &&
                             <button onClick={repeatMode} className="playerButton"> 
-                                <img src={require("./img/repeat.svg")}></img>
+                                <img alt="repeat" src={require("./img/repeat.svg")}></img>
                             </button>}
                 
                         
@@ -188,7 +191,7 @@ function MusicPlayer({
                 
                 <div className="device">
                     <button onClick={togglePopup} className="playerButton device-button" style={{color: "white", marginLeft:"auto" }}>
-                        <img style={{ marginLeft:"auto" }}src={require("./img/speaker.svg")}></img>
+                        <img alt="speaker" style={{ marginLeft:"auto" }}src={require("./img/speaker.svg")}></img>
                     </button>
                 </div>    
 

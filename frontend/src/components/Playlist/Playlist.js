@@ -2,7 +2,6 @@ import React, {useState, useEffect} from "react";
 import "./Playlist.css";
 import PlaylistInner from "./PlaylistInner";
 import PlaylistOuter from "./PlaylistOuter";
-import RefreshDialog from "../RefreshDialog";
 
 function Playlist({ 
     spotifyApi,
@@ -10,21 +9,27 @@ function Playlist({
     currentPlayback,
     player,
     deviceID,
-    token
+    token,
+    setNeedsRefresh
 }) {
     const [pane, setPane] = useState("outer"); 
     const [selectedPlaylist, setSelectedPlaylist] = useState(null); 
     const [playlists, setPlaylists] = useState(null);
     useEffect(() => {
-        if (token) {
-            spotifyApi.getUserPlaylists({limit:50}).then( (data) =>
+        if (spotifyApi.getAccessToken()) {
+            spotifyApi.getUserPlaylists({limit:50}).then( (data) => {
+                console.log("yipyip");
                 setPlaylists(data.items)
+            }
             )
             .catch( (err) => {
+                if(err.status === 401) {
+                   setNeedsRefresh(true);
+                }
                 console.log('frontend::Playlist.js spotifyApi.getUserPlaylists() failed. Error: ', err);
             })         
         }
-    }, [spotifyApi, token, pane]);
+    }, [token, spotifyApi, pane, setNeedsRefresh]);
     return (
         <div>
             {pane === "outer" && playlists && 
@@ -34,7 +39,7 @@ function Playlist({
                     setSelectedPlaylist = {setSelectedPlaylist}
                     spotifyApi = {spotifyApi}
                     user = {user}
-                    token = {token}
+                    token = {spotifyApi.getAccessToken()}
                 />
             }
       
@@ -48,7 +53,8 @@ function Playlist({
                     currentPlayback = {currentPlayback}
                     player = {player}
                     deviceID = {deviceID}
-                    token = {token}
+                    token = {spotifyApi.getAccessToken()}
+                    setNeedsRefresh = {setNeedsRefresh}
                 />
             )}
         </div>

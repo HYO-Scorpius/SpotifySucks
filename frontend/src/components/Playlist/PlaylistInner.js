@@ -10,7 +10,8 @@ function PlaylistInner({
 	currentPlayback,
 	player,
 	token,
-	deviceID
+	deviceID,
+   setNeedsRefresh
 }) {
 	const [tracks, setTracks] = useState(null); 
 
@@ -19,9 +20,12 @@ function PlaylistInner({
 			(data) => {
 				setTracks(data.items);
 			}).catch((err) => {
-				console.log('frontend::PlaylistInner.js spotifyApi.getPlaylistTracks() failed. Error: ', err);
+                if(err.status === 401) {
+                   setNeedsRefresh(true);
+                }
+               console.log('frontend::PlaylistInner.js spotifyApi.getPlaylistTracks() failed. Error: ', err);
 			});
-	},[selectedPlaylist, spotifyApi]);
+	},[selectedPlaylist, spotifyApi, setNeedsRefresh]);
 
 	return (
 		<div> 
@@ -34,6 +38,7 @@ function PlaylistInner({
 					playlist = {selectedPlaylist} 
 					user = {user}
 					token = {token}
+               setNeedsRefresh = {setNeedsRefresh}
 				/>
 			</div>
 			<div>

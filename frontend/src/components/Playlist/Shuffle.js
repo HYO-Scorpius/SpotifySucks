@@ -1,10 +1,11 @@
-import React, {useState, useDebugValue, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 
 function Shuffle({ 
     spotifyApi,
     playlist,
     user,
-    token
+    token,
+    setNeedsRefresh
 }) {
     
     const [type, setType] = useState('random');
@@ -18,16 +19,21 @@ function Shuffle({
         if (token) {
             spotifyApi.getPlaylist(playlist.id)
                 .then((data) => setFollowers(followersWithCommas(data.followers.total)))
-                .catch(err => console.log(err))
+                .catch((err) => {
+                    if(err.status === 401) {
+                       setNeedsRefresh(true);
+                    }
+                    console.log(err)
+                })
         }
-    }, [followers, playlist, spotifyApi, user])
+    }, [followers, playlist, spotifyApi, user, setNeedsRefresh, token])
 
     let apiUrl = `/api/${spotifyApi.getAccessToken()}/shuffle/types/${type}/user/${user.id}/playlists/${playlist.id}/replace/`;
     return (
         <div> 
             <div>
                 <div className="playlist-header">
-                    <img src={playlist.images[0].url}></img>
+                    <img alt= "playlist cover" src={playlist.images[0].url}></img>
      
                     <div className="playlist-description">
                         <h2 className="playlist-title"><i className="fab fa-spotify marginIcon"></i> {playlist.name}</h2>
