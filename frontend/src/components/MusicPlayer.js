@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./MusicPlayer.css";
 import {msToMinAndSec} from './../helper'
-import { act } from "react-dom/test-utils";
+//import { act } from "react-dom/test-utils";
 
 // Class components should always call base consturctor with props
 function MusicPlayer({
@@ -119,11 +119,9 @@ function MusicPlayer({
 
             <div className="footer">
             
-        {/*
                 <div className="loading" style={{visibility: loading}}>
-                    <img src={require('./img/loading.gif')} ></img>
+                    <img alt= "loading" src={require('./img/loading.gif')} ></img>
                 </div>
-        */}
                 
                 <div className="info">
                     <div className="album_info">

@@ -8,7 +8,6 @@ function PlaylistOuter({
     
     return (
         <div className="playlist-grid"> 
-        {console.log(playlists)}
             {playlists.map((playlist) =>{ 
                 return (
                     <div key={playlist.id}>

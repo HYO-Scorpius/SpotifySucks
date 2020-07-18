@@ -8,20 +8,20 @@ import RefreshDialog from './components/RefreshDialog';
 //import FriendSyncTab from './components/FriendSyncTab';
 //import MultiPlaylistTab from './components/MultiPlaylistTab';
 import { getCookie } from './helper';
+const spotifyApi = new SWA();
 
 function App() {
    	const [needsRefresh, setNeedsRefresh] = useState(false);
-   	const [spotifyApi, setSpotifyApi] = useState(new SWA());
    	const [user, setUser] = useState({});
 
 
-//    useEffect(() => {
-//        //regularly get api token
-//        const token = getCookie('api_token') || null;
-//        if (token) {
-//            spotifyApi.setAccessToken(token);
-//        }
-//    },[needsRefresh]);
+    useEffect(() => {
+        //regularly get api token
+        const token = getCookie('api_token') || null;
+        if (token) {
+            spotifyApi.setAccessToken(token);
+        }
+    },[needsRefresh]);
 
     useEffect(() => {
         //regularly get user
@@ -38,7 +38,7 @@ function App() {
                 }
                 console.log('frontend::App.js spotifyApi.getMe() failed. Error: ', err);
             });      
-    },[spotifyApi, needsRefresh]);
+    },[needsRefresh]);
   
     const [loading, setLoading] = useState("visible")
     const [player, setPlayer] = useState(null);
@@ -61,10 +61,8 @@ function App() {
     
     useEffect(() => {
         setToken(spotifyApi.getAccessToken());
-        console.log("nani");
         if (token){
             window.onSpotifyWebPlaybackSDKReady = () => {
-                console.log("ewwe");
                 const player = new window.Spotify.Player({
                     name: "Spotify Sucks",
                     getOAuthToken: (cb) => {
@@ -226,7 +224,7 @@ function App() {
                 player.connect();
             };
         }
-    }, [token, spotifyApi, needsRefresh]);
+    }, [token, needsRefresh]);
 
     return (
         <div>

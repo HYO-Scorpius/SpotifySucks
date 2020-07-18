@@ -16,9 +16,8 @@ function Playlist({
     const [selectedPlaylist, setSelectedPlaylist] = useState(null); 
     const [playlists, setPlaylists] = useState(null);
     useEffect(() => {
-        if (spotifyApi.getAccessToken()) {
+        if (token) {
             spotifyApi.getUserPlaylists({limit:50}).then( (data) => {
-                console.log("yipyip");
                 setPlaylists(data.items)
             }
             )
