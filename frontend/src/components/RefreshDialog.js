@@ -10,7 +10,8 @@ import { getCookie } from '../helper';
 function RefreshDialog({
     spotifyApi,
     open,
-    setOpen
+    setOpen,
+    setToken
 }) {
     
     const handleClose = () => {
@@ -24,6 +25,7 @@ function RefreshDialog({
         .then(() => {
             let token = getCookie('api_token') || null;
             spotifyApi.setAccessToken(token); 
+            setToken(token);
             handleClose();
         })
         .catch((err) => console.log("refresh failed: ", err))
