@@ -189,7 +189,7 @@ function MusicPlayer({
                 
                 <div className="device">
                     <button onClick={togglePopup} className="playerButton device-button" style={{color: "white", marginLeft:"auto" }}>
-                        <img alt="speaker" style={{ marginLeft:"auto" }}src={require("./img/speaker.svg")}></img>
+                        <img alt="speaker" style={{ marginLeft:"auto" }} src={require("./img/speaker.svg")}></img>
                     </button>
                 </div>    
 
