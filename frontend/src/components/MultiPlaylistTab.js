@@ -62,6 +62,22 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       });
   }
 
+  function getTrackList(url) {
+    fetch(url, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    })
+     .then((res) => res.json())
+     .then((json) => {
+        console.log("Track Json ", json.items["track"]);
+      })
+      .catch(function () {
+        console.log("Error with playlists");
+      });
+  }
 
   return (
     <div>
@@ -95,7 +111,7 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
           <ul>
             {
               playlists.map((playlist) => (
-                <li onClick={ () => (playlist.tracks) }>
+                <li onClick={ () => getTrackList(playlist.tracks) }>
                   <input type="checkbox" value={playlist.name} />
                   {playlist.name}
                   <div> {tracks.name}</div>
