@@ -108,14 +108,15 @@ app.get('/callback', (req, res) => {
 
 
 //Refresh spotify access token
-app.get('/refresh', (_, res) =>{
-   res.send("go away");
+app.get('/refresh/:r_token', (req, res) =>{
+   spotifyApi.setRefreshToken(req.params.r_token);
    spotifyApi.refreshAccessToken().then (
       (data) => {
          let a_token = data.body['access_token'];
          spotifyApi.setAccessToken(a_token);
 
          res.cookie('api_token', a_token, {maxAge: 3600000});
+         res.send(a_token);
       },
       (err) => {
          console.log('backend::app.js::/refresh spotifyApi.refreshAccessToken failed. Error: ', err);
@@ -142,7 +143,7 @@ app.get('/api/:access_token/shuffle/types/:type/user/:userId/playlists/:playlist
          makePlaylist(spotifyApi, req.params.userId, data.body, URIs, req.params.replace === 'yes', req.params.type);
       },
    (err) =>{
-   console.log(err);
+       console.log(err);
    });
 });
 

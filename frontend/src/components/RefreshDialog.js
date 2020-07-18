@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -18,8 +18,9 @@ function RefreshDialog({
     };
     
     const refreshToken = () => {
-        let refreshURl = "";
-        fetch("/refresh")
+        let r_token = getCookie('refresh_token');
+        let refreshURL = `/refresh/${r_token}`;
+        fetch(refreshURL)
         .then(() => {
             let token = getCookie('api_token') || null;
             spotifyApi.setAccessToken(token); 
