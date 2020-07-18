@@ -80,9 +80,7 @@ function App() {
                 });
         
                 player.addListener("authentication_error", ({ message }) => {
-                    if (needsRefresh === false){
-                        setNeedsRefresh(true);
-                    }
+                    setNeedsRefresh(true);
                     console.error("Auth Error", message);
                 });
             
@@ -226,6 +224,13 @@ function App() {
         }
     }, [token]);
 
+    useEffect(() => {
+        if (token) {
+            console.log(token);
+            window.onSpotifyWebPlaybackSDKReady();
+        }
+    },[token]);
+
     return (
         <div>
             { needsRefresh === true && 
@@ -233,6 +238,7 @@ function App() {
                     spotifyApi = {spotifyApi}
                     open = {needsRefresh}
                     setOpen = {setNeedsRefresh}
+                    setToken = {setToken}
                 />
             }
          

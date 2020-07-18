@@ -18,10 +18,12 @@ function MusicPlayer({
     const [popup, setPopup] = useState(false)
 
     useEffect( () => {
-        // get available devices
-        spotifyApi.getMyDevices().then(
-            data =>  setDevices(data.devices)
-        ).catch( err => console.log(err))
+        if (token) {
+            // get available devices
+            spotifyApi.getMyDevices().then(
+                data =>  setDevices(data.devices)
+            ).catch( err => console.log(err))
+        }
     }, [token, spotifyApi, deviceID, currentPlayback])
 
     function togglePopup() {
