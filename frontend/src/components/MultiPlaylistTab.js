@@ -6,17 +6,13 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
   const [isConnected, setConnectedState] = useState(false);
   const [playlists, setPlaylists] = useState([]);
   const [tracks, setTracks] = useState([]);
-  const [sub, setSub] = React.useState([
-    { name: "My top 10" },
-    { name: "Moody Jams" },
-    { name: "My Mixtape's On Fire" },
-  ]);
 
   // After render, establish socket and set instance
   useEffect(() => {
     setSocket(io("http://localhost:1337"));
   }, []);
 
+  // Testing out socket
   useEffect(() => {
     if (!socket) return;
 
@@ -39,7 +35,7 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
     }
   }
 
-  // Retrieve all the users playlists
+  // Retrieve current users playlists
   function getUserPlaylists() {
     fetch("https://api.spotify.com/v1/me/playlists", {
       headers: {
@@ -56,12 +52,24 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
           tracks: item.tracks.href,
         }));
         setPlaylists(fetchedPlaylists);
+        //console.log(fetchedPlaylists);
       })
       .catch(function () {
         console.log("Error with playlists");
       });
   }
 
+  function getPrivatePlaylists(user_id) {
+    fetch("https://api.spotify.com/v1/users/" + user_id + "/playlists", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    }).then((res) => res.json());
+  }
+
+  // Click list item to view all tracks under clicked playlist
   function getTrackList(url) {
     fetch(url, {
       headers: {
@@ -70,18 +78,35 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
         authorization: `Bearer ${token}`,
       },
     })
-     .then((res) => res.json())
-     .then((json) => {
-        console.log("Track Json ", json.items["track"]);
+      .then((res) => res.json())
+      .then((json) => {
+        //console.log(url);
+        //console.log("Track Json ", json.items);
+        let fetchedTracks = json.items.map((item) => ({
+          name: item.track.name,
+          id: item.track.id,
+          uri: item.track.uri,
+        }));
+        //setTracks(fetchedTracks);
+        console.log(fetchedTracks);
       })
       .catch(function () {
-        console.log("Error with playlists");
+        console.log("Could not get Tracks");
       });
   }
+
+  // Save tracks url of the clicked playlists
+  function playListBoxClicked(playlist_name, tracks_url) {
+    console.log(playlist_name);
+  }
+
+  //
+  function createPlaylist() {}
 
   return (
     <div>
       <div>
+        {/* Testing socket connection */}
         <input
           type="button"
           onClick={toggleConnection}
@@ -93,32 +118,39 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
         <input type="text" id="fname" name="fname"></input>
       </div>
 
+      {/*Gets all the playlists requested by friends */}
       <div>
-        <label for="fname">Contributors: </label>
+        <button onClick={getUserPlaylists} type="button">
+          Request
+        </button>
       </div>
 
       <div>
-        <label for="fname">Create Playlist: </label>
-        <input type="text" id="fname" name="fname"></input>
-        <button onClick={getUserPlaylists} type="button">
-          Create
-        </button>
+        <label for="fname">Contributors: </label>
       </div>
 
       <div>
         <label for="fname">
           All Accessible Playlists:
           <ul>
-            {
-              playlists.map((playlist) => (
-                <li onClick={ () => getTrackList(playlist.tracks) }>
-                  <input type="checkbox" value={playlist.name} />
-                  {playlist.name}
-                  <div> {tracks.name}</div>
-                </li>
-              ))}
+            {playlists.map((playlist) => (
+              <li onClick={() => getTrackList(playlist.tracks)}>
+                <input
+                  type="checkbox"
+                  value={playlist.name}
+                  onChange={playListBoxClicked(playlist.name, playlist.tracks)}
+                />
+                {playlist.name}
+              </li>
+            ))}
           </ul>
         </label>
+      </div>
+
+      <div>
+        <label for="fname">Create Playlist: </label>
+        <input type="text" id="fname" name="fname"></input>
+        <button type="button">Create</button>
       </div>
     </div>
   );
