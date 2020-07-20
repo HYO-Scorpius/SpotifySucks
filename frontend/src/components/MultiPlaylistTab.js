@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 
 function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
+  let textInput = React.createRef();
   const [socket, setSocket] = useState(null);
   const [isConnected, setConnectedState] = useState(false);
   const [playlists, setPlaylists] = useState([]);
+  const [privatePlaylist, setPrivatePlaylist] = useState([]);
   const [tracks, setTracks] = useState([]);
+  const [input, setInput] = useState("");
 
   // After render, establish socket and set instance
   useEffect(() => {
@@ -66,7 +69,15 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-    }).then((res) => res.json());
+    }).then((res) => res.json())
+    .then((json) => {
+      console.log("PRIVATE" ,json);
+      let fetchPrivatePlaylist = json.items.map((item) => ({
+        name: item.name,
+        tracks: item.tracks.href,
+      }));
+      setPrivatePlaylist(fetchPrivatePlaylist);
+    });
   }
 
   // Click list item to view all tracks under clicked playlist
@@ -87,7 +98,7 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
           id: item.track.id,
           uri: item.track.uri,
         }));
-        //setTracks(fetchedTracks);
+        setTracks(fetchedTracks);
         console.log(fetchedTracks);
       })
       .catch(function () {
@@ -103,6 +114,8 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
   //
   function createPlaylist() {}
 
+  
+
   return (
     <div>
       <div>
@@ -115,7 +128,8 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       </div>
       <div>
         <label for="fname">Add Friend: </label>
-        <input type="text" id="fname" name="fname"></input>
+        <input ref={textInput} type="text" onChange={e => setInput(e.target.value)} name="fname"></input>
+        <button onClick={() => getPrivatePlaylists(input)} type="button"> Private </button> 
       </div>
 
       {/*Gets all the playlists requested by friends */}
@@ -133,15 +147,14 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
         <label for="fname">
           All Accessible Playlists:
           <ul>
-            {playlists.map((playlist) => (
-              <li onClick={() => getTrackList(playlist.tracks)}>
-                <input
-                  type="checkbox"
-                  value={playlist.name}
-                  onChange={playListBoxClicked(playlist.name, playlist.tracks)}
-                />
-                {playlist.name}
-              </li>
+            {privatePlaylist.map((playlist) => (
+              <select value={playlist.name} onClick={() => getTrackList(playlist.tracks)}>
+                <option>{"--"}{playlist.name}{"--"}</option>
+                {tracks.map((track) => (
+                <option> {track.name} </option>
+                ))}
+              </select>
+             
             ))}
           </ul>
         </label>
