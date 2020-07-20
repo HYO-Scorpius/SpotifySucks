@@ -88,6 +88,10 @@
 
 .progressBar {
     width: 90%;
+}
+
+.bar-container {
+    width: 90%;
     display: flex;
     justify-content: center;
     vertical-align: middle;
@@ -133,6 +137,32 @@
 .device {
     margin-left: auto;
     margin-right: 40px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.volume-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.volume-progress {
+    width: 80px;
+    margin-right: 10px;
+    margin-left: 5px;
+}
+
+.device button {
+    margin: 0;
+}
+
+.volume-bar > .playerButton {
+    cursor: default;
+    margin-right: 5px;
+    margin-left: 5px;
 }
 
 .devices-available {
@@ -171,44 +201,4 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-}
-
-input[type='range'] {
-    cursor: pointer;
-    overflow: hidden;
-    width: 70%;
-    height: 7px;
-    -webkit-appearance: none;
-    background-color: grey;
-    border-radius: 8px;
-}
-  
-input[type='range']::-webkit-slider-runnable-track {
-    height: 7px;
-    -webkit-appearance: none;
-}
-
-input[type='range']::-webkit-slider-thumb {
-    box-shadow: -10000px 0 0 10000px #27918f;
-    -webkit-appearance: none;
-    border: none;
-    color: transparent;
-    background-color: transparent;
-    height: 7px;
-    width: 0px;
-}
-
-/* Firefox compatibility */
-input[type="range"]::-moz-range-progress {
-    background-color: #27918f;
-}
-
-input[type=range]::-moz-range-thumb {
-    background-color: transparent;
-    border: none;
-}
-
-/* IE*/
-input[type="range"]::-ms-fill-lower {
-    background-color: #27918f; 
 }

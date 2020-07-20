@@ -274,6 +274,7 @@ function App() {
                 currentPlayback = {currentPlayback}
                 setCurrentPlayback = {setCurrentPlayback}
                 token = {token}
+                player = {player}
             />
         </div>
     );
