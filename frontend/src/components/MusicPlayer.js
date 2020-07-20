@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./MusicPlayer.css";
 import {msToMinAndSec} from './../helper'
+import Nouislider from "nouislider-react";
+import "./nouisliderModified.css";
 //import { act } from "react-dom/test-utils";
 
 // Class components should always call base consturctor with props
@@ -11,11 +13,15 @@ function MusicPlayer({
 	progress,
 	setProgress,
 	currentPlayback,
-    token
+    token,
+    volume
 }) {
 
     const [devices, setDevices] = useState([])
     const [popup, setPopup] = useState(false)
+
+    var interval;
+    
 
     useEffect( () => {
         if (token) {
@@ -72,11 +78,13 @@ function MusicPlayer({
 	// Go back to the previous track
 	function prevTrack() {
 		if (currentPlayback.connected) {
-            if (progress < 3000) {
+            if (progress <= 3000) {
                 spotifyApi.skipToPrevious().then(() => {
     				console.log("Set to previous track!");
     			}).catch(err => console.log(err));
             } else {
+                clearInterval(interval)
+                setProgress(0)
                 spotifyApi.seek(0).catch(err => console.log(err));
             }
 			
@@ -96,23 +104,31 @@ function MusicPlayer({
 		
 	}
 
-	// Seek To Position In Currently Playing Track
-	function seekPosition(value) {
-		if (currentPlayback.connected) {
-			spotifyApi.seek(value).then(() => {
-				console.log("Seeked position " + value)
-			}).catch(err => console.log(err));
-		}
-		
-	}
+	// seek to position in currently playing track
+	function seekPosition(values) {
+        spotifyApi.seek(parseInt(values[0])).then(() => {
+            console.log("Seeked position " + values[0])
+        }).catch(err => console.log(err));
+    }
+
+    // update progress bar while dragging slider without calling api
+    function cooperatePls(values) {
+        setProgress(parseInt(values[0]))
+    }
+
+    // set volume
+    function changeVolume(values) {
+        spotifyApi.setVolume(parseInt(values[0])).catch(err => console.log(err))
+    }
+    
 
 	// update progress bar every second
 	useEffect(() => {
-		const interval = setInterval(() => {
-			if (!currentPlayback.paused) setProgress(progress => progress + 1000);
-		}, 1000);
+		interval = setInterval(() => {
+			if (!currentPlayback.paused) setProgress(progress => progress + 100);
+		}, 100);
 		return () => clearInterval(interval);
-	},[token, setProgress, currentPlayback.paused]);
+	},[token, setProgress, currentPlayback, currentPlayback.paused]);
 
 	// javascript conditional { boolean ?() : () }
 	return (
@@ -181,17 +197,50 @@ function MusicPlayer({
                 
                     </p>
                 
-                    <div className="progressBar">
-                        <p style={{paddingRight:2}} className="progressText">{msToMinAndSec(progress)}</p>
-                        <input style={{margin:0}} value={progress} max={currentPlayback.duration} min="0" type="range" step="1000" onChange={e => seekPosition(e.target.value)}></input>
-                        <p style={{paddingLeft:2}} className="progressText">{msToMinAndSec(currentPlayback.duration)}</p>
+
+                    <div className="bar-container">
+                        <p style={{paddingRight:5}} className="progressText">{msToMinAndSec(progress)}</p>
+                        <div className="progressBar">
+                            <Nouislider
+                                accessibility
+                                connect={[true,false]}
+                                start={progress}
+                                onChange={seekPosition}
+                                onSlide={cooperatePls}
+                                onStart={clearInterval(interval)}
+                                range={{
+                                min: 0,
+                                max: currentPlayback.duration+1
+                                }}
+                            />
+                        </div>
+                        <p style={{paddingLeft:5}} className="progressText">{msToMinAndSec(currentPlayback.duration)}</p>
                     </div>
+                    
                 
                 </div>
                 
                 <div className="device">
+                    <div className="volume-bar">
+                        <i className="fas fa-volume-down playerButton"/>
+                        <div className="volume-progress">
+                            <Nouislider
+                                accessibility
+                                connect={[true,false]}
+                                start={volume}
+                                onChange={changeVolume}
+                                step={10}
+                                range={{
+                                min: 0,
+                                max: 100
+                                }}
+                            />
+                        </div>
+                        <i className="fas fa-volume-up playerButton"/>
+
+                    </div>
                     <button onClick={togglePopup} className="playerButton device-button" style={{color: "white", marginLeft:"auto" }}>
-                        <img alt="speaker" style={{ marginLeft:"auto" }}src={require("./img/speaker.svg")}></img>
+                        <img alt="speaker" style={{ marginLeft:"auto" }} src={require("./img/speaker.svg")}></img>
                     </button>
                 </div>    
 
