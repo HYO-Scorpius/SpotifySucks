@@ -13,11 +13,13 @@ function MusicPlayer({
 	progress,
 	setProgress,
 	currentPlayback,
-    token
+    token,
+    volume
 }) {
 
     const [devices, setDevices] = useState([])
     const [popup, setPopup] = useState(false)
+
     var interval;
     
 
@@ -102,11 +104,21 @@ function MusicPlayer({
 		
 	}
 
-	// Seek To Position In Currently Playing Track
+	// seek to position in currently playing track
 	function seekPosition(values) {
         spotifyApi.seek(parseInt(values[0])).then(() => {
             console.log("Seeked position " + values[0])
         }).catch(err => console.log(err));
+    }
+
+    // update progress bar while dragging slider without calling api
+    function cooperatePls(values) {
+        setProgress(parseInt(values[0]))
+    }
+
+    // set volume
+    function changeVolume(values) {
+        spotifyApi.setVolume(parseInt(values[0])).catch(err => console.log(err))
     }
     
 
@@ -189,19 +201,18 @@ function MusicPlayer({
                     <div className="bar-container">
                         <p style={{paddingRight:5}} className="progressText">{msToMinAndSec(progress)}</p>
                         <div className="progressBar">
-                            {/* <p style={{paddingRight:2}} className="progressText">{msToMinAndSec(progress)}</p> */}
                             <Nouislider
                                 accessibility
                                 connect={[true,false]}
                                 start={progress}
                                 onChange={seekPosition}
+                                onSlide={cooperatePls}
                                 onStart={clearInterval(interval)}
                                 range={{
                                 min: 0,
                                 max: currentPlayback.duration+1
                                 }}
                             />
-                            {/* <p style={{paddingLeft:2}} className="progressText">{msToMinAndSec(currentPlayback.duration)}</p> */}
                         </div>
                         <p style={{paddingLeft:5}} className="progressText">{msToMinAndSec(currentPlayback.duration)}</p>
                     </div>
@@ -216,10 +227,12 @@ function MusicPlayer({
                             <Nouislider
                                 accessibility
                                 connect={[true,false]}
-                                start={1}
+                                start={volume}
+                                onChange={changeVolume}
+                                step={10}
                                 range={{
                                 min: 0,
-                                max: 1
+                                max: 100
                                 }}
                             />
                         </div>
