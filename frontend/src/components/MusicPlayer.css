@@ -161,13 +161,11 @@
 
 .volume-bar > .playerButton {
     cursor: default;
-    margin-right: 5px;
-    margin-left: 5px;
 }
 
 .devices-available {
     font-size: 11px;
-    right: 20px;
+    right: 10px;
     max-width: 200px;
     min-width: 70px;
     background-color: rgb(37, 37, 37);
@@ -182,7 +180,7 @@
 .arrow {
     content: "";
     position: fixed;
-    right: 41px;
+    right: 30px;
     bottom: 70px;
     margin-left: -5px;
     border-width: 5px;
