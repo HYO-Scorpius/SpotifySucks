@@ -13,19 +13,27 @@ function PlaylistInner({
 	deviceID,
    setNeedsRefresh
 }) {
-	const [tracks, setTracks] = useState(null); 
+	const [tracks, setTracks] = useState([]); 
+	const [totalTaken, setTotalTaken] = useState(0);
+	const [totalTracks, setTotal] = useState(null)
 
 	useEffect(() => {
-		spotifyApi.getPlaylistTracks(selectedPlaylist.id).then(
+		if ( (totalTracks==null) || (totalTaken < totalTracks) ) {
+			spotifyApi.getPlaylistTracks(selectedPlaylist.id, {
+				offset: totalTaken
+			}).then(
 			(data) => {
-				setTracks(data.items);
+				setTracks(state => state.concat(data.items))
+				setTotalTaken(state => state+100)
+				setTotal(data.total)
 			}).catch((err) => {
                 if(err.status === 401) {
                    setNeedsRefresh(true);
                 }
                console.log('frontend::PlaylistInner.js spotifyApi.getPlaylistTracks() failed. Error: ', err);
 			});
-	},[selectedPlaylist, spotifyApi, setNeedsRefresh]);
+		}
+	},[selectedPlaylist, spotifyApi, setNeedsRefresh, totalTaken]);
 
 	return (
 		<div> 
