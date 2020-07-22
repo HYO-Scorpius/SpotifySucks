@@ -13,13 +13,4 @@ export function msToMinAndSec(ms) {
     return mins + ':' + ((Math.log(secs) * Math.LOG10E + 1 | 0) > 1 ? secs : "0" + secs);
 }
 
-// // Play particular song
-// export function playParticularTrack(trackURI) {
-//    try {
-//      console.log(trackURI);
-//      spotifyApi.play({ uris: [trackURI] });
-//    } catch (err) {
-//      console.log(err);
-//    }
-//  };
 

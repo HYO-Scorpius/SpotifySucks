@@ -20,37 +20,36 @@ function MusicPlayer({
     const [devices, setDevices] = useState([])
     const [popup, setPopup] = useState(false)
 
-    var interval;
-    
-
+    // get available devices
     useEffect( () => {
         if (token) {
-            // get available devices
             spotifyApi.getMyDevices().then(
                 data =>  setDevices(data.devices)
             ).catch( err => console.log(err))
         }
     }, [token, spotifyApi, deviceID, currentPlayback])
 
+    // toggle device popup
     function togglePopup() {
         setPopup( state => (!state))
     }
 
-	// Play song already loaded
+	// play song
 	function startUserPlayback() {
 		if (currentPlayback.connected) {
+            // if player already connected, play already loaded song
 			spotifyApi.play({
-				"device_id": deviceID
+				device_id: deviceID
 			}).catch(err => console.log(err));
 		} else {
+            // else transfer playback
 			spotifyApi.transferMyPlayback([deviceID], {
 				play: true
 			});
 		}
-		
 	}
 
-	// Pause the player
+	// pause the player
 	function pause() {
 		spotifyApi.pause().then(() => {
 			console.log("Paused!");
@@ -64,47 +63,49 @@ function MusicPlayer({
 		}
 	}
 
-	// Skip to the next track
+	// skip to the next track
 	function seekTrack() {
 		if (currentPlayback.connected) {
 			spotifyApi.skipToNext().then(() => {
 				console.log("Skipped to next track!");
-				console.log("Seek device id", deviceID);
 			}).catch(err => console.log(err));
 		}
 		
 	}
 
-	// Go back to the previous track
+	// function associated to "previous" button
 	function prevTrack() {
 		if (currentPlayback.connected) {
+            // if progress less or equal to 3s then go to previous track
+            // else go back to beginning of current track
             if (progress <= 3000) {
                 spotifyApi.skipToPrevious().then(() => {
     				console.log("Set to previous track!");
     			}).catch(err => console.log(err));
             } else {
-                clearInterval(interval)
                 setProgress(0)
                 spotifyApi.seek(0).catch(err => console.log(err));
             }
 			
 		}
-		
 	}
 
 	// select repeat mode
 	function repeatMode() {
 		if (currentPlayback.connected) {
-			let mode = "";
-			if (currentPlayback.repeat_mode === 2) mode = "off";
-			else if (currentPlayback.repeat_mode === 1) mode = "track"
-			else mode = "context"
+            let mode = ""
+            // if current is repeating track, turn repeat off
+            if (currentPlayback.repeat_mode === 2) mode = "off"
+            // if current is repeating context, repeat track
+            else if (currentPlayback.repeat_mode === 1) mode = "track"
+            // if repeat is currently off, repeat context
+			else mode = "context" 
 			spotifyApi.setRepeat(mode).catch(err => console.log(err));
 		}
 		
 	}
 
-	// seek to position in currently playing track
+	// seek to position determined by slider in currently playing track
 	function seekPosition(values) {
         spotifyApi.seek(parseInt(values[0])).then(() => {
             console.log("Seeked position " + values[0])
@@ -112,35 +113,36 @@ function MusicPlayer({
     }
 
     // update progress bar while dragging slider without calling api
-    function cooperatePls(values) {
+    function dragSlider(values) {
         setProgress(parseInt(values[0]))
     }
 
-    // set volume
+    // set volume of player
     function changeVolume(values) {
         spotifyApi.setVolume(parseInt(values[0])).catch(err => console.log(err))
     }
     
 
-	// update progress bar every second
+	// update progress bar every 100 ms if playback not paused
 	useEffect(() => {
-		interval = setInterval(() => {
+		const interval = setInterval(() => {
 			if (!currentPlayback.paused) setProgress(progress => progress + 100);
 		}, 100);
 		return () => clearInterval(interval);
-	},[token, setProgress, currentPlayback, currentPlayback.paused]);
+	},[token, setProgress, currentPlayback]);
 
-	// javascript conditional { boolean ?() : () }
 	return (
 
         <div>
 
             <div className="footer">
             
+                {/* loading screen until player is ready */}
                 <div className="loading" style={{visibility: loading}}>
                     <img alt= "loading" src={require('./img/loading.gif')} ></img>
                 </div>
                 
+                {/* song info */}
                 <div className="info">
                     <div className="album_info">
                         <img
@@ -159,11 +161,11 @@ function MusicPlayer({
                     </div>
                 </div>
                 
-                
+                {/* buttons to control player: shuffle, play/pause, repeat */}
                 <div className="player">
                 
                     <p className="player_controls">
-                        {/* shuffle and repeat buttons not working yet */}
+
                         <button className="playerButton" onClick={toggleShuffle} style={{color: currentPlayback.shuffle ? "#2FA7A4" : "white"}}>
                             <i className="fas fa-random"></i>
                         </button>
@@ -198,6 +200,7 @@ function MusicPlayer({
                     </p>
                 
 
+                    {/* current position, progress bar, duration */}
                     <div className="bar-container">
                         <p style={{paddingRight:5}} className="progressText">{msToMinAndSec(progress)}</p>
                         <div className="progressBar">
@@ -206,8 +209,7 @@ function MusicPlayer({
                                 connect={[true,false]}
                                 start={progress}
                                 onChange={seekPosition}
-                                onSlide={cooperatePls}
-                                onStart={clearInterval(interval)}
+                                onSlide={dragSlider}
                                 range={{
                                 min: 0,
                                 max: currentPlayback.duration+1
@@ -220,6 +222,7 @@ function MusicPlayer({
                 
                 </div>
                 
+                {/* volume slider + device icon */}
                 <div className="device">
                     <div className="volume-bar">
                         <i className="fas fa-volume-down playerButton"/>
@@ -246,6 +249,7 @@ function MusicPlayer({
 
             </div>
 
+            {/* device selection popup triggered by device icon */}
             { popup &&
                 <div className="devices-available">
                     {devices.map(device => 
@@ -262,10 +266,8 @@ function MusicPlayer({
 
 function Device({device, spotifyApi}) {
 
-    const device_id = device.id
-
     function tranfer() {
-        spotifyApi.transferMyPlayback([device_id]);
+        spotifyApi.transferMyPlayback([device.id]);
     }
 
     return(
