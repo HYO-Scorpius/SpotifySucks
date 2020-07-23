@@ -11,14 +11,14 @@ function PlaylistInner({
 	player,
 	token,
 	deviceID,
-   setNeedsRefresh
+   	setNeedsRefresh
 }) {
 	const [tracks, setTracks] = useState([]); 
 	const [totalTaken, setTotalTaken] = useState(0);
-	const [totalTracks, setTotal] = useState(null)
+	const [totalTracks, setTotal] = useState(1)
 
 	useEffect(() => {
-		if ( (totalTracks==null) || (totalTaken < totalTracks) ) {
+		if ( totalTaken < totalTracks ) {
 			spotifyApi.getPlaylistTracks(selectedPlaylist.id, {
 				offset: totalTaken
 			}).then(
@@ -33,7 +33,7 @@ function PlaylistInner({
                console.log('frontend::PlaylistInner.js spotifyApi.getPlaylistTracks() failed. Error: ', err);
 			});
 		}
-	},[selectedPlaylist, spotifyApi, setNeedsRefresh, totalTaken]);
+	},[selectedPlaylist, spotifyApi, setNeedsRefresh, totalTaken, totalTracks]);
 
 	return (
 		<div> 
@@ -46,7 +46,7 @@ function PlaylistInner({
 					playlist = {selectedPlaylist} 
 					user = {user}
 					token = {token}
-               setNeedsRefresh = {setNeedsRefresh}
+               		setNeedsRefresh = {setNeedsRefresh}
 				/>
 			</div>
 			<div>
