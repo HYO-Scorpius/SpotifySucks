@@ -46,6 +46,7 @@ function App() {
     const [deviceID, setDeviceID] = useState("");
     const [token, setToken] = useState("");
     const [progress, setProgress] = useState(0);
+    const [volume, setVolume] = useState(100)
     const [currentPlayback, setCurrentPlayback] = useState({
         duration:0,
         position:0,
@@ -105,7 +106,6 @@ function App() {
                         const { duration, position, paused, shuffle, repeat_mode } = state;
                         const {
                             current_track,
-                            next_tracks: [next_track],
                         } = state.track_window;
                         const {
                             artists,
@@ -167,6 +167,7 @@ function App() {
                 player.addListener("ready", async ({ device_id }) => {
                     console.log("Ready with Device ID", device_id);
                     setDeviceID(device_id);
+                    player.getVolume().then( volume => setVolume(volume*100) )
                     // get currently playing track or last played track if not playing
                     spotifyApi.getMyCurrentPlayingTrack().then(
                         data => {
@@ -230,7 +231,7 @@ function App() {
             console.log(token);
             window.onSpotifyWebPlaybackSDKReady();
         }
-    },[token, window.onSpotifyWebPlaybackSDKReady]);
+    },[token]);
 
     return (
         <div>
@@ -281,6 +282,8 @@ function App() {
                 currentPlayback = {currentPlayback}
                 setCurrentPlayback = {setCurrentPlayback}
                 token = {token}
+                volume = {volume}
+                player = {player}
             />
         </div>
     );

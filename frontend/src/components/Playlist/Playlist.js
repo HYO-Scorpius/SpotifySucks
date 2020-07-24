@@ -14,21 +14,28 @@ function Playlist({
 }) {
     const [pane, setPane] = useState("outer"); 
     const [selectedPlaylist, setSelectedPlaylist] = useState(null); 
-    const [playlists, setPlaylists] = useState(null);
+    const [playlists, setPlaylists] = useState([]);
+    const [totalPlaylistsTaken, setTotalTaken] = useState(0)
+    const [totalPlaylists, setTotal] = useState(null)
+
     useEffect(() => {
-        if (token) {
-            spotifyApi.getUserPlaylists({limit:50}).then( (data) => {
-                setPlaylists(data.items)
-            }
-            )
-            .catch( (err) => {
+        if (token && ((totalPlaylists==null) || ( totalPlaylistsTaken < totalPlaylists))) {
+            spotifyApi.getUserPlaylists({
+                limit:50,
+                offset: totalPlaylistsTaken
+            }).then( (data) => {
+                setPlaylists(state => state.concat(data.items))
+                setTotalTaken(state => state+50)
+                setTotal(data.total)
+            }).catch( (err) => {
                 if(err.status === 401) {
                    setNeedsRefresh(true);
                 }
                 console.log('frontend::Playlist.js spotifyApi.getUserPlaylists() failed. Error: ', err);
             })         
         }
-    }, [token, spotifyApi, pane, setNeedsRefresh]);
+    }, [token, spotifyApi, pane, setNeedsRefresh, totalPlaylistsTaken]);
+
     return (
         <div>
             {pane === "outer" && playlists && 
