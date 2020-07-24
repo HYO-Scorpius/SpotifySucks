@@ -11,6 +11,8 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
   const [indexTrack, setIndexTrack] = useState([]);
   const [input, setInput] = useState("");
   const [filteredTracks, setFilter] = useState([]);
+  const [playlistURI, setPlaylistsURI] = useState([]);
+  const [playlistTitle, setPlaylistTitle] = useState("");
 
   // After render, establish socket and set instance
   useEffect(() => {
@@ -119,12 +121,54 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
   //Create unique tracks list
   function uniqueTracksList() {
     const array = [];
+    const uri = [];
     tracks.map((user)=>user.map((data)=>{
       array.push(data.name);
+      uri.push(data.uri);
     }))
     const uniqueList = [...new Set(array)]
+    const uriList = [...new Set(uri)]
     setFilter(uniqueList);
-    console.log(uniqueList);
+    setPlaylistsURI(uriList);
+    console.log(uri);
+  }
+
+  function createPlaylist(){
+
+    if(input==""){alert("Invalid user id"); return;}
+    if(playlistTitle==""){alert("Enter a playlist title!");return;}
+    let playlist_id = "";
+    fetch("https://api.spotify.com/v1/users/"+ input + "/playlists", {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        "name": playlistTitle,
+        "public": false,
+      }),
+    }).then((res) => res.json())
+    .then((json) => {
+      playlist_id = json.id;
+      console.log("Playlist ID", playlist_id);
+    });
+
+    if(!playlist_id==""){
+      
+      fetch("https://api.spotify.com/v1/playlists/"+playlist_id+"/tracks", {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        "uris": [playlistURI],
+      }),
+    });
+
+    }
+
   }
 
   
@@ -174,13 +218,16 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       </div>
 
       <div>
-        <label for="fname">Create Playlist: </label>
-        <input type="text" id="fname" name="fname"></input>
-        <button type="button" onClick={() => uniqueTracksList()}>Create</button>
-        <div className="filtered_tracks">{filteredTracks.map((filter) => (
+        <label for="fname">Create a Playlist </label>
+        <input type="text" onChange={e => setPlaylistTitle(e.target.value)}></input>
+        <button type="button" onClick={() => uniqueTracksList()}>Unique!</button>
+        <div className="filtered_tracks">
+        <p> {playlistTitle} </p>  
+        {filteredTracks.map((filter) => (
                 <p> {filter} </p>
                 ))}</div>
       </div>
+      <button type="button" onClick={() => createPlaylist()}> Create </button>
     </div>
   );
 }
