@@ -152,23 +152,26 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
     .then((json) => {
       playlist_id = json.id;
       console.log("Playlist ID", playlist_id);
+      postTracksToPlaylist(playlist_id);
     });
+  
+  }
 
-    if(!playlist_id==""){
-      
-      fetch("https://api.spotify.com/v1/playlists/"+playlist_id+"/tracks", {
+  function postTracksToPlaylist(playlist_id) {
+    fetch("https://api.spotify.com/v1/playlists/"+playlist_id+"/tracks", {
       method: "POST",
       headers: {
         authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "uris": [playlistURI],
+        uris: playlistURI,
       }),
+    }).then(console.log("Added tracks to playlist"))
+    .then(console.log("Track ARRAY", playlistURI))
+    .catch(err => {
+      console.log('Adding track Error', err);
     });
-
-    }
-
   }
 
   
