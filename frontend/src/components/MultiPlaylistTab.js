@@ -73,18 +73,21 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-    }).then((res) => res.json())
-    .then((json) => {
-      console.log("PRIVATE" ,json);
-      let fetchPrivatePlaylist = json.items.map((item, index) => ({
-        name: item.name,
-        tracks: item.tracks.href,
-        index: index = index + 1
-      }));
-      setPrivatePlaylist(fetchPrivatePlaylist);
-      console.log("TRACKS", fetchPrivatePlaylist);
-      fetchPrivatePlaylist.map((play) => (getTrackList(play.tracks, play.name)) )
-    });
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        console.log("PRIVATE", json);
+        let fetchPrivatePlaylist = json.items.map((item, index) => ({
+          name: item.name,
+          tracks: item.tracks.href,
+          index: (index = index + 1),
+        }));
+        setPrivatePlaylist(fetchPrivatePlaylist);
+        console.log("TRACKS", fetchPrivatePlaylist);
+        fetchPrivatePlaylist.map((play) =>
+          getTrackList(play.tracks, play.name)
+        );
+      });
   }
 
   // Click list item to view all tracks under clicked playlist
@@ -98,17 +101,15 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
     })
       .then((res) => res.json())
       .then((json) => {
-        //console.log(url);
-        //console.log("Track Json ", json.items);
         let fetchedTracks = json.items.map((item) => ({
           name: item.track.name,
           id: item.track.id,
           uri: item.track.uri,
-          playlist: playlist
+          playlist: playlist,
         }));
 
         //concatenate the tracks
-        setTracks(tracks => [...tracks, fetchedTracks]);
+        setTracks((tracks) => [...tracks, fetchedTracks]);
         console.log(fetchedTracks);
       })
       .catch(function () {
@@ -116,49 +117,54 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       });
   }
 
-
-
   //Create unique tracks list
   function uniqueTracksList() {
     const array = [];
     const uri = [];
-    tracks.map((user)=>user.map((data)=>{
-      array.push(data.name);
-      uri.push(data.uri);
-    }))
-    const uniqueList = [...new Set(array)]
-    const uriList = [...new Set(uri)]
+    tracks.map((user) =>
+      user.map((data) => {
+        array.push(data.name);
+        uri.push(data.uri);
+      })
+    );
+    const uniqueList = [...new Set(array)];
+    const uriList = [...new Set(uri)];
     setFilter(uniqueList);
     setPlaylistsURI(uriList);
-    console.log(uri);
+    console.log("URI list", uri);
   }
 
-  function createPlaylist(){
-
-    if(input==""){alert("Invalid user id"); return;}
-    if(playlistTitle==""){alert("Enter a playlist title!");return;}
+  function createPlaylist() {
+    if (input == "") {
+      alert("Invalid user id");
+      return;
+    }
+    if (playlistTitle == "") {
+      alert("Enter a playlist title!");
+      return;
+    }
     let playlist_id = "";
-    fetch("https://api.spotify.com/v1/users/"+ input + "/playlists", {
+    fetch("https://api.spotify.com/v1/users/" + input + "/playlists", {
       method: "POST",
       headers: {
         authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "name": playlistTitle,
-        "public": false,
+        name: playlistTitle,
+        public: false,
       }),
-    }).then((res) => res.json())
-    .then((json) => {
-      playlist_id = json.id;
-      console.log("Playlist ID", playlist_id);
-      postTracksToPlaylist(playlist_id);
-    });
-  
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        playlist_id = json.id;
+        console.log("Playlist ID", playlist_id);
+        postTracksToPlaylist(playlist_id);
+      });
   }
 
   function postTracksToPlaylist(playlist_id) {
-    fetch("https://api.spotify.com/v1/playlists/"+playlist_id+"/tracks", {
+    fetch("https://api.spotify.com/v1/playlists/" + playlist_id + "/tracks", {
       method: "POST",
       headers: {
         authorization: `Bearer ${token}`,
@@ -167,14 +173,13 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       body: JSON.stringify({
         uris: playlistURI,
       }),
-    }).then(console.log("Added tracks to playlist"))
-    .then(console.log("Track ARRAY", playlistURI))
-    .catch(err => {
-      console.log('Adding track Error', err);
-    });
+    })
+      .then(console.log("Added tracks to playlist"))
+      .then(console.log("Track ARRAY", playlistURI))
+      .catch((err) => {
+        console.log("Adding track Error", err);
+      });
   }
-
-  
 
   return (
     <div>
@@ -188,14 +193,15 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       </div>
       <div>
         <label for="fname">Add Friend: </label>
-        <input ref={textInput} type="text" onChange={e => setInput(e.target.value)} name="fname"></input>
-        <button onClick={() => getPrivatePlaylists(input)} type="button"> Private </button> 
-      </div>
-
-      {/*Gets all the playlists requested by friends */}
-      <div>
-        <button onClick={getUserPlaylists} type="button">
-          Request
+        <input
+          ref={textInput}
+          type="text"
+          onChange={(e) => setInput(e.target.value)}
+          name="fname"
+        ></input>
+        <button onClick={() => getPrivatePlaylists(input)} type="button">
+          {" "}
+          Request{" "}
         </button>
       </div>
 
@@ -208,13 +214,19 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
           All Accessible Playlists:
           <ul>
             {privatePlaylist.map((playlist) => (
-              <select value={playlist.name} onClick={() => setIndexTrack(tracks[playlist.index-1])}>
-                <option>{"--"}{playlist.name}{"--"}</option>
+              <select
+                value={playlist.name}
+                onClick={() => setIndexTrack(tracks[playlist.index - 1])}
+              >
+                <option>
+                  {"--"}
+                  {playlist.name}
+                  {"--"}
+                </option>
                 {indexTrack.map((track) => (
-                <option> {track.name} </option>
+                  <option> {track.name} </option>
                 ))}
               </select>
-             
             ))}
           </ul>
         </label>
@@ -222,15 +234,24 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
 
       <div>
         <label for="fname">Create a Playlist </label>
-        <input type="text" onChange={e => setPlaylistTitle(e.target.value)}></input>
-        <button type="button" onClick={() => uniqueTracksList()}>Unique!</button>
+        <input
+          type="text"
+          onChange={(e) => setPlaylistTitle(e.target.value)}
+        ></input>
+        <button type="button" onClick={() => uniqueTracksList()}>
+          Unique!
+        </button>
         <div className="filtered_tracks">
-        <p> {playlistTitle} </p>  
-        {filteredTracks.map((filter) => (
-                <p> {filter} </p>
-                ))}</div>
+          <p> {playlistTitle} </p>
+          {filteredTracks.map((filter) => (
+            <p> {filter} </p>
+          ))}
+        </div>
       </div>
-      <button type="button" onClick={() => createPlaylist()}> Create </button>
+      <button type="button" onClick={() => createPlaylist()}>
+        {" "}
+        Create{" "}
+      </button>
     </div>
   );
 }
