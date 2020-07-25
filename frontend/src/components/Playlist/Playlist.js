@@ -34,7 +34,7 @@ function Playlist({
                 console.log('frontend::Playlist.js spotifyApi.getUserPlaylists() failed. Error: ', err);
             })         
         }
-    }, [token, spotifyApi, pane, setNeedsRefresh, totalPlaylistsTaken]);
+    }, [token, spotifyApi, pane, setNeedsRefresh, totalPlaylistsTaken, totalPlaylists]);
 
     return (
         <div>

@@ -6,9 +6,8 @@ import MusicPlayer from './components/MusicPlayer'
 import Tabs from './components/Tabs';
 import RefreshDialog from './components/RefreshDialog';
 //import FriendSyncTab from './components/FriendSyncTab';
-//import MultiPlaylistTab from './components/MultiPlaylistTab';
-import { getCookie } from './helper';
 import MultiPlaylistTab from './components/MultiPlaylistTab';
+import { getCookie } from './helper';
 const spotifyApi = new SWA();
 
 function App() {

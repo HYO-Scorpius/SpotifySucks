@@ -33,7 +33,7 @@ function PlaylistInner({
                console.log('frontend::PlaylistInner.js spotifyApi.getPlaylistTracks() failed. Error: ', err);
 			});
 		}
-	},[selectedPlaylist, spotifyApi, setNeedsRefresh, totalTaken]);
+	},[selectedPlaylist, spotifyApi, setNeedsRefresh, totalTaken, totalTracks]);
 
 	return (
 		<div> 
