@@ -1,25 +1,30 @@
 import React, { useEffect, useState } from "react";
+import "./multiplaylist.css";
 import io from "socket.io-client";
 
 function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
   let textInput = React.createRef();
-  const [socket, setSocket] = useState(null);
-  const [isConnected, setConnectedState] = useState(false);
-  const [playlists, setPlaylists] = useState([]);
+  //const [socket, setSocket] = useState(null);
+  //const [isConnected, setConnectedState] = useState(false);
+  //const [playlists, setPlaylists] = useState([]);
+
   const [privatePlaylist, setPrivatePlaylist] = useState([]);
-  const [tracks, setTracks] = useState([]);
-  const [indexTrack, setIndexTrack] = useState([]);
+  const [tracks, setTracks] = useState([]); 
+  const [indexTrack, setIndexTrack] = useState([]); 
   const [input, setInput] = useState("");
-  const [filteredTracks, setFilter] = useState([]);
+  const [tempSpotifyID, setTempSpotifyID] = useState("");
+  const [uniqueTracks, setUniqueTracks] = useState([]);
   const [playlistURI, setPlaylistsURI] = useState([]);
   const [playlistTitle, setPlaylistTitle] = useState("");
+
+  /** Playing around with socket connection
 
   // After render, establish socket and set instance
   useEffect(() => {
     setSocket(io("http://localhost:1337"));
   }, []);
 
-  // Testing out socket
+
   useEffect(() => {
     if (!socket) return;
 
@@ -41,56 +46,44 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       socket.connect();
     }
   }
+ **/
 
-  // Retrieve current users playlists
-  function getUserPlaylists() {
-    fetch("https://api.spotify.com/v1/me/playlists", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        console.log("Playlist Json ", json.items);
-        let fetchedPlaylists = json.items.map((item) => ({
-          name: item.name,
-          tracks: item.tracks.href,
-        }));
-        setPlaylists(fetchedPlaylists);
-        //console.log(fetchedPlaylists);
-      })
-      .catch(function () {
-        console.log("Error with playlists");
-      });
-  }
 
+  // Get a playlist based on the Spotufy UserID
   function getPrivatePlaylists(user_id) {
+    if (user_id == "") {
+      alert("Invalid user id");
+      return;
+    }
     fetch("https://api.spotify.com/v1/users/" + user_id + "/playlists", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-    })
-      .then((res) => res.json())
+    }).then((res) => res.json())
       .then((json) => {
-        console.log("PRIVATE", json);
+        console.log("Playlists JSON", json);
+        //Gets playlist name, tracks url, and index of each playlist
         let fetchPrivatePlaylist = json.items.map((item, index) => ({
           name: item.name,
           tracks: item.tracks.href,
           index: (index = index + 1),
         }));
+
+        // Populate const array for playlist info
         setPrivatePlaylist(fetchPrivatePlaylist);
-        console.log("TRACKS", fetchPrivatePlaylist);
+        console.log("fetchPrivatePlaylist", fetchPrivatePlaylist);
+
+        // Populate const array for all tracks within a playlist
         fetchPrivatePlaylist.map((play) =>
           getTrackList(play.tracks, play.name)
         );
       });
   }
 
-  // Click list item to view all tracks under clicked playlist
+
+  // Gets all the tracks for each playlist using url and playlist name
   function getTrackList(url, playlist) {
     fetch(url, {
       headers: {
@@ -98,9 +91,10 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-    })
-      .then((res) => res.json())
+    }).then((res) => res.json())
       .then((json) => {
+
+        // Each track has name, id, url and the playlist it belongs to
         let fetchedTracks = json.items.map((item) => ({
           name: item.track.name,
           id: item.track.id,
@@ -108,43 +102,51 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
           playlist: playlist,
         }));
 
-        //concatenate the tracks
+        //Concatenate tracks for all playlists into a const array
         setTracks((tracks) => [...tracks, fetchedTracks]);
-        console.log(fetchedTracks);
       })
       .catch(function () {
         console.log("Could not get Tracks");
       });
   }
 
-  //Create unique tracks list
+
+  /* With all the tracks from the different playlists, 
+  * this will filter out the same tracks and only
+  * keep unique tracks */
   function uniqueTracksList() {
     const array = [];
     const uri = [];
-    tracks.map((user) =>
-      user.map((data) => {
+    tracks.map((track) =>
+      track.map((data) => {
         array.push(data.name);
         uri.push(data.uri);
       })
-    );
+    ); 
+    // Unique track names (for display)
     const uniqueList = [...new Set(array)];
+    // Unique urls (for playlist creation)
     const uriList = [...new Set(uri)];
-    setFilter(uniqueList);
+    setUniqueTracks(uniqueList);
     setPlaylistsURI(uriList);
-    console.log("URI list", uri);
   }
 
+
+  // Creates an empty playlist based on Spotify User ID
   function createPlaylist() {
-    if (input == "") {
-      alert("Invalid user id");
+    if (tempSpotifyID == "") {
+      alert("Get SpotifyID from docs");
       return;
     }
+    
     if (playlistTitle == "") {
       alert("Enter a playlist title!");
       return;
     }
+
+    // Make POST req and get PlaylistID for created playlist
     let playlist_id = "";
-    fetch("https://api.spotify.com/v1/users/" + input + "/playlists", {
+    fetch("https://api.spotify.com/v1/users/" + tempSpotifyID + "/playlists", {
       method: "POST",
       headers: {
         authorization: `Bearer ${token}`,
@@ -163,6 +165,8 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       });
   }
 
+
+  // Using PlaylistID returned back, add tracks to it
   function postTracksToPlaylist(playlist_id) {
     fetch("https://api.spotify.com/v1/playlists/" + playlist_id + "/tracks", {
       method: "POST",
@@ -173,55 +177,57 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       body: JSON.stringify({
         uris: playlistURI,
       }),
-    })
-      .then(console.log("Added tracks to playlist"))
-      .then(console.log("Track ARRAY", playlistURI))
+    }).then(console.log("Added tracks to playlist", playlistURI))
+      .then(alert("Successfully created a new playlist!"))
       .catch((err) => {
         console.log("Adding track Error", err);
       });
+
   }
 
   return (
-    <div>
-      <div>
-        {/* Testing socket connection */}
-        <input
-          type="button"
-          onClick={toggleConnection}
-          value={isConnected ? "Disconnect" : "Connect"}
-        />
-      </div>
-      <div>
-        <label for="fname">Add Friend: </label>
-        <input
-          ref={textInput}
-          type="text"
-          onChange={(e) => setInput(e.target.value)}
-          name="fname"
-        ></input>
-        <button onClick={() => getPrivatePlaylists(input)} type="button">
-          {" "}
-          Request{" "}
-        </button>
-      </div>
+    <div className="section">
 
-      <div>
-        <label for="fname">Contributors: </label>
-      </div>
+      {/* Left half of the screen displaying forms*/}
+      <div className="left">
 
-      <div>
-        <label for="fname">
-          All Accessible Playlists:
+        <div className="user_id">
+        <label> For testing purposes, hardcode user spotify ID </label>
+        <a href="https://developer.spotify.com/console/get-current-user/" target="_blank"></a>
+          <input
+            type="text"
+            onChange={(e) => setTempSpotifyID(e.target.value)}
+          ></input>
+
+          <label> Enter friends Spotify User ID </label>
+          <input
+            ref={textInput}
+            type="text"
+            onChange={(e) => setInput(e.target.value)}
+          ></input>
+          <button className="button" onClick={() => getPrivatePlaylists(input)} type="button">
+            {" "}
+            Get Playlists{" "}
+          </button>
+
+          <div>
+            {/* Display friends Spotify UserID that was entered*/}
+            <label>Contributors: </label>
+          </div>
+        </div>
+        
+        <div className="playlist_display">
+          <label>All Accessible Playlists:</label>
           <ul>
+            {/* Each playlist was added to the array with an index starting
+             a 1 in getPrivatePlaylists(). The [playlist.index - 1]
+            correpsonds to its track list.     */}
             {privatePlaylist.map((playlist) => (
               <select
                 value={playlist.name}
-                onClick={() => setIndexTrack(tracks[playlist.index - 1])}
-              >
+                onClick={() => setIndexTrack(tracks[playlist.index - 1])}>
                 <option>
-                  {"--"}
-                  {playlist.name}
-                  {"--"}
+                  {"--"}{playlist.name}{"--"}
                 </option>
                 {indexTrack.map((track) => (
                   <option> {track.name} </option>
@@ -229,29 +235,35 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
               </select>
             ))}
           </ul>
-        </label>
+        </div>
+
+        <div>
+          <label>Create a New Playlist </label>
+          <input
+            type="text"
+            onChange={(e) => setPlaylistTitle(e.target.value)}
+          ></input>
+          <button className="button" type="button" onClick={() => uniqueTracksList()}>
+            Display Tracks
+          </button>
+        </div>
+
+        <button className="button" type="button" onClick={() => createPlaylist()}>
+          {" "}
+          Confirm{" "}
+        </button>
       </div>
 
-      <div>
-        <label for="fname">Create a Playlist </label>
-        <input
-          type="text"
-          onChange={(e) => setPlaylistTitle(e.target.value)}
-        ></input>
-        <button type="button" onClick={() => uniqueTracksList()}>
-          Unique!
-        </button>
+      {/* Right half of the screen displaying tracks*/}
+      <div className="right">
+        <p> {playlistTitle} </p>
         <div className="filtered_tracks">
-          <p> {playlistTitle} </p>
-          {filteredTracks.map((filter) => (
+          {uniqueTracks.map((filter) => (
             <p> {filter} </p>
           ))}
         </div>
       </div>
-      <button type="button" onClick={() => createPlaylist()}>
-        {" "}
-        Create{" "}
-      </button>
+
     </div>
   );
 }
