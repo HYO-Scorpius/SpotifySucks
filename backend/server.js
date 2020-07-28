@@ -208,6 +208,13 @@ const makePlaylist = (api, user, playlist,  URIs, replace, type) => {
 };
 
 const fillPlaylist = (api, URIs, playlist) => {
+    let totSoFar = 0;
+    URIs.forEach(uri => {
+     if (uri.substring(8,13) === 'local') {
+         URIs.splice(totSoFar, 1);
+     } 
+        totSoFar++;
+    });
   api.addTracksToPlaylist(playlist.id, URIs).then(
     (_) => {},
     (err) => {
@@ -262,7 +269,7 @@ io.on('connection', (socket) => {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Multiplaylist
 //////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 app.get("/", (req, res) => {
   res.send("Multiplaylist socket connected!");
 });
@@ -282,6 +289,7 @@ io.on("connection", (client) => {
     console.log("Status: ", status);
   });
 });
+*/
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Database
