@@ -15,8 +15,9 @@ function PlaylistInner({
 }) {
 	const [tracks, setTracks] = useState([]); 
 	const [totalTaken, setTotalTaken] = useState(0);
-	const [totalTracks, setTotal] = useState(1)
-
+	const [totalTracks, setTotal] = useState(1);
+	const [refresh, callRefresh] = useState(false);
+	
 	useEffect(() => {
 		if ( totalTaken < totalTracks ) {
 			spotifyApi.getPlaylistTracks(selectedPlaylist.id, {
@@ -33,12 +34,17 @@ function PlaylistInner({
                console.log('frontend::PlaylistInner.js spotifyApi.getPlaylistTracks() failed. Error: ', err);
 			});
 		}
-	},[selectedPlaylist, spotifyApi, setNeedsRefresh, totalTaken, totalTracks]);
+	}, [selectedPlaylist, spotifyApi, setNeedsRefresh, totalTaken, totalTracks]);
+
+	useEffect(() => {
+		setTracks([])
+		setTotalTaken(0)
+	}, [refresh])
 
 	return (
 		<div> 
 			<div>
-				<button className="back" onClick={() =>setPane("outer")}><i className="fas fa-chevron-circle-left marginIcon"></i> Go Back </button> 
+				<button className="back" onClick={() => setPane("outer")}><i className="fas fa-chevron-circle-left marginIcon"></i> Go Back </button> 
 			</div>
 			<div>
 				<Shuffle 
@@ -46,15 +52,17 @@ function PlaylistInner({
 					playlist = {selectedPlaylist} 
 					user = {user}
 					token = {token}
-               		setNeedsRefresh = {setNeedsRefresh}
+					setNeedsRefresh = {setNeedsRefresh}
+					refresh = {refresh}
+					callRefresh = {callRefresh}
 				/>
 			</div>
 			<div>
      			{tracks && 
      				<TrackList
      					tracks = {tracks} 
-     					playlist={selectedPlaylist} 
-     					spotifyApi={spotifyApi} 
+     					playlist= {selectedPlaylist} 
+     					spotifyApi= {spotifyApi} 
      					currentPlayback = {currentPlayback}
      					player = {player}
      					deviceID = {deviceID}
