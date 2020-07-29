@@ -1,0 +1,39 @@
+
+.left {
+    display: inline-block;
+    padding:30px;
+    box-sizing: border-box;
+    width: 50%;
+}
+
+.right {
+    position: relative;
+    float: right;
+    box-sizing: border-box;
+    padding: 10px;
+    width: 50%;
+}
+
+.filtered_tracks {
+    text-align: left;
+    padding-left: 20px;
+    border-style: solid;
+    background-color: rgb(36, 134, 129);
+}
+
+.user_id{
+position: relative;
+}
+
+.button {
+    text-align: center;
+    font-size: 16px;
+    padding: 11px;
+    width: 25%;
+    color: white;
+    background: #516269;
+    border-color:#5ed7bf;
+    font-family: 'Titillium Web', sans-serif;
+  }
+
+
