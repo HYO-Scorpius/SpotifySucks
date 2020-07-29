@@ -16,10 +16,10 @@ function Playlist({
     const [selectedPlaylist, setSelectedPlaylist] = useState(null); 
     const [playlists, setPlaylists] = useState([]);
     const [totalPlaylistsTaken, setTotalTaken] = useState(0)
-    const [totalPlaylists, setTotal] = useState(null)
+    const [totalPlaylists, setTotal] = useState(1)
 
     useEffect(() => {
-        if (token && ((totalPlaylists==null) || ( totalPlaylistsTaken < totalPlaylists))) {
+        if (token &&  (totalPlaylistsTaken < totalPlaylists)) {
             spotifyApi.getUserPlaylists({
                 limit:50,
                 offset: totalPlaylistsTaken
@@ -27,6 +27,7 @@ function Playlist({
                 setPlaylists(state => state.concat(data.items))
                 setTotalTaken(state => state+50)
                 setTotal(data.total)
+                console.log("one page loaded")
             }).catch( (err) => {
                 if(err.status === 401) {
                    setNeedsRefresh(true);
@@ -35,6 +36,12 @@ function Playlist({
             })         
         }
     }, [token, spotifyApi, pane, setNeedsRefresh, totalPlaylistsTaken, totalPlaylists]);
+
+    useEffect(() => {
+        setTotalTaken(0);
+        setPlaylists([]);
+        console.log("reset pane")
+    }, [pane])
 
     return (
         <div>
@@ -59,6 +66,7 @@ function Playlist({
                     currentPlayback = {currentPlayback}
                     player = {player}
                     deviceID = {deviceID}
+                    setSelectedPlaylist = {setSelectedPlaylist}
                     token = {spotifyApi.getAccessToken()}
                     setNeedsRefresh = {setNeedsRefresh}
                 />

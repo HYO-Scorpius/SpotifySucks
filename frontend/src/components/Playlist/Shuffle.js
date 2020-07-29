@@ -5,11 +5,14 @@ function Shuffle({
     playlist,
     user,
     token,
-    setNeedsRefresh
+    setNeedsRefresh,
+    callRefresh,
+    refresh
 }) {
     
     const [type, setType] = useState('random');
     const [followers, setFollowers] = useState(0)
+    const [imgUrl, setImg] = useState(playlist.images[0].url)
  
     function followersWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -18,7 +21,10 @@ function Shuffle({
     useEffect(() => {
         if (token) {
             spotifyApi.getPlaylist(playlist.id)
-                .then((data) => setFollowers(followersWithCommas(data.followers.total)))
+                .then((data) => {
+                    setFollowers(followersWithCommas(data.followers.total))
+                    setImg(data.images[0].url)
+                })
                 .catch((err) => {
                     if(err.status === 401) {
                        setNeedsRefresh(true);
@@ -26,14 +32,14 @@ function Shuffle({
                     console.log(err)
                 })
         }
-    }, [followers, playlist, spotifyApi, user, setNeedsRefresh, token])
+    }, [followers, playlist, spotifyApi, user, setNeedsRefresh, token, refresh])
 
     let apiUrl = `/api/${spotifyApi.getAccessToken()}/shuffle/types/${type}/user/${user.id}/playlists/${playlist.id}/replace/`;
     return (
         <div> 
             <div>
                 <div className="playlist-header">
-                    <img alt= "playlist cover" src={playlist.images[0].url}></img>
+                    <img alt= "playlist cover" src={imgUrl}></img>
      
                     <div className="playlist-description">
                         <h2 className="playlist-title"><i className="fab fa-spotify marginIcon"></i> {playlist.name}</h2>
@@ -50,7 +56,7 @@ function Shuffle({
                             <option value="album">Shuffle by Album</option>
                         </select>
       
-                        {(user.id === playlist.owner.id) && <button onClick={() => fetch(apiUrl + 'yes').then(console.log("shuffled playlist")).catch((err) => console.log("was not able to shuffle current playlist"))}>
+                        {(user.id === playlist.owner.id) && <button onClick={() => fetch(apiUrl + 'yes').then(console.log("shuffled playlist")).then(callRefresh(state => !state)).catch((err) => console.log("was not able to shuffle current playlist"))}>
                             <i className="fas fa-greater-than marginIcon"></i>  Shuffle Current Playlist 
                         </button>}
          
