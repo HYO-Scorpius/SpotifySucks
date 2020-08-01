@@ -39,17 +39,21 @@ function RefreshDialog({
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
+                
                 <DialogTitle id="alert-dialog-title">{"Session Expired"}</DialogTitle> 
+
                 <DialogContent> 
                     <DialogContentText id="alert-dialog-description"> 
                         Your session expired. To carry on, please click the button below to refresh your access token.
                     </DialogContentText>
                 </DialogContent>
+
                 <DialogActions>
                     <Button onClick={refreshToken} color="primary" autoFocus> 
                         Refresh
                     </Button> 
                 </DialogActions>
+
             </Dialog>
         </div>
     );

@@ -24,6 +24,7 @@ function Shuffle({
                 .then((data) => {
                     setFollowers(followersWithCommas(data.followers.total))
                     setImg(data.images[0].url)
+                    setTimeout( () => setImg(data.images[0].url), 5000)
                 })
                 .catch((err) => {
                     if(err.status === 401) {

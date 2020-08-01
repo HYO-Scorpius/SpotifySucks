@@ -3,6 +3,7 @@ import App from '../App';
 import { getCookie } from '../helper';
 
 const api_token = getCookie('api_token');
+
 function Login() {
     
     return api_token ? (
@@ -17,5 +18,5 @@ function Login() {
     );
 }
         
-        export default Login;
+export default Login;
         
