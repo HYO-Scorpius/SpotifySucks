@@ -19,6 +19,6 @@
     },
     "scripts": {
         "start": "node server.js",
-        "dev": "npx nodemon app.js"
+        "dev": "npx nodemon server.js"
     }
 }
