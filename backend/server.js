@@ -15,8 +15,8 @@ const querystring = require("querystring");
 
 const PORT = process.env.PORT || 1337;
 const uri = process.env.ATLAS_URI;
-const CALLBACK = process.env.CALLBACK || "http://localholst:1337/callback";
-const REDIRECT = process.env.REDIRECT || "http://localholst:3000/";
+const CALLBACK = process.env.CALLBACK || "http://localhost:1337/callback";
+const REDIRECT = process.env.REDIRECT || "http://localhost:3000/";
 const connection = mongoose.connection;
 
 const app = express();
