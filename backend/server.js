@@ -13,8 +13,9 @@ const http = require("http");
 const redis = require("socket.io-redis");
 
 const PORT = process.env.PORT || 1337;
-const HOSTNAME = "127.0.0.1";
 const uri = process.env.ATLAS_URI;
+const CALLBACK = process.env.CALLBACK;
+const REDIRECT = process.env.REDIRECT;
 const connection = mongoose.connection;
 
 const app = express();
@@ -38,7 +39,7 @@ app.use(express.json());
 app.use(
     cors({
         credentials: true,
-        origin: "http://localhost:3000", // URL of the react (Frontend) app
+        origin: REDIRECT, // URL of the react (Frontend) app
     })
 );
         
@@ -78,7 +79,7 @@ var scopes = [
 var spotifyApi = new SWA({
     clientId: clientID,
     clientSecret: clientSECRET,
-    redirectUri: "http://localhost:1337/callback",
+    redirectUri: CALLBACK,
 });
 
 var authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
@@ -109,7 +110,7 @@ app.get("/callback", (req, res) => {
             res.cookie("api_token", a_token, { maxAge: 3600000 });
             res.cookie("refresh_token", r_token);
             
-            res.redirect("http://localhost:3000/");
+            res.redirect(REDIRECT);
         },
         (err) => {
             console.log(
