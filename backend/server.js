@@ -320,6 +320,6 @@ app.use("/queue", queueRoute);
 app.use("/users", usersRoute);
 //app.use('/session', sessionRoute)
 
-app.listen(PORT, HOSTNAME, () => {
-    console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
+app.listen(PORT, () => {
+    console.log(`Server running ${PORT}/`);
 });
