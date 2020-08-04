@@ -10,7 +10,7 @@ function Login() {
     ) : (
         <div className="Login">
         <header className="Login-header">
-        <a href="http://localhost:1337/spotify/login"><i className="fas fa-sign-in-alt icon"></i></a>
+        <a href="http://intense-reef-77781.herokuapp.com/spotify/login"><i className="fas fa-sign-in-alt icon"></i></a>
         </header>
         </div>
             
