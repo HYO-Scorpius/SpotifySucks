@@ -11,11 +11,12 @@ const shuffle = require("./Modules/shuffle");
 const cookieParser = require("cookie-parser"); // Module to Write Cookies
 const http = require("http");
 const redis = require("socket.io-redis");
+const querystring = require("querystring");
 
 const PORT = process.env.PORT || 1337;
 const uri = process.env.ATLAS_URI;
-const CALLBACK = process.env.CALLBACK;
-const REDIRECT = process.env.REDIRECT;
+const CALLBACK = process.env.CALLBACK || "http://localholst:1337/callback";
+const REDIRECT = process.env.REDIRECT || "http://localholst:3000/";
 const connection = mongoose.connection;
 
 const app = express();
@@ -110,7 +111,8 @@ app.get("/callback", (req, res) => {
             res.cookie("api_token", a_token, { maxAge: 3600000 });
             res.cookie("refresh_token", r_token);
             
-            res.redirect(REDIRECT);
+            res.redirect(REDIRECT + "#" +
+                querystring.stringify({access_token: a_token, refresh_token:r_token}));
         },
         (err) => {
             console.log(
