@@ -83,6 +83,10 @@ var spotifyApi = new SWA({
 
 var authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
 
+app.get("/", (_,res) => {
+    res.send("monka, you shouldn't be here");
+});
+
 // Redirects to authorize URL
 app.get("/spotify/login", (_, res) => {
     res.cookie("auth_state", state);
