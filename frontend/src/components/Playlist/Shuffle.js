@@ -34,7 +34,7 @@ function Shuffle({
         }
     }, [followers, playlist, spotifyApi, user, setNeedsRefresh, token, refresh])
 
-    let apiUrl = `/api/${spotifyApi.getAccessToken()}/shuffle/types/${type}/user/${user.id}/playlists/${playlist.id}/replace/`;
+    let apiUrl = `/api/shuffle/types/${type}/user/${user.id}/playlists/${playlist.id}/replace/`;
     return (
         <div> 
             <div>

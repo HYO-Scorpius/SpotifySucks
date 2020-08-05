@@ -1,12 +1,13 @@
 import React from 'react';
 import App from '../App';
-import { getCookie } from '../helper';
+import { getCookie , getHashParams} from '../helper';
 
 const api_token = getCookie('api_token');
 function Login() {
     console.log(process.env.REACT_APP_API_URL);
     
-    return api_token ? (
+    const {access_token, } = getHashParams();
+    return (api_token || access_token) ? (
         <App />
     ) : (
         <div className="Login">

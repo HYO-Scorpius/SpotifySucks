@@ -19,7 +19,6 @@ export const getHashParams = () => {
     r = /([^&;=]+)=?([^&;]*)/g,
     q = window.location.hash.substring(1);
   while ((e = r.exec(q))) {
-      console.log(e[2]);
     hashParams[e[1]] = decodeURIComponent(e[2]);
   }
   return hashParams;

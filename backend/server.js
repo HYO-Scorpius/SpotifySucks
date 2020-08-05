@@ -108,7 +108,7 @@ app.get("/callback", (req, res) => {
             
             spotifyApi.setAccessToken(a_token);
             spotifyApi.setRefreshToken(r_token);
-            res.cookie("api_token", a_token, { maxAge: 3600000 });
+            res.cookie("access_token", a_token, { maxAge: 3600000 });
             res.cookie("refresh_token", r_token);
             
             res.redirect(REDIRECT + "#" +
@@ -124,14 +124,14 @@ app.get("/callback", (req, res) => {
 });
                 
 //Refresh spotify access token
-app.get('/refresh/:r_token', (req, res) =>{
-    spotifyApi.setRefreshToken(req.params.r_token);
+app.get('/refresh', (req, res) =>{
+    spotifyApi.setRefreshToken(req.cookies.refresh_token);
     spotifyApi.refreshAccessToken().then (
         (data) => {
             let a_token = data.body['access_token'];
             spotifyApi.setAccessToken(a_token);
             
-            res.cookie('api_token', a_token, {maxAge: 3600000});
+            res.cookie('access_token', a_token, {maxAge: 3600000});
             res.send(a_token);
         },
         (err) => {
@@ -142,6 +142,7 @@ app.get('/refresh/:r_token', (req, res) =>{
     
 //Logout for dev purposes for now
 app.get("/logout", (_, res) => {
+    res.clearCookie("access_token");
     res.clearCookie("api_token");
     console.log("hit");
     res.send("hi");
@@ -152,9 +153,11 @@ app.get("/logout", (_, res) => {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.get(
-    "/api/:access_token/shuffle/types/:type/user/:userId/playlists/:playlistId/replace/:replace",
+    "/api/shuffle/types/:type/user/:userId/playlists/:playlistId/replace/:replace",
     (req, _) => {
-        spotifyApi.setAccessToken(req.params.access_token);
+        spotifyApi.setAccessToken(req.cookies.access_token);
+        console.log(req.params.access_token);
+        console.log(req.cookies);
         spotifyApi.getPlaylist(req.params.playlistId).then(
             (data) => {
                 let URIs = shuffle(req.params.type, data.body.tracks.items);

@@ -5,7 +5,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { getCookie } from '../helper';
 
 function RefreshDialog({
     spotifyApi,
@@ -19,13 +18,14 @@ function RefreshDialog({
     };
     
     const refreshToken = () => {
-        let r_token = getCookie('refresh_token');
-        let refreshURL = `/refresh/${r_token}`;
+        let refreshURL = `/refresh`;
         fetch(refreshURL)
-        .then(() => {
-            let token = getCookie('api_token') || null;
-            spotifyApi.setAccessToken(token); 
-            setToken(token);
+        .then(response => response.text())
+        .then((data) => {
+            console.log(data);
+            document.cookie = `api_token=${data}`;
+            spotifyApi.setAccessToken(data); 
+            setToken(data);
             handleClose();
         })
         .catch((err) => console.log("refresh failed: ", err))
