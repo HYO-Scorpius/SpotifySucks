@@ -168,6 +168,7 @@ app.get(
                     req.params.replace === "yes",
                     req.params.type
                 );
+                res.send("done");
             },
             (err) =>{
                 console.log(err);
