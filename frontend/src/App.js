@@ -9,6 +9,7 @@ import RefreshDialog from './components/RefreshDialog';
 import MultiPlaylistTab from './components/MultiPlaylistTab';
 import { getCookie, getHashParams} from './helper';
 const spotifyApi = new SWA();
+const apiServer = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}`: "http://intense-reef-77781.herokuapp.com/spotify/login"
 
 function App() {
    	const [needsRefresh, setNeedsRefresh] = useState(false);
@@ -256,6 +257,7 @@ function App() {
                     open = {needsRefresh}
                     setOpen = {setNeedsRefresh}
                     setToken = {setToken}
+                    apiServer = {apiServer}
                 />
             }
          
@@ -270,6 +272,7 @@ function App() {
                         deviceID = {deviceID}
                         token = {token}
                         setNeedsRefresh = {setNeedsRefresh}
+                        apiServer = {apiServer}
                     />
                 </div>
                 <div label="MultiPlaylist">
@@ -279,13 +282,11 @@ function App() {
                         deviceID = {deviceID}
                         token = {token}
                         setNeedsRefresh = {setNeedsRefresh}
+                        apiServer = {apiServer}
                      />
                 </div>
                 <div label="FriendSync">
                     FriendSyncTab 
-                </div>
-                <div label="VanillaPlaylist">
-                    leaving empty until the other three are done
                 </div>
             </Tabs>
             <MusicPlayer  

@@ -7,7 +7,8 @@ function Shuffle({
     token,
     setNeedsRefresh,
     callRefresh,
-    refresh
+    refresh,
+    apiServer
 }) {
     
     const [type, setType] = useState('random');
@@ -34,7 +35,7 @@ function Shuffle({
         }
     }, [followers, playlist, spotifyApi, user, setNeedsRefresh, token, refresh])
 
-    let apiUrl = `/api/shuffle/types/${type}/user/${user.id}/playlists/${playlist.id}/replace/`;
+    let apiUrl = `${apiServer}/api/shuffle/types/${type}/user/${user.id}/playlists/${playlist.id}/replace/`;
     return (
         <div> 
             <div>

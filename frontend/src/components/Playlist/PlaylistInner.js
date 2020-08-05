@@ -11,7 +11,8 @@ function PlaylistInner({
 	player,
 	token,
 	deviceID,
-   	setNeedsRefresh
+   	setNeedsRefresh,
+    apiServer
 }) {
 	const [tracks, setTracks] = useState([]); 
 	const [totalTaken, setTotalTaken] = useState(0);
@@ -55,6 +56,7 @@ function PlaylistInner({
 					setNeedsRefresh = {setNeedsRefresh}
 					refresh = {refresh}
 					callRefresh = {callRefresh}
+                    apiServer = {apiServer}
 				/>
 			</div>
 			<div>
