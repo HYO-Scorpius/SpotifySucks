@@ -10,7 +10,9 @@ function RefreshDialog({
     spotifyApi,
     open,
     setOpen,
-    setToken
+    setToken,
+    r_token,
+    apiServer
 }) {
     
     const handleClose = () => {
@@ -18,7 +20,7 @@ function RefreshDialog({
     };
     
     const refreshToken = () => {
-        let refreshURL = `/refresh`;
+        let refreshURL = `${apiServer}/refresh/${r_token}`;
         fetch(refreshURL)
         .then(response => response.text())
         .then((data) => {

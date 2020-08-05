@@ -124,8 +124,8 @@ app.get("/callback", (req, res) => {
 });
                 
 //Refresh spotify access token
-app.get('/refresh', (req, res) =>{
-    spotifyApi.setRefreshToken(req.cookies.refresh_token);
+app.get('/refresh/:refresh_token', (req, res) =>{
+    spotifyApi.setRefreshToken(req.params.refresh_token);
     spotifyApi.refreshAccessToken().then (
         (data) => {
             let a_token = data.body['access_token'];
@@ -153,11 +153,10 @@ app.get("/logout", (_, res) => {
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.get(
-    "/api/shuffle/types/:type/user/:userId/playlists/:playlistId/replace/:replace",
+    "/api/:access_token/shuffle/types/:type/user/:userId/playlists/:playlistId/replace/:replace",
     (req, _) => {
-        spotifyApi.setAccessToken(req.cookies.access_token);
+        spotifyApi.setAccessToken(req.params.access_token);
         console.log(req.params.access_token);
-        console.log(req.cookies);
         spotifyApi.getPlaylist(req.params.playlistId).then(
             (data) => {
                 let URIs = shuffle(req.params.type, data.body.tracks.items);
