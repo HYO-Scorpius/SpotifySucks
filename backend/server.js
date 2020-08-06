@@ -37,12 +37,7 @@ app
     
 app.use(express.json());
 
-app.use(
-    cors({
-        credentials: true,
-        origin: REDIRECT, // URL of the react (Frontend) app
-    })
-);
+app.use( cors());
         
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Spotify Authentication
