@@ -9,7 +9,7 @@ import RefreshDialog from './components/RefreshDialog';
 import MultiPlaylistTab from './components/MultiPlaylistTab';
 import { getCookie, getHashParams} from './helper';
 const spotifyApi = new SWA();
-const apiServer = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}`: "http://intense-reef-77781.herokuapp.com"
+const apiServer = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}`: "https://intense-reef-77781.herokuapp.com"
 
 function App() {
    	const [needsRefresh, setNeedsRefresh] = useState(false);
