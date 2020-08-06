@@ -35,7 +35,11 @@ npm install && cd backend && npm install && cd ../frontend && npm install
         ```
       - The <DB_URI> looks something like this: ```mongodb+srv://username:```<password>```@cluster.gcp.mongodb.net/test?retryWrites=true```
       - Replace ```<password>``` with the password set when creating the user in the Database Setup
-
+      - create a file in the frontend/ folder called .env
+      - add the following to your .env file
+      - ```
+         REACT_APP_API_URL=http://localhost:1337 
+         ```
    ### Database
       - Create ```New Project``` >> ```Build a cluster``` 
       - Go to the ```Database``` tab under 'Security' and ```Add a new database user``` with a desired password.
