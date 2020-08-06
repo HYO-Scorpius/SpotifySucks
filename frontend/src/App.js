@@ -244,7 +244,6 @@ function App() {
 
     useEffect(() => {
         if (token && window.Spotify) {
-            console.log(token);
             window.onSpotifyWebPlaybackSDKReady();
         }
     },[token]);
