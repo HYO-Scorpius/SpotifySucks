@@ -14,7 +14,7 @@ function Login() {
         <header className="Login-header">
         <a href={
             process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/spotify/login`:
-            "http://intense-reef-77781.herokuapp.com/spotify/login"
+            "https://intense-reef-77781.herokuapp.com/spotify/login"
         }
         ><i className="fas fa-sign-in-alt icon"></i></a>
         </header>
