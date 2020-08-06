@@ -111,9 +111,8 @@ app.get("/callback", (req, res) => {
             res.cookie("access_token", a_token, { maxAge: 3600000 });
             res.cookie("refresh_token", r_token);
             
-           // res.redirect(REDIRECT + "#" +
-            //    querystring.stringify({access_token: a_token, refresh_token:r_token}));
-            res.redirect("https://google.com");
+            res.redirect(REDIRECT + "#" +
+                querystring.stringify({access_token: a_token, refresh_token:r_token}));
         },
         (err) => {
             console.log(
