@@ -57,7 +57,7 @@ function Shuffle({
                             <option value="artists">Shuffle by Artist</option>
                             <option value="album">Shuffle by Album</option>
                         </select>
-      
+     <p> {apiUrl} </p> 
                         {(user.id === playlist.owner.id) && <button onClick={() => fetch(apiUrl + 'yes').then(console.log("shuffled playlist")).then(callRefresh(state => !state)).catch((err) => console.log("was not able to shuffle current playlist"))}>
                             <i className="fas fa-greater-than marginIcon"></i>  Shuffle Current Playlist 
                         </button>}
