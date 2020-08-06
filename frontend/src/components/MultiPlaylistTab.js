@@ -9,8 +9,8 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
   //const [playlists, setPlaylists] = useState([]);
 
   const [privatePlaylist, setPrivatePlaylist] = useState([]);
-  const [tracks, setTracks] = useState([]); 
-  const [indexTrack, setIndexTrack] = useState([]); 
+  const [tracks, setTracks] = useState([]);
+  const [indexTrack, setIndexTrack] = useState([]);
   const [input, setInput] = useState("");
   const [tempSpotifyID, setTempSpotifyID] = useState("");
   const [uniqueTracks, setUniqueTracks] = useState([]);
@@ -48,7 +48,6 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
   }
  **/
 
-
   // Get a playlist based on the Spotufy UserID
   function getPrivatePlaylists(user_id) {
     if (user_id == "") {
@@ -61,7 +60,8 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-    }).then((res) => res.json())
+    })
+      .then((res) => res.json())
       .then((json) => {
         console.log("Playlists JSON", json);
         //Gets playlist name, tracks url, and index of each playlist
@@ -82,7 +82,6 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       });
   }
 
-
   // Gets all the tracks for each playlist using url and playlist name
   function getTrackList(url, playlist) {
     fetch(url, {
@@ -91,9 +90,9 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-    }).then((res) => res.json())
+    })
+      .then((res) => res.json())
       .then((json) => {
-
         // Each track has name, id, url and the playlist it belongs to
         let fetchedTracks = json.items.map((item) => ({
           name: item.track.name,
@@ -110,10 +109,9 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       });
   }
 
-
-  /* With all the tracks from the different playlists, 
-  * this will filter out the same tracks and only
-  * keep unique tracks */
+  /* With all the tracks from the different playlists,
+   * this will filter out the same tracks and only
+   * keep unique tracks */
   function uniqueTracksList() {
     const array = [];
     const uri = [];
@@ -122,7 +120,7 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
         array.push(data.name);
         uri.push(data.uri);
       })
-    ); 
+    );
     // Unique track names (for display)
     const uniqueList = [...new Set(array)];
     // Unique urls (for playlist creation)
@@ -131,14 +129,13 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
     setPlaylistsURI(uriList);
   }
 
-
   // Creates an empty playlist based on Spotify User ID
   function createPlaylist() {
     if (tempSpotifyID == "") {
       alert("Get SpotifyID from docs");
       return;
     }
-    
+
     if (playlistTitle == "") {
       alert("Enter a playlist title!");
       return;
@@ -165,7 +162,6 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       });
   }
 
-
   // Using PlaylistID returned back, add tracks to it
   function postTracksToPlaylist(playlist_id) {
     fetch("https://api.spotify.com/v1/playlists/" + playlist_id + "/tracks", {
@@ -177,45 +173,54 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       body: JSON.stringify({
         uris: playlistURI,
       }),
-    }).then(console.log("Added tracks to playlist", playlistURI))
+    })
+      .then(console.log("Added tracks to playlist", playlistURI))
       .then(alert("Successfully created a new playlist!"))
       .catch((err) => {
         console.log("Adding track Error", err);
       });
-
   }
 
   return (
     <div className="section">
-
       {/* Left half of the screen displaying forms*/}
-      <div className="left">
 
-        <div className="user_id">
-        <label> For testing purposes, hardcode user spotify ID </label>
-        <a href="https://developer.spotify.com/console/get-current-user/" target="_blank"></a>
+      <div className="left">
+        <label>
+          {" "}
+          For testing purposes, enter user spotify ID
+          <a
+            href="https://developer.spotify.com/console/get-current-user/"
+            target="_blank"
+          ></a>
           <input
             type="text"
             onChange={(e) => setTempSpotifyID(e.target.value)}
           ></input>
+        </label>
 
-          <label> Enter friends Spotify User ID </label>
+        <label>
+          {" "}
+          Enter friends Spotify User ID
           <input
             ref={textInput}
             type="text"
             onChange={(e) => setInput(e.target.value)}
           ></input>
-          <button className="button" onClick={() => getPrivatePlaylists(input)} type="button">
-            {" "}
-            Get Playlists{" "}
-          </button>
+        </label>
 
-          <div>
-            {/* Display friends Spotify UserID that was entered*/}
-            <label>Contributors: </label>
-          </div>
-        </div>
-        
+        <button
+          className="button"
+          onClick={() => getPrivatePlaylists(input)}
+          type="button"
+        >
+          {" "}
+          Get Playlists{" "}
+        </button>
+
+        {/* Display friends Spotify UserID that was entered*/}
+        <label>Contributors: </label>
+
         <div className="playlist_display">
           <label>All Accessible Playlists:</label>
           <ul>
@@ -225,9 +230,12 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
             {privatePlaylist.map((playlist) => (
               <select
                 value={playlist.name}
-                onClick={() => setIndexTrack(tracks[playlist.index - 1])}>
+                onClick={() => setIndexTrack(tracks[playlist.index - 1])}
+              >
                 <option>
-                  {"--"}{playlist.name}{"--"}
+                  {"--"}
+                  {playlist.name}
+                  {"--"}
                 </option>
                 {indexTrack.map((track) => (
                   <option> {track.name} </option>
@@ -237,18 +245,26 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
           </ul>
         </div>
 
-        <div>
-          <label>Create a New Playlist </label>
+        <label>
+          Create a New Playlist
           <input
             type="text"
             onChange={(e) => setPlaylistTitle(e.target.value)}
           ></input>
-          <button className="button" type="button" onClick={() => uniqueTracksList()}>
-            Display Tracks
-          </button>
-        </div>
+        </label>
+        <button
+          className="button"
+          type="button"
+          onClick={() => uniqueTracksList()}
+        >
+          Display Tracks
+        </button>
 
-        <button className="button" type="button" onClick={() => createPlaylist()}>
+        <button
+          className="button"
+          type="button"
+          onClick={() => createPlaylist()}
+        >
           {" "}
           Confirm{" "}
         </button>
@@ -263,7 +279,6 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
           ))}
         </div>
       </div>
-
     </div>
   );
 }

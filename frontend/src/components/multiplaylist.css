@@ -1,39 +1,49 @@
+.section {
+  height: 100%;
+  width: 95%;
+  margin: 0px auto;
+  padding: 5px;
+}
+
+input {
+  margin-left: 10px;
+  display: inline;
+}
+
+label {
+  padding-bottom: 10px;  
+  display: block;
+}
 
 .left {
-    display: inline-block;
-    padding:30px;
-    box-sizing: border-box;
-    width: 50%;
+  background-color: rgb(14, 51, 77);
+  padding: 30px;
+  width: 45%;
+  display: table-cell;
+  vertical-align: baseline;
+  float: left;
 }
 
 .right {
-    position: relative;
-    float: right;
-    box-sizing: border-box;
-    padding: 10px;
-    width: 50%;
+  float: right;
+  padding: 10px;
+  width: 48%;
 }
 
 .filtered_tracks {
-    text-align: left;
-    padding-left: 20px;
-    border-style: solid;
-    background-color: rgb(36, 134, 129);
-}
-
-.user_id{
-position: relative;
+  text-align: left;
+  padding-left: 20px;
+  border-style: solid;
+  background-color: rgb(36, 134, 129);
 }
 
 .button {
-    text-align: center;
-    font-size: 16px;
-    padding: 11px;
-    width: 25%;
-    color: white;
-    background: #516269;
-    border-color:#5ed7bf;
-    font-family: 'Titillium Web', sans-serif;
-  }
-
-
+  text-align: center;
+  font-size: 16px;
+  padding: 11px;
+  width: 25%;
+  color: white;
+  background: #516269;
+  border-color: #5ed7bf;
+  font-family: "Titillium Web", sans-serif;
+}
