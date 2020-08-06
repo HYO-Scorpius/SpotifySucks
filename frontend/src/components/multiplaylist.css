@@ -17,6 +17,7 @@ label {
 
 .left {
   background-color: rgb(14, 51, 77);
+  margin-top: 25px;
   padding: 30px;
   width: 45%;
   display: table-cell;
@@ -46,4 +47,8 @@ label {
   background: #516269;
   border-color: #5ed7bf;
   font-family: "Titillium Web", sans-serif;
+}
+
+.uid_label {
+    color: crimson;
 }

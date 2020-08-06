@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./multiplaylist.css";
 import io from "socket.io-client";
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
-function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
+function MultiPlaylistTab({ user, deviceID, token }) {
   let textInput = React.createRef();
   //const [socket, setSocket] = useState(null);
   //const [isConnected, setConnectedState] = useState(false);
@@ -12,10 +13,11 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
   const [tracks, setTracks] = useState([]);
   const [indexTrack, setIndexTrack] = useState([]);
   const [input, setInput] = useState("");
-  const [tempSpotifyID, setTempSpotifyID] = useState("");
   const [uniqueTracks, setUniqueTracks] = useState([]);
   const [playlistURI, setPlaylistsURI] = useState([]);
   const [playlistTitle, setPlaylistTitle] = useState("");
+  const [userID, setUserID] = useState("");
+  const [displayText, setDisplayText] = useState("");
 
   /** Playing around with socket connection
 
@@ -131,10 +133,7 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
 
   // Creates an empty playlist based on Spotify User ID
   function createPlaylist() {
-    if (tempSpotifyID == "") {
-      alert("Get SpotifyID from docs");
-      return;
-    }
+   
 
     if (playlistTitle == "") {
       alert("Enter a playlist title!");
@@ -143,7 +142,7 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
 
     // Make POST req and get PlaylistID for created playlist
     let playlist_id = "";
-    fetch("https://api.spotify.com/v1/users/" + tempSpotifyID + "/playlists", {
+    fetch("https://api.spotify.com/v1/users/" + user.id + "/playlists", {
       method: "POST",
       headers: {
         authorization: `Bearer ${token}`,
@@ -181,23 +180,13 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
       });
   }
 
+
   return (
     <div className="section">
       {/* Left half of the screen displaying forms*/}
 
       <div className="left">
-        <label>
-          {" "}
-          For testing purposes, enter user spotify ID
-          <a
-            href="https://developer.spotify.com/console/get-current-user/"
-            target="_blank"
-          ></a>
-          <input
-            type="text"
-            onChange={(e) => setTempSpotifyID(e.target.value)}
-          ></input>
-        </label>
+        
 
         <label>
           {" "}
@@ -211,12 +200,25 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
 
         <button
           className="button"
+          onClick={() => {setUserID(user.id); setDisplayText("My Spotify User ID: ");} }
+          type="button"
+        >
+          {" "}
+          Display Spotify ID{" "}
+        </button>
+
+        <button
+          className="button"
           onClick={() => getPrivatePlaylists(input)}
           type="button"
         >
           {" "}
           Get Playlists{" "}
         </button>
+
+        <CopyToClipboard text={userID} onCopy={() => alert("Copied to clipboard!")}>
+          <label className="uid_label">{displayText} {userID}</label>
+        </CopyToClipboard>
 
         {/* Display friends Spotify UserID that was entered*/}
         <label>Contributors: </label>
@@ -257,7 +259,7 @@ function MultiPlaylistTab({ spotifyApi, user, deviceID, token }) {
           type="button"
           onClick={() => uniqueTracksList()}
         >
-          Display Tracks
+          Display New Tracks
         </button>
 
         <button
