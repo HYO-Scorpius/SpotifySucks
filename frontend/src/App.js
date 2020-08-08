@@ -20,11 +20,11 @@ function App() {
     useEffect(() => {
         //regularly get api token
         const { access_token, refresh_token } = getHashParams();
-        if (access_token) {
-            spotifyApi.setAccessToken(access_token);
-            document.cookie = `api_token=${access_token}`;
+        const c_access_token = getCookie('api_token') || null;
+        if (c_access_token) {
+            spotifyApi.setAccessToken(c_access_token);
         } else {
-            const token = getCookie('api_token') || null;
+            document.cookie = `api_token=${access_token}`;
             if (token) spotifyApi.setAccessToken(token);
         }
 
