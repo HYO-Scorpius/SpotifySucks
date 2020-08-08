@@ -34,10 +34,7 @@ function App() {
         } else {
             const token = getCookie('refresh_token') || null;
             if (token) setRefreshToken(token);
-        }
-
-            
-
+        } 
     },[needsRefresh]);
 
     useEffect(() => {
