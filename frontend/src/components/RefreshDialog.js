@@ -27,6 +27,7 @@ function RefreshDialog({
         fetch(refreshURL)
         .then(response => response.text())
         .then((data) => {
+            setLoading(false);
             document.cookie = `api_token=${data}`;
             spotifyApi.setAccessToken(data); 
             setToken(data);
