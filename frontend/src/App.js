@@ -7,20 +7,37 @@ import Tabs from './components/Tabs';
 import RefreshDialog from './components/RefreshDialog';
 //import FriendSyncTab from './components/FriendSyncTab';
 import MultiPlaylistTab from './components/MultiPlaylistTab';
-import { getCookie } from './helper';
+import { getCookie, getHashParams} from './helper';
 const spotifyApi = new SWA();
+const apiServer = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}`: "https://intense-reef-77781.herokuapp.com"
 
 function App() {
    	const [needsRefresh, setNeedsRefresh] = useState(false);
    	const [user, setUser] = useState({});
+    const [refreshToken, setRefreshToken] = useState(null);
 
 
     useEffect(() => {
         //regularly get api token
-        const token = getCookie('api_token') || null;
-        if (token) {
-            spotifyApi.setAccessToken(token);
+        const { access_token, refresh_token } = getHashParams();
+        if (access_token) {
+            spotifyApi.setAccessToken(access_token);
+            document.cookie = `api_token=${access_token}`;
+        } else {
+            const token = getCookie('api_token') || null;
+            if (token) spotifyApi.setAccessToken(token);
         }
+
+        if (refresh_token) {
+            setRefreshToken(refresh_token);
+            document.cookie = `refresh_token=${refresh_token}`;
+        } else {
+            const token = getCookie('refresh_token') || null;
+            if (token) setRefreshToken(token);
+        }
+
+            
+
     },[needsRefresh]);
 
     useEffect(() => {
@@ -227,7 +244,6 @@ function App() {
 
     useEffect(() => {
         if (token && window.Spotify) {
-            console.log(token);
             window.onSpotifyWebPlaybackSDKReady();
         }
     },[token]);
@@ -240,6 +256,8 @@ function App() {
                     open = {needsRefresh}
                     setOpen = {setNeedsRefresh}
                     setToken = {setToken}
+                    apiServer = {apiServer}
+                    r_token = {refreshToken}
                 />
             }
          
@@ -254,6 +272,7 @@ function App() {
                         deviceID = {deviceID}
                         token = {token}
                         setNeedsRefresh = {setNeedsRefresh}
+                        apiServer = {apiServer}
                     />
                 </div>
                 <div label="MultiPlaylist">
@@ -263,13 +282,11 @@ function App() {
                         deviceID = {deviceID}
                         token = {token}
                         setNeedsRefresh = {setNeedsRefresh}
+                        apiServer = {apiServer}
                      />
                 </div>
                 <div label="FriendSync">
                     FriendSyncTab 
-                </div>
-                <div label="VanillaPlaylist">
-                    leaving empty until the other three are done
                 </div>
             </Tabs>
             <MusicPlayer  

@@ -6,18 +6,24 @@
   "dependencies": {
     "concurrently": "^5.2.0",
     "cookie-parser": "^1.4.5",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "react-copy-to-clipboard": "^5.0.2"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" "
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" ",
+    "start": "node backend/server.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install npm && cd backend && npm install"
+  },
+  "engines": {
+    "node": "14.x"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HYO-Scorpius/SpotifySucks.git"
   },
-  "author": "Amy Kenny Mike Syed",
+  "author": "Amy Kenny Mike Syed Chiara",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/HYO-Scorpius/SpotifySucks/issues"

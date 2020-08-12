@@ -10,7 +10,8 @@ function Playlist({
     player,
     deviceID,
     token,
-    setNeedsRefresh
+    setNeedsRefresh,
+    apiServer
 }) {
     const [pane, setPane] = useState("outer"); 
     const [selectedPlaylist, setSelectedPlaylist] = useState(null); 
@@ -53,6 +54,7 @@ function Playlist({
                     spotifyApi = {spotifyApi}
                     user = {user}
                     token = {spotifyApi.getAccessToken()}
+                    apiServer = {apiServer}
                 />
             }
       
@@ -69,6 +71,7 @@ function Playlist({
                     setSelectedPlaylist = {setSelectedPlaylist}
                     token = {spotifyApi.getAccessToken()}
                     setNeedsRefresh = {setNeedsRefresh}
+                    apiServer = {apiServer}
                 />
             )}
         </div>

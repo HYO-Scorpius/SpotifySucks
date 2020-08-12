@@ -11,10 +11,12 @@ const shuffle = require("./Modules/shuffle");
 const cookieParser = require("cookie-parser"); // Module to Write Cookies
 const http = require("http");
 const redis = require("socket.io-redis");
+const querystring = require("querystring");
 
 const PORT = process.env.PORT || 1337;
-const HOSTNAME = "127.0.0.1";
 const uri = process.env.ATLAS_URI;
+const CALLBACK = process.env.CALLBACK || "http://localhost:1337/callback";
+const REDIRECT = process.env.REDIRECT || "http://localhost:3000/";
 const connection = mongoose.connection;
 
 const app = express();
@@ -35,12 +37,7 @@ app
     
 app.use(express.json());
 
-app.use(
-    cors({
-        credentials: true,
-        origin: "http://localhost:3000", // URL of the react (Frontend) app
-    })
-);
+app.use( cors());
         
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Spotify Authentication
@@ -78,10 +75,14 @@ var scopes = [
 var spotifyApi = new SWA({
     clientId: clientID,
     clientSecret: clientSECRET,
-    redirectUri: "http://localhost:1337/callback",
+    redirectUri: CALLBACK,
 });
 
 var authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
+
+app.get("/", (_,res) => {
+    res.send("monka, you shouldn't be here");
+});
 
 // Redirects to authorize URL
 app.get("/spotify/login", (_, res) => {
@@ -102,10 +103,11 @@ app.get("/callback", (req, res) => {
             
             spotifyApi.setAccessToken(a_token);
             spotifyApi.setRefreshToken(r_token);
-            res.cookie("api_token", a_token, { maxAge: 3600000 });
+            res.cookie("access_token", a_token, { maxAge: 3600000 });
             res.cookie("refresh_token", r_token);
             
-            res.redirect("http://localhost:3000/");
+            res.redirect(REDIRECT + "#" +
+                querystring.stringify({access_token: a_token, refresh_token:r_token}));
         },
         (err) => {
             console.log(
@@ -117,14 +119,14 @@ app.get("/callback", (req, res) => {
 });
                 
 //Refresh spotify access token
-app.get('/refresh/:r_token', (req, res) =>{
-    spotifyApi.setRefreshToken(req.params.r_token);
+app.get('/refresh/:refresh_token', (req, res) =>{
+    spotifyApi.setRefreshToken(req.params.refresh_token);
     spotifyApi.refreshAccessToken().then (
         (data) => {
             let a_token = data.body['access_token'];
             spotifyApi.setAccessToken(a_token);
             
-            res.cookie('api_token', a_token, {maxAge: 3600000});
+            res.cookie('access_token', a_token, {maxAge: 3600000});
             res.send(a_token);
         },
         (err) => {
@@ -135,6 +137,7 @@ app.get('/refresh/:r_token', (req, res) =>{
     
 //Logout for dev purposes for now
 app.get("/logout", (_, res) => {
+    res.clearCookie("access_token");
     res.clearCookie("api_token");
     console.log("hit");
     res.send("hi");
@@ -148,6 +151,7 @@ app.get(
     "/api/:access_token/shuffle/types/:type/user/:userId/playlists/:playlistId/replace/:replace",
     (req, _) => {
         spotifyApi.setAccessToken(req.params.access_token);
+        console.log(req.params.access_token);
         spotifyApi.getPlaylist(req.params.playlistId).then(
             (data) => {
                 let URIs = shuffle(req.params.type, data.body.tracks.items);
@@ -159,6 +163,7 @@ app.get(
                     req.params.replace === "yes",
                     req.params.type
                 );
+                res.send("done");
             },
             (err) =>{
                 console.log(err);
@@ -316,6 +321,6 @@ app.use("/queue", queueRoute);
 app.use("/users", usersRoute);
 //app.use('/session', sessionRoute)
 
-app.listen(PORT, HOSTNAME, () => {
-    console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
+app.listen(PORT, () => {
+    console.log(`Server running ${PORT}/`);
 });
