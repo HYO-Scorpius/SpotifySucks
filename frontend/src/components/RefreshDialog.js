@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useState} from "react";
+import "./RefreshDialog.css"
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -14,6 +15,7 @@ function RefreshDialog({
     r_token,
     apiServer
 }) {
+    const [loading, setLoading] = useState(false);
     
     const handleClose = () => {
         setOpen(false);
@@ -21,9 +23,11 @@ function RefreshDialog({
     
     const refreshToken = () => {
         let refreshURL = `${apiServer}/refresh/${r_token}`;
+        setLoading(true);
         fetch(refreshURL)
         .then(response => response.text())
         .then((data) => {
+            setLoading(false);
             document.cookie = `api_token=${data}`;
             spotifyApi.setAccessToken(data); 
             setToken(data);
@@ -34,6 +38,11 @@ function RefreshDialog({
     
     return (
         <div>
+            <div className="loading" style={{visibility: loading}}>
+                <img alt= "loading" src={require('./img/loading.gif')} ></img>
+            </div>
+
+        {loading === false && 
             <Dialog 
                 open={open}
                 onClose={handleClose}
@@ -56,6 +65,7 @@ function RefreshDialog({
                 </DialogActions>
 
             </Dialog>
+        }
         </div>
     );
 }
