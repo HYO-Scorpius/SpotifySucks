@@ -187,97 +187,102 @@ function MultiPlaylistTab({ user, deviceID, token }) {
 
       <div className="left">
         
+        <div className="left-container">
+          <label>
+            {" "}
+            Enter friends Spotify User ID
+            <input
+              ref={textInput}
+              type="text"
+              onChange={(e) => setInput(e.target.value)}
+            ></input>
+          </label>
 
-        <label>
-          {" "}
-          Enter friends Spotify User ID
-          <input
-            ref={textInput}
-            type="text"
-            onChange={(e) => setInput(e.target.value)}
-          ></input>
-        </label>
+          <button
+            className="button"
+            onClick={() => {setUserID(user.id); setDisplayText("My Spotify User ID: ");} }
+            type="button"
+          >
+            {" "}
+            Display Spotify ID{" "}
+          </button>
 
-        <button
-          className="button"
-          onClick={() => {setUserID(user.id); setDisplayText("My Spotify User ID: ");} }
-          type="button"
-        >
-          {" "}
-          Display Spotify ID{" "}
-        </button>
+          <button
+            className="button"
+            onClick={() => getPrivatePlaylists(input)}
+            type="button"
+          >
+            {" "}
+            Get Playlists{" "}
+          </button>
 
-        <button
-          className="button"
-          onClick={() => getPrivatePlaylists(input)}
-          type="button"
-        >
-          {" "}
-          Get Playlists{" "}
-        </button>
+          <CopyToClipboard text={userID} onCopy={() => alert("Copied to clipboard!")}>
+            <label className="uid_label">{displayText} {userID}</label>
+          </CopyToClipboard>
 
-        <CopyToClipboard text={userID} onCopy={() => alert("Copied to clipboard!")}>
-          <label className="uid_label">{displayText} {userID}</label>
-        </CopyToClipboard>
+          {/* Display friends Spotify UserID that was entered*/}
+          <label>Contributors: </label>
 
-        {/* Display friends Spotify UserID that was entered*/}
-        <label>Contributors: </label>
+          <div className="playlist_display">
+            <label>All Accessible Playlists:</label>
+            <ul>
+              {/* Each playlist was added to the array with an index starting
+              a 1 in getPrivatePlaylists(). The [playlist.index - 1]
+              correpsonds to its track list.     */}
+              {privatePlaylist.map((playlist) => (
+                <select
+                  value={playlist.name}
+                  onClick={() => setIndexTrack(tracks[playlist.index - 1])}
+                >
+                  <option>
+                    {"--"}
+                    {playlist.name}
+                    {"--"}
+                  </option>
+                  {indexTrack.map((track) => (
+                    <option> {track.name} </option>
+                  ))}
+                </select>
+              ))}
+            </ul>
+          </div>
 
-        <div className="playlist_display">
-          <label>All Accessible Playlists:</label>
-          <ul>
-            {/* Each playlist was added to the array with an index starting
-             a 1 in getPrivatePlaylists(). The [playlist.index - 1]
-            correpsonds to its track list.     */}
-            {privatePlaylist.map((playlist) => (
-              <select
-                value={playlist.name}
-                onClick={() => setIndexTrack(tracks[playlist.index - 1])}
-              >
-                <option>
-                  {"--"}
-                  {playlist.name}
-                  {"--"}
-                </option>
-                {indexTrack.map((track) => (
-                  <option> {track.name} </option>
-                ))}
-              </select>
-            ))}
-          </ul>
+          <label>
+            Create a New Playlist
+            <input
+              type="text"
+              onChange={(e) => setPlaylistTitle(e.target.value)}
+            ></input>
+          </label>
+          <button
+            className="button"
+            type="button"
+            onClick={() => uniqueTracksList()}
+          >
+            Display New Tracks
+          </button>
+
+          <button
+            className="button confirm"
+            type="button"
+            onClick={() => createPlaylist()}
+          >
+            {" "}
+            Confirm{" "}
+          </button>
         </div>
-
-        <label>
-          Create a New Playlist
-          <input
-            type="text"
-            onChange={(e) => setPlaylistTitle(e.target.value)}
-          ></input>
-        </label>
-        <button
-          className="button"
-          type="button"
-          onClick={() => uniqueTracksList()}
-        >
-          Display New Tracks
-        </button>
-
-        <button
-          className="button"
-          type="button"
-          onClick={() => createPlaylist()}
-        >
-          {" "}
-          Confirm{" "}
-        </button>
       </div>
+        
 
       {/* Right half of the screen displaying tracks*/}
       <div className="right">
         <p> {playlistTitle} </p>
         <div className="filtered_tracks">
           {uniqueTracks.map((filter) => (
-            <p> {filter} </p>
+            <p className="track-container2">
+               <i className="fas fa-music marginIcon smallicon2"></i>
+              {filter} 
+            </p>
           ))}
         </div>
       </div>

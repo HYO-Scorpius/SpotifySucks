@@ -1,54 +1,77 @@
 .section {
-  height: 100%;
-  width: 95%;
-  margin: 0px auto;
-  padding: 5px;
+    height: 100%;
+    width: 100%;
+    padding-bottom: 500px;
+    margin: 0px auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 5px;
 }
 
 input {
-  margin-left: 10px;
-  display: inline;
+    margin-left: 10px;
+    display: inline;
 }
 
 label {
-  padding-bottom: 10px;  
-  display: block;
+    padding-bottom: 10px;  
+    display: block;
 }
 
 .left {
-  background-color: rgb(14, 51, 77);
-  margin-top: 25px;
-  padding: 30px;
-  width: 45%;
-  display: table-cell;
-  vertical-align: baseline;
-  float: left;
+    margin-top: 25px;
+    width: 45%;
+}
+
+.left-container {
+    border: 1px solid white;
+    background-color: black;
+    border-radius: 10px;
+    padding: 30px;
 }
 
 .right {
-  float: right;
-  padding: 10px;
-  width: 48%;
+    width: 45%;
+    padding: 10px;
 }
 
 .filtered_tracks {
-  text-align: left;
-  padding-left: 20px;
-  border-style: solid;
-  background-color: rgb(36, 134, 129);
+    text-align: left;
+}
+
+.track-container2 {
+    margin:0;
+    padding: 8px;
+    background-color: black;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 6px;
+    height: 17px;
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+    border-radius: 10px;
+    font-size: 13.5px;
+    cursor: context-menu;
+}
+
+.smallicon2 {
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .button {
-  text-align: center;
-  font-size: 16px;
-  padding: 11px;
-  width: 25%;
-  color: white;
-  background: #516269;
-  border-color: #5ed7bf;
-  font-family: "Titillium Web", sans-serif;
+    padding: 8px;
+}
+
+.confirm {
+    background-color: #1d6160;
+    border-color: #1d6160;
+    color: white;
 }
 
 .uid_label {
     color: crimson;
+    cursor: pointer;
+    font-size: smaller;
 }
