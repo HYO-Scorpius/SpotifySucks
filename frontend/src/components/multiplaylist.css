@@ -25,15 +25,16 @@ label {
 }
 
 .left-container {
-    border: 1px solid white;
+    border: 1px solid rgba(255, 255, 255, 0.39);
     background-color: black;
     border-radius: 10px;
     padding: 30px;
 }
 
 .right {
+    margin-left: 15px;
+    margin-top: 25px;
     width: 45%;
-    padding: 10px;
 }
 
 .filtered_tracks {
@@ -47,9 +48,12 @@ label {
     display: flex;
     flex-direction: row;
     margin-bottom: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     height: 17px;
-    border-top: 1px solid white;
-    border-bottom: 1px solid white;
+    border-top: 1px solid rgba(255, 255, 255, 0.39);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.39);
     border-radius: 10px;
     font-size: 13.5px;
     cursor: context-menu;
@@ -57,6 +61,7 @@ label {
 
 .smallicon2 {
     margin-top: auto;
+    margin-right: 8px;
     margin-bottom: auto;
 }
 
@@ -64,14 +69,86 @@ label {
     padding: 8px;
 }
 
-.confirm {
+.button:hover,  .playlists-displayed > button:hover {
+    background-color: rgb(213, 219, 219);
+    border-color:rgb(213, 219, 219);
+}
+
+.primary {
     background-color: #1d6160;
     border-color: #1d6160;
     color: white;
+    width: 100px;
+}
+
+.primary:hover {
+    background-color: #1a5857;
+    border-color: #1a5857;
 }
 
 .uid_label {
     color: crimson;
     cursor: pointer;
     font-size: smaller;
+}
+
+.idDisplay {
+    width: 160px;
+}
+
+.create-playlist > h3 {
+    color: #218f8d;
+}
+
+.button-row {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.playlists-displayed {
+    padding: 8px;
+    border-bottom: 1px solid white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.playlists-displayed > button {
+    margin: 0;
+    margin-left: 5px;
+    width: 50px;
+    font-size: 12px;
+    height: auto;
+}
+
+h3.name {
+    margin-top:0;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 15px;
+}
+
+.playlist-tracks > .header > img {
+    width: 100px;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+
+.playlists-displayed > .playlist-name {
+    width: 100%;
+    margin-right: auto;
+    vertical-align: middle;
+}
+
+.shown {
+    background-color: #77acab;
+    border-color: #77acab;
+}
+
+button.shown:hover {
+    background-color: #70a1a1;
+    border-color: #70a1a1;
 }
