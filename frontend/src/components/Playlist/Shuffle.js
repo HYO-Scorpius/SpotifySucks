@@ -13,8 +13,8 @@ function Shuffle({
     
     const [type, setType] = useState('random');
     const [followers, setFollowers] = useState(0)
-    const [imgUrl, setImg] = useState(playlist.images[0].url)
- 
+    const [imgUrl, setImg] = useState( playlist.images[0] ? playlist.images[0].url : "")
+
     function followersWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
@@ -42,7 +42,7 @@ function Shuffle({
         <div> 
             <div>
                 <div className="playlist-header">
-                    <img alt= "playlist cover" src={imgUrl}></img>
+                    {imgUrl && <img alt= "playlist cover" src={imgUrl}></img>}
      
                     <div className="playlist-description">
                         <h2 className="playlist-title"><i className="fab fa-spotify marginIcon"></i> {playlist.name}</h2>

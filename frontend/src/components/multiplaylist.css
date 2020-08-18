@@ -32,8 +32,9 @@ label {
 }
 
 .right {
+    margin-left: 15px;
+    margin-top: 25px;
     width: 45%;
-    padding: 10px;
 }
 
 .filtered_tracks {
@@ -47,6 +48,9 @@ label {
     display: flex;
     flex-direction: row;
     margin-bottom: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     height: 17px;
     border-top: 1px solid rgba(255, 255, 255, 0.39);
     border-bottom: 1px solid rgba(255, 255, 255, 0.39);
@@ -57,6 +61,7 @@ label {
 
 .smallicon2 {
     margin-top: auto;
+    margin-right: 8px;
     margin-bottom: auto;
 }
 
@@ -64,7 +69,7 @@ label {
     padding: 8px;
 }
 
-.button:hover {
+.button:hover,  .playlists-displayed > button:hover {
     background-color: rgb(213, 219, 219);
     border-color:rgb(213, 219, 219);
 }
@@ -98,4 +103,52 @@ label {
 .button-row {
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.playlists-displayed {
+    padding: 8px;
+    border-bottom: 1px solid white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.playlists-displayed > button {
+    margin: 0;
+    margin-left: 5px;
+    width: 50px;
+    font-size: 12px;
+    height: auto;
+}
+
+h3.name {
+    margin-top:0;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 15px;
+}
+
+.playlist-tracks > .header > img {
+    width: 100px;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+
+.playlists-displayed > .playlist-name {
+    width: 100%;
+    margin-right: auto;
+    vertical-align: middle;
+}
+
+.shown {
+    background-color: #77acab;
+    border-color: #77acab;
+}
+
+button.shown:hover {
+    background-color: #70a1a1;
+    border-color: #70a1a1;
 }

@@ -15,7 +15,7 @@ function PlaylistOuter({
                             setPane("inner");
                             setSelectedPlaylist(playlist);
                         }}> 
-                            <img alt= "playlist cover" src={playlist.images[0].url}></img>
+                            {playlist.images[0] && <img alt= "playlist cover" src={playlist.images[0].url}></img>}
                             <span className="playlist-name">{ playlist.name }</span> 
                             <span className="playlist-by">by {playlist.owner.display_name}</span>
                             <span className="popuptext playlist-text">{ playlist.name }</span> 
