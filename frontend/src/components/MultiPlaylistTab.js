@@ -17,7 +17,7 @@ function MultiPlaylistTab({ user, deviceID, token }) {
     const [playlistURI, setPlaylistsURI] = useState([]);
     const [playlistTitle, setPlaylistTitle] = useState("");
     const [userID, setUserID] = useState("");
-    const [displayText, setDisplayText] = useState("");
+    const [displayText, setDisplayText] = useState(false);
     
     /** Playing around with socket connection
     
@@ -190,33 +190,39 @@ function MultiPlaylistTab({ user, deviceID, token }) {
             
                 <div className="left-container">
                     <label>
-                        Enter friends Spotify User ID
+                        Enter friends' Spotify User ID:
                         <input
                             ref={textInput}
                             type="text"
                             onChange={(e) => setInput(e.target.value)}
                         />
                     </label>
+
+                    <div className="button-row">
                 
-                    <button
-                        className="button"
-                        onClick={() => {setUserID(user.id); setDisplayText("My Spotify User ID: ");} }
-                        type="button"
-                    >
-                        Display Spotify ID
-                    </button>
-                
-                    <button
-                        className="button"
-                        onClick={() => getPrivatePlaylists(input)}
-                        type="button"
-                    >
-                        Get Playlists
-                    </button>
+                        <button
+                            className="button idDisplay"
+                            onClick={() => {setUserID(user.id); setDisplayText(state => !state);} }
+                            type="button"
+                        >
+                            { !displayText && "Display My Spotify ID"}
+                            { displayText && "Hide My Spotify ID"}
+                        </button>
                     
-                    <CopyToClipboard text={userID} onCopy={() => alert("Copied to clipboard!")}>
-                        <label className="uid_label">{displayText} {userID}</label>
-                    </CopyToClipboard>
+                        <button
+                            className="button primary"
+                            onClick={() => getPrivatePlaylists(input)}
+                            type="button"
+                        >
+                            Get Playlists
+                        </button>
+
+                        { displayText && 
+                        <CopyToClipboard text={userID} onCopy={() => alert("Copied to clipboard!")}>
+                            <label className="uid_label">My Spotify User ID: {userID}</label>
+                        </CopyToClipboard>}
+
+                    </div>
                 
                     {/* Display friends Spotify UserID that was entered*/}
                     <label>Contributors: </label>
@@ -244,30 +250,39 @@ function MultiPlaylistTab({ user, deviceID, token }) {
                             ))}
                         </ul>
                     </div>
-                        
-                    <label>
-                        Create a New Playlist
-                        <input
-                            type="text"
-                            onChange={(e) => setPlaylistTitle(e.target.value)}
-                        />
-                    </label>
-                    <button
-                        className="button"
-                        type="button"
-                        onClick={() => uniqueTracksList()}
-                    >
-                        Display New Tracks
-                    </button>
-                        
-                    <button
-                        className="button confirm"
-                        type="button"
-                        onClick={() => createPlaylist()}
-                    >
-                        Confirm
-                    </button>
+
+                    <div className="create-playlist"> 
+
+                        <h3>Create A New Playlist</h3>
+                        <label>
+                            Title:
+                            <input
+                                type="text"
+                                onChange={(e) => setPlaylistTitle(e.target.value)}
+                            />
+                        </label>
+
+                        <div className="button-row">
+                            <button
+                                className="button idDisplay"
+                                type="button"
+                                onClick={() => uniqueTracksList()}
+                            >
+                                Display New Tracks
+                            </button>
+                            
+                            <button
+                                className="button primary"
+                                type="button"
+                                onClick={() => createPlaylist()}
+                            >
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
+                        
             </div>
                     
                     

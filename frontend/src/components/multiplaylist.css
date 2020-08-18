@@ -64,14 +64,38 @@ label {
     padding: 8px;
 }
 
-.confirm {
+.button:hover {
+    background-color: rgb(213, 219, 219);
+    border-color:rgb(213, 219, 219);
+}
+
+.primary {
     background-color: #1d6160;
     border-color: #1d6160;
     color: white;
+    width: 100px;
+}
+
+.primary:hover {
+    background-color: #1a5857;
+    border-color: #1a5857;
 }
 
 .uid_label {
     color: crimson;
     cursor: pointer;
     font-size: smaller;
+}
+
+.idDisplay {
+    width: 160px;
+}
+
+.create-playlist > h3 {
+    color: #218f8d;
+}
+
+.button-row {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
