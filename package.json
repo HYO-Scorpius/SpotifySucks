@@ -11,9 +11,12 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" ",
-    "start": "node backend/server.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install npm && cd backend && npm install"
+    "dev": "concurrently \"cd frontend && npm start\" \"cd backend && npm run dev\" ",
+    "start": "concurrently \"cd frontend && npm start\" \"cd backend && npm run start\" ",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install npm && cd backend && npm install",
+    "installation": "concurrently \"cd frontend && npm install\" \"cd backend && npm install\" ",
+    "frontend": "cd frontend && npm start",
+    "backend": "cd backend & npm run start"
   },
   "engines": {
     "node": "14.x"
